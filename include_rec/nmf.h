@@ -10,6 +10,7 @@ private:
     const int min_matrix_value = 0;
     const int max_matrix_value = 10;
 
+    float Euclidean_norm(matrix<float>& A);
     float Frabenius_norm(matrix<float>& A, matrix<float>& W, matrix<float>& H);
     void gradient_descent(matrix<float>& A, matrix<float>& W, matrix<float>& H);
 public:
