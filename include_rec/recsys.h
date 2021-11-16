@@ -11,5 +11,5 @@ class RecSys {
 private:
     NMF model;
 public:
-    vector<int> create_recommendations(vector<vector<int>>& A, int k);
+    matrix<float> create_recommendations(vector<vector<int>>& A, int k);
 };
