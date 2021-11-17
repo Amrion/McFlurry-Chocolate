@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 
-#include "matrix.h"
-#include "nmf.h"
+#include "matrix.hpp"
+#include "nmf.hpp"
 
 #define mi matrix<int>
 #define mf matrix<float>

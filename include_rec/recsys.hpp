@@ -4,8 +4,8 @@
 #include <thread>
 #include <mutex>
 
-#include "matrix.h"
-#include "nmf.h"
+#include "matrix.hpp"
+#include "nmf.hpp"
 
 using namespace std;
 

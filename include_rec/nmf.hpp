@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "matrix.h"
+#include "matrix.hpp"
 
 using namespace std;
 
@@ -23,4 +23,3 @@ public:
 
     matrix<float> matrix_factorization(matrix<float>& A);
 };
-

@@ -22,7 +22,7 @@ set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Werror -fprofile-arcs -ftest-coverage -fPIC")
 
 include_directories(include_rec)
 
-set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.h ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/nmf.cpp ${PROJECT_SOURCE_DIR}/src_rec/matrix.cpp)
+set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/nmf.cpp ${PROJECT_SOURCE_DIR}/src_rec/matrix.cpp)
 add_library(find_recsys_lib SHARED ${FIND_RECSYS_LIB})
 target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
 

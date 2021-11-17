@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "recsys.h"
+#include "recsys.hpp"
 
 TEST(MATRIX_CHECK, CONSTRUCTOR_N_M) {
     matrix<int> B(10, 10);
