@@ -113,4 +113,5 @@ matrix<T> matrix<T>::_T() {
     return A_T;
 }
 
+template class matrix<int>;
 template class matrix<float>;

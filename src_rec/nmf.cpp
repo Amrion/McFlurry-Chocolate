@@ -8,10 +8,6 @@
 
 using namespace std;
 
-float sqr(const float x) {
-    return x * x;
-}
-
 void print_m(mf& A) {
     for (int i = 0; i < A.size_n(); ++i) {
         for (int j = 0; j < A.size_m(); ++j) {
@@ -42,7 +38,7 @@ float NMF::Euclidean_norm(mf& A) {
     float sum = 0;
     for (int i = 0; i < A.size_n(); ++i) {
         for (int j = 0; j < A.size_m(); ++j) {
-            sum += sqr(A[i][j]);
+            sum += pow(A[i][j], 2);
         }
     }
     return 0.5 * sqrt( sum );
@@ -53,7 +49,7 @@ float NMF::Frabenius_norm(mf& A, mf& W, mf& H) {
     float sum = 0;
     for (int i = 0; i < WH.size_n(); ++i) {
         for (int j = 0; j < WH.size_m(); ++j) {
-            sum += sqr(WH[i][j]);
+            sum += pow(WH[i][j], 2);
         }
     }
     return 0.5 * sqrt( sum );

@@ -53,8 +53,15 @@ map<int, vector<int>> RecSys::create_recommendations(vector<vector<int>>& V, int
     print_matrix(REC);
 
     map<int, vector<int>> user_recs;
+
+    vector<thread> threads;
     for (int i = 0; i < REC.size_n(); ++i) {
+        // threads.push_back(thread(&RecSys::rec_for_user, this, user_recs, REC, i));
         rec_for_user(user_recs, REC, i);
+    }
+
+    for (auto &th : threads) {
+        th.join();
     }
     
     return user_recs;

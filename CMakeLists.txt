@@ -31,14 +31,11 @@ add_executable(${PROJECT_NAME} src_rec/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE find_recsys_lib -ldl)
 
 # Build test
-option(BUILD_TESTS OFF)
-if (BUILD_TESTS)
-    enable_testing()
-    include(GoogleTest)
+enable_testing()
+include(GoogleTest)
 
-    include_directories(${GTEST_INCLUDE_DIRS})
+include_directories(${GTEST_INCLUDE_DIRS})
 
-    add_executable(libgtest tests/gtests.cpp)
-    target_link_libraries(libgtest ${GTEST_LIBRARIES} find_recsys_lib gtest_main)
-    gtest_add_tests(TARGET libgtest)
-endif()
+add_executable(libgtest tests/gtests.cpp)
+target_link_libraries(libgtest ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
+gtest_add_tests(TARGET libgtest)
