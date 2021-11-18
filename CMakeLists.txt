@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include_db)
 
-set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/USER_REC.h  ${PROJECT_SOURCE_DIR}/src_db/USER_REC.cpp ${PROJECT_SOURCE_DIR}/include_db/USER_INFO.h ${PROJECT_SOURCE_DIR}/include_db/PHOTOS.h ${PROJECT_SOURCE_DIR}/include_db/MARKS.h ${PROJECT_SOURCE_DIR}/include_db/DIALOGS.h ${PROJECT_SOURCE_DIR}/include_db/DataBase.h)
+set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/USERS_REC.h  ${PROJECT_SOURCE_DIR}/src_db/USERS_REC.cpp ${PROJECT_SOURCE_DIR}/include_db/USERS_INFO.h ${PROJECT_SOURCE_DIR}/include_db/PHOTOS.h ${PROJECT_SOURCE_DIR}/include_db/MARKS.h ${PROJECT_SOURCE_DIR}/include_db/DIALOGS.h ${PROJECT_SOURCE_DIR}/include_db/DataBase.h)
 
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)

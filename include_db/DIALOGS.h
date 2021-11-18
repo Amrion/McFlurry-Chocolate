@@ -18,7 +18,7 @@ class DIALOGS : public Oracle_db {
     int getFirstUserId();
 
     void setSecondUserId(int id);
-    int getsetSecondUserId();
+    int getSecondUserId();
 
     void setDate(string date);
     string getDate();
