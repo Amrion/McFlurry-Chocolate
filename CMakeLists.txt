@@ -27,15 +27,21 @@ add_library(find_recsys_lib SHARED ${FIND_RECSYS_LIB})
 target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
 
 # Build main
-add_executable(${PROJECT_NAME} src_rec/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE find_recsys_lib -ldl)
+option(BUILD_MAIN OFF)
+if (BUILD_MAIN)
+    add_executable(${PROJECT_NAME} src_rec/main.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE find_recsys_lib -ldl)
+endif()
 
 # Build test
-enable_testing()
-include(GoogleTest)
+option(BUILD_TESTS ON)
+if (BUILD_TESTS)
+    enable_testing()
+    include(GoogleTest)
 
-include_directories(${GTEST_INCLUDE_DIRS})
+    include_directories(${GTEST_INCLUDE_DIRS})
 
-add_executable(libgtest tests/gtests.cpp)
-target_link_libraries(libgtest ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
-gtest_add_tests(TARGET libgtest)
+    add_executable(libgtest tests/gtests.cpp)
+    target_link_libraries(libgtest ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
+    gtest_add_tests(TARGET libgtest)
+endif()
