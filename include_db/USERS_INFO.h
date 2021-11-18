@@ -21,7 +21,6 @@ class USERS_INFO : public Oracle_db {
   string _telegram_link;
 
   public:
-  USERS_INFO(string Host, string User, string Password);
 
   void setId(const int id);
   int getId();

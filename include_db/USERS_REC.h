@@ -1,6 +1,6 @@
 #pragma once
 #include "DataBase.h"
-#include "marks.h"
+#include "MARKS.h"
 #include "recsys.hpp"
 
 using namespace std;
@@ -13,7 +13,6 @@ class USERS_REC : public Oracle_db {
   int _id;
   vector <int> _id_rec;
 
-  map create_rec_map();
   vector <vector <int>> map_into_vector();
   public:
 

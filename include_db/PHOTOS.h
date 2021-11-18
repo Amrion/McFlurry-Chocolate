@@ -5,7 +5,7 @@
 class photo {
     private:
     int length;
-    int wight;
+    int weight;
     vector <int> R;
     vector <int> G;
     vector <int> B;
@@ -19,7 +19,7 @@ class PHOTOS : public Oracle_db {
   
     private:
     int _photoId;
-    int _user_id;
+    int _userId;
     photo _photo;
     string _date;
 

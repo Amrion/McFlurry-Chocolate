@@ -33,12 +33,12 @@ class MESSAGES : public Oracle_db {
     string table = "MESSAGES";
 
     private:
-    int chat_messages_id;
-    string chat_messages_text;
-    int chat_messages_fk_dialog_id;
-    int chat_messages_fk_user_id;
-    int chat_messages_fk_to_user_id;
-    string chat_messages_time;
+    int msg_id;
+    string msg_text;
+    int dialog_id;
+    int user1_id;
+    int user2_id;
+    string msg_time;
     public:
     void setMId(int id);
     int getMId();
