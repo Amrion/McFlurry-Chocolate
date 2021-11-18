@@ -1,52 +1,62 @@
-#include <soci/soci.h>
-#include <soci/connection-pool.h>
+#pragma once
+#include <vector>
+#include "DataBase.h"
+using namespace std;
 
-#include <iostream>
-#include <string>
+class USERS_INFO : public Oracle_db {
+  protected:
+  string table = "USERS_INFO";
+  
+  private:
+  int _id;
+  string _mail;
+  double _password;
+  string _name;
+  string _surname;
+  int _age;
+  string _gender;
+  string _faculty;
+  int _course_number;
+  string _vk_link;
+  string _telegram_link;
 
-class db_pool {
-  soci::connection_pool* pool_;
-  std::size_t pool_size_;
-public:
-  db_pool():pool_(nullptr),pool_size_(0) {}
-  ~db_pool() { close(); }
+  public:
+  USERS_INFO(string Host, string User, string Password);
 
-  soci::connection_pool* get_pool() { return pool_; }
+  void setId(const int id);
+  int getId();
 
-  bool connect(const std::string& conn_str, std::size_t n = 5) {
-    if (pool_ != nullptr) { close(); }
-    int is_connected = 0;
+  void setMail(const string mail);
+  string getMail();
 
-    if (!(pool_ = new soci::connection_pool((pool_size_ = n)))) return false;
+  void setPassword(const double password);
+  double getPassword();
 
-    try {
-      soci::indicator ind;
-      for (std::size_t _i = 0; _i < pool_size_; _i++) {
-        soci::session& sql = pool_->at(_i);
-        // для каждой сессии открываем соединение с БД
-        sql.open(conn_str);
-        // и проверяем простым запросом
-        sql << "SELECT 1;", soci::into(is_connected, ind);
-        if (!is_connected) break;
-        else if (_i+1 < pool_size_) is_connected = 0;
-      }
-    } catch (std::exception const & e) { std::cerr << e.what() << std::endl; }
+  void setName(const string name);
+  string getName();
 
-    if (!is_connected) close();
+  void setSurname(const string surname);
+  string getSurname();
 
-    return (pool_ != nullptr);
-  }
+  void setAge(const int age);
+  int getAge();
 
-  void close () {
-    if (pool_ != nullptr) {
-      try {
-        for (std::size_t _i = 0; _i < pool_size_; _i++) {
-          soci::session& sql = pool_->at(_i);
-          sql.close();
-        }
-        delete pool_; pool_ = nullptr;
-      } catch (std::exception const & e) { std::cerr << e.what() << std::endl; }
-      pool_size_ = 0;
-    }
-  }
+  void setGender(const string gender);
+  string getGender();
+
+  void setFaculty(const string faculty);
+  string getFaculty();
+
+  void setCourse_number(const int course_number);
+  int getCourse_number();
+
+  void setVk_link(const string vk_link);
+  string getVk_link();
+
+  void setTelegram_link(const string telegram_link);
+  string getTelegram_link();
+
+
+  virtual int select_by_id();
+  virtual int delete_by_id();
 };
