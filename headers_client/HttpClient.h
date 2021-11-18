@@ -10,7 +10,6 @@
 class HttpClient : public Wt::WApplication {
 public:
     HttpClient(const Wt::WEnvironment &env);
-    void handleInternalPath(const std::string& internalPath);
 
 private:
     void doRequest();
