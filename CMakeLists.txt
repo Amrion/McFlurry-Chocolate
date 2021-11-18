@@ -23,8 +23,9 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(test tests/test.cpp)
-target_link_libraries(test find_db_lib gtest_main)
+include_directories(tests)
+add_executable(test_db tests/test.cpp)
+target_link_libraries(test_db find_db_lib gtest_main)
 
 include(GoogleTest)
-gtest_add_tests(TARGET test)
+gtest_add_tests(TARGET test_db)
