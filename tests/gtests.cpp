@@ -4,8 +4,8 @@
 
 TEST(MATRIX_CHECK, CONSTRUCTOR_N_M) {
     matrix<int> B(10, 10);
-    for (int i = 0; i < B.size_n(); ++i) {
-        for (int j = 0; j < B.size_m(); ++j) {
+    for (size_t i = 0; i < B.size_n(); ++i) {
+        for (size_t j = 0; j < B.size_m(); ++j) {
             EXPECT_EQ(B[i][j], 0);
         }
     }
@@ -20,8 +20,8 @@ TEST(MATRIX_CHECK, CONSTRUCTOR_VECTOR) {
     }
 
     matrix<int> B(Vi);
-    for (int i = 0; i < B.size_n(); ++i) {
-        for (int j = 0; j < B.size_m(); ++j) {
+    for (size_t i = 0; i < B.size_n(); ++i) {
+        for (size_t j = 0; j < B.size_m(); ++j) {
             EXPECT_EQ(B[i][j], Vi[i][j]);
         }
     }
@@ -53,8 +53,8 @@ TEST(MATRIX_CHECK, MULTIPLIE_MATRIX) {
     matrix<int> B(Vii);
 
     matrix<int> AB = A*B;
-    for (int i = 0; i < AB.size_n(); ++i) {
-        for (int j = 0; j < AB.size_m(); ++j) {
+    for (size_t i = 0; i < AB.size_n(); ++i) {
+        for (size_t j = 0; j < AB.size_m(); ++j) {
             EXPECT_EQ(AB[i][j], ANS[i][j]);
         }
     }
@@ -69,8 +69,8 @@ TEST(MATRIX_CHECK, MULTIPLIE_NUMBER) {
     }
     matrix<int> A(Vi);
     A = A * 5;
-    for (int i = 0; i < A.size_n(); ++i) {
-        for (int j = 0; j < A.size_m(); ++j) {
+    for (size_t i = 0; i < A.size_n(); ++i) {
+        for (size_t j = 0; j < A.size_m(); ++j) {
             EXPECT_EQ(A[i][j], Vi[i][j] * 5);
         }
     }
@@ -94,8 +94,8 @@ TEST(MATRIX_CHECK, SUM_MATRIX) {
     matrix<int> B(Vii);
 
     matrix<int> AB = A + B;
-    for (int i = 0; i < AB.size_n(); ++i) {
-        for (int j = 0; j < AB.size_m(); ++j) {
+    for (size_t i = 0; i < AB.size_n(); ++i) {
+        for (size_t j = 0; j < AB.size_m(); ++j) {
             EXPECT_EQ(AB[i][j], Vi[i][j] + Vii[i][j]);
         }
     }
@@ -113,8 +113,8 @@ TEST(NMF_CHECK, FRABENIUS_NORM) {
 TEST(NMF_CHECK, EUCLIDEAN_NORM) {
     matrix<float> A(10, 10); A.random_init(0, 10);
     float sum = 0;
-    for (int i = 0; i < A.size_n(); ++i) {
-        for (int j = 0; j < A.size_m(); ++j) {
+    for (size_t i = 0; i < A.size_n(); ++i) {
+        for (size_t j = 0; j < A.size_m(); ++j) {
             sum += pow(A[i][j], 2);
         }
     }

@@ -9,8 +9,8 @@
 using namespace std;
 
 void print_m(mf& A) {
-    for (int i = 0; i < A.size_n(); ++i) {
-        for (int j = 0; j < A.size_m(); ++j) {
+    for (size_t i = 0; i < A.size_n(); ++i) {
+        for (size_t j = 0; j < A.size_m(); ++j) {
             cout << A[i][j] << ' ';
         }
         cout << '\n';
@@ -36,8 +36,8 @@ NMF::NMF(const int _k, float _eps, float _learning_rate, int _nb_epoch) {
 
 float NMF::Euclidean_norm(mf& A) {
     float sum = 0;
-    for (int i = 0; i < A.size_n(); ++i) {
-        for (int j = 0; j < A.size_m(); ++j) {
+    for (size_t i = 0; i < A.size_n(); ++i) {
+        for (size_t j = 0; j < A.size_m(); ++j) {
             sum += pow(A[i][j], 2);
         }
     }
@@ -47,8 +47,8 @@ float NMF::Euclidean_norm(mf& A) {
 float NMF::Frabenius_norm(mf& A, mf& W, mf& H) {
     mf WH = W * H * (-1) + A;
     float sum = 0;
-    for (int i = 0; i < WH.size_n(); ++i) {
-        for (int j = 0; j < WH.size_m(); ++j) {
+    for (size_t i = 0; i < WH.size_n(); ++i) {
+        for (size_t j = 0; j < WH.size_m(); ++j) {
             sum += pow(WH[i][j], 2);
         }
     }

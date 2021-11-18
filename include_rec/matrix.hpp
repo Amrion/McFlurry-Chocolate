@@ -7,8 +7,8 @@ using namespace std;
 template<class T>
 class matrix {
 private:
-    int n = 0;
-    int m = 0;
+    size_t n = 0;
+    size_t m = 0;
     vector<vector<T>> data;
 
     T random_in_range(const T& l, const T& r);
@@ -23,9 +23,9 @@ public:
     matrix<T> operator* (const float num) const;
     matrix<T> operator+ (const matrix<T>& B) const;
 
-    pair<int, int> size();
-    const int size_n() const;
-    const int size_m() const;
+    pair<size_t, size_t> size() const;
+    const size_t size_n() const;
+    const size_t size_m() const;
     void random_init(const T& l, const T& r);
     matrix<T> _T();
 };

@@ -3,8 +3,8 @@
 using namespace std;
 
 void print_matrix(matrix<float>& A) {
-    for (int i = 0; i < A.size_n(); ++i) {
-        for (int j = 0; j < A.size_m(); ++j) {
+    for (size_t i = 0; i < A.size_n(); ++i) {
+        for (size_t j = 0; j < A.size_m(); ++j) {
             cout << A[i][j] << ' ';
         }
         cout << '\n';
@@ -30,12 +30,12 @@ struct id_score {
 
 void RecSys::rec_for_user(map<int, vector<int>>& user_recs, matrix<float>& REC, const int user_id) {
     vector<id_score> rec_ids;
-    for (int i = 0; i < REC.size_m(); ++i)
+    for (size_t i = 0; i < REC.size_m(); ++i)
         rec_ids.push_back( id_score({i, REC[user_id][i]}) );
     
     sort(rec_ids.begin(), rec_ids.end());
     vector<int> recs(REC.size_m());
-    for (int i = 0; i < REC.size_m(); ++i) {
+    for (size_t i = 0; i < REC.size_m(); ++i) {
         recs[i] = rec_ids[i].i_s.first;
     }
     rec_ids.clear();
@@ -55,7 +55,7 @@ map<int, vector<int>> RecSys::create_recommendations(vector<vector<int>>& V, int
     map<int, vector<int>> user_recs;
 
     vector<thread> threads;
-    for (int i = 0; i < REC.size_n(); ++i) {
+    for (size_t i = 0; i < REC.size_n(); ++i) {
         // threads.push_back(thread(&RecSys::rec_for_user, this, user_recs, REC, i));
         rec_for_user(user_recs, REC, i);
     }
