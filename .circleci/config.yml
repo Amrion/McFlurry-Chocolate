@@ -44,7 +44,7 @@ jobs:
       - run: |
              mkdir build
              cd build
-             cmake ..
+             cmake -DBUILD_MAIN=OFF -DBUILD_TESTS=ON ..
              make
       - run: |
              ./libgtest
