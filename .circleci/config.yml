@@ -47,7 +47,7 @@ jobs:
 
       - run: |
              wget -c https://github.com/emweb/wt/archive/4.5.1.tar.gz
-             tar xvxf 4.5.0.tar.gz
+             tar xvxf 4.5.1.tar.gz
              cd wt-4.5.1 && mkdir build && cd build
              cmake ..
              make wt wthttp -j4
