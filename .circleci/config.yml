@@ -49,7 +49,7 @@ jobs:
              wget -c https://github.com/emweb/wt/archive/4.5.1.tar.gz
              tar xvxf 4.5.1.tar.gz
              cd wt-4.5.1 && mkdir build && cd build
-             cmake ..
-             make wt wthttp -j4
+             sudo cmake ..
+             sudo make wt wthttp -j4
              sudo make install
-             ln -s /usr/local/lib/libwt.so /usr/lib/
+             sudo ln -s /usr/local/lib/libwt.so /usr/lib/
