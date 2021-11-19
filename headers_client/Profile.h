@@ -7,9 +7,9 @@
 #include <Wt/WStringStream.h>
 #include <Wt/WBreak.h>
 
-class Profile : public Wt::WContainerWidget {
+class ProfileWidget : public Wt::WContainerWidget {
 public:
-    Profile(Wt::WStringStream data);
+    ProfileWidget(std::map<int, std::map<std::string, std::string>> data);
 private:
     Wt::WImage photo;
     Wt::WText name;

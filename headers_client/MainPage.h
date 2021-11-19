@@ -7,9 +7,9 @@
 #include <Wt/WStringStream.h>
 #include <Wt/WBreak.h>
 
-class MainPage : public Wt::WContainerWidget {
+class MainPageWidget : public Wt::WContainerWidget {
 public:
-    MainPage(Wt::WStringStream data);
+    MainPageWidget(std::map<int, std::map<std::string, std::string>> data);
 private:
     Wt::WImage photo;
     Wt::WPushButton like;

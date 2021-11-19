@@ -7,10 +7,11 @@
 #include <Wt/WStringStream.h>
 #include <Wt/WBreak.h>
 #include <Wt/WLineEdit.h>
+#include <map>
 
-class User : public Wt::WContainerWidget {
+class UserWidget : public Wt::WContainerWidget {
 public:
-    User(Wt::WStringStream data);
+    UserWidget(std::map<int, std::map<std::string, std::string>> data);
 private:
     Wt::WImage photo;
     Wt::WPushButton changeData;
