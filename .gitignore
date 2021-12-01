@@ -2,5 +2,5 @@
 
 cmake-build-debug/
 
-headers_client/Profile.h
-headers_client/User.h
+headers_client/ProfileWidget.h
+headers_client/UserWidget.h

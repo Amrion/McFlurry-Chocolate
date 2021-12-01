@@ -28,7 +28,7 @@ body {
     transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
 }
 .name:hover {
-    color: black;
+    color: darkred;
 }
 .avatar {
     margin-right: 10px;
@@ -77,7 +77,7 @@ body {
 .photo {
     text-align: center;
     border-radius: 5%;
-    width: 350px;
+    width: 400px;
     box-shadow: 0 0 10px;
 }
 .people {
@@ -209,10 +209,139 @@ body {
             225deg,#fd267a, #ff6036);
 }
 .profileInfo {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border-radius: 10px;
-    border: 1px solid;
+    border: 0 solid;
     background-color: white;
-    width: 350px;
+    width: 400px;
     height: 500px;
     box-shadow: 0 0 10px;
 }
+.test {
+    font-size: 100px;
+    color: black;
+}
+.nameProfile {
+    margin-bottom: 15px;
+    font-size: 30px;
+    font-weight: bold;
+}
+.otherAge {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+.otherDiscr {
+    margin-bottom: 15px;
+    font-size: 20px;
+    padding: 0 20px;
+}
+.photoProfile {
+    height: 100%;
+    width: 100%;
+}
+::-webkit-scrollbar {
+    width: 0;
+}
+.vkNet {
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+.aboutMe {
+    overflow-y: scroll;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    border: 0 solid;
+    background-color: #f2f2f2;
+    width: 500px;
+    height: 600px;
+    box-shadow: 0 0 10px;
+}
+.textSetting {
+    padding-left: 20px;
+    font-size: 20px;
+    color: grey;
+    font-weight: bold;
+}
+.lineSetting {
+    padding-left: 20px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    outline: none;
+    border: 0;
+    width: 478px;
+    height: 50px;
+}
+.discSetting {
+    padding-left: 20px;
+    font-size: 15px;
+    outline: none;
+    border: 0;
+    width: 478px;
+    height: 150px;
+    margin-bottom: 30px;
+}
+.buttonSetting {
+    margin-left: 20%;
+    height: 50px;
+}
+.buttonSetting:hover {
+    width: 300px;
+}
+.invalid {
+    padding-left: 20px;
+    font-size: 15px;
+    color: red;
+    margin-bottom: 20px;
+}
+.userPhotos {
+    display: flex;
+    margin-bottom: 30px;
+}
+.userPhoto {
+    margin-left: 20px;
+    border-radius: 10px;
+    width: 20%;
+}
+input[value='file'] {
+    display: none;
+}
+.addPhoto {
+    padding-left: 20px !important;
+    display: block !important;
+    margin-bottom: 30px !important;
+
+}
+input[type='file'] {
+    font-size: 15px;
+}
+.empty {
+    width: 100px;
+    height: 133px;
+    margin-left: 20px;
+    border-radius: 10px;
+    background-color: gray;
+}
+.exit {
+    cursor: pointer;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    background: transparent;
+    margin-left: 220px;
+    width: 60px;
+    height: 40px;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.exit:hover {
+    border-radius: 10px;
+    background-color: darkred;
+}
+

@@ -1,0 +1,32 @@
+#pragma once
+
+#include <Wt/WContainerWidget.h>
+#include <Wt/WText.h>
+#include <Wt/WImage.h>
+#include <Wt/WPushButton.h>
+#include <Wt/WLineEdit.h>
+#include <Wt/WTextArea.h>
+#include <Wt/WIntValidator.h>
+#include <Wt/WFileUpload.h>
+
+class UserWidget : public Wt::WContainerWidget {
+public:
+    explicit UserWidget(Wt::WContainerWidget*);
+private:
+    Wt::WImage* myPhoto;
+    Wt::WFileUpload* addPhoto;
+    Wt::WPushButton* saveData;
+    Wt::WPushButton* back;
+    Wt::WText* discText;
+    Wt::WTextArea* discEdit;
+    Wt::WText* ageText;
+    Wt::WLineEdit* ageEdit;
+    Wt::WText* netText;
+    Wt::WLineEdit* netEdit;
+    Wt::WText* passText;
+    Wt::WLineEdit* passEdit;
+    Wt::WText* passTwoText;
+    Wt::WLineEdit* passTwoEdit;
+
+    void createInfoPage(Wt::WContainerWidget*);
+};

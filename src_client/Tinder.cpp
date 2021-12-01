@@ -5,9 +5,9 @@ TinderApplication::TinderApplication(const Wt::WEnvironment& env, TinderServer& 
    std::map<std::string, std::string> data;
 
     setTitle("BMSTU Tinder");
-    useStyleSheet("../css/mainPage.css");
+    useStyleSheet("../css/Tinder.css");
 
-    MainPageWidget* mainPageWidget = root()->addWidget(std::make_unique<MainPageWidget>(data, server));
+    MainPageWidget* mainPageWidget = root()->addWidget(std::make_unique<MainPageWidget>(data, server, this));
 }
 
 std::unique_ptr<Wt::WApplication> createApplication(const Wt::WEnvironment& env, TinderServer& server) {

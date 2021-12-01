@@ -7,7 +7,7 @@
 class TinderApplication : public Wt::WApplication
 {
 public:
-    TinderApplication(const Wt::WEnvironment& env, TinderServer& server);
+    TinderApplication(const Wt::WEnvironment&, TinderServer&);
 
 private:
     TinderServer& server;

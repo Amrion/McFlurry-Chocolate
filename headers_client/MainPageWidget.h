@@ -1,41 +1,48 @@
 #pragma once
 
+#include <Wt/WApplication.h>
 #include <Wt/WContainerWidget.h>
 #include <Wt/WText.h>
 #include <Wt/WImage.h>
 #include <Wt/WLink.h>
 #include <Wt/WPushButton.h>
 #include <Wt/WStringStream.h>
-#include <Wt/WBreak.h>
-#include <Wt/WHBoxLayout.h>
+#include <Wt/WStackedWidget.h>
 #include <Wt/WWidget.h>
 #include  <Wt/WAnchor.h>
-#include <Wt/WBorderLayout.h>
 
 #include "../server_temp/TinderServer.h"
+#include "ProfileWidget.h"
+#include "TinderApplication.h"
+#include "SearchPageWidget.h"
+#include "PairWidget.h"
+#include "UserWidget.h"
 
 class MainPageWidget : public Wt::WContainerWidget {
 public:
-    MainPageWidget(std::map<std::string, std::string> data, TinderServer& server);
+    MainPageWidget(std::map<std::string, std::string>, TinderServer&, TinderApplication*);
 
-protected:
-    Wt::WImage* photo;
-    Wt::WPushButton* like;
-    Wt::WPushButton* back;
-    Wt::WPushButton* forward;
-    Wt::WPushButton* dislike;
+    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*);
+private:
     Wt::WAnchor* name;
-    Wt::WPushButton* info;
     Wt::WImage* avatar;
     Wt::WText* pair;
     Wt::WAnchor* pairName;
     Wt::WImage* pairAvatar;
+    Wt::WPushButton* start;
+    Wt::WPushButton* exit;
+
+    ProfileWidget* profileWidget;
+    UserWidget* userWidget;
+    PairWidget* pairWidget;
+    SearchPageWidget* searchPageWidget;
 
     TinderServer& server;
-private:
+    Wt::WStackedWidget* wStackedWidget;
     std::map<std::string, std::string> data;
 
-    void changePhoto(Wt::WContainerWidget*);
-    void changePhototemp(Wt::WContainerWidget*);
-
+    void showSearchPhoto(Wt::WContainerWidget*);
+    void showInfoPair(Wt::WContainerWidget*);
+    void showInfoProfile(Wt::WContainerWidget*);
+    void showInfoUser(Wt::WContainerWidget*);
 };
