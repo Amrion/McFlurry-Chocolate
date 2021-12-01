@@ -12,7 +12,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE) 
 FetchContent_MakeAvailable(googletest)
 
-
 # This flags are used if cmake is called with -DCMAKE_BUILD_TYPE=PROFILE
 set(CMAKE_CXX_FLAGS_PROFILE --coverage)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -22,6 +21,10 @@ set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Werror -fprofile-arcs -ftest-coverage -fPIC")
 
 include_directories(include_rec)
 
+# Boost ublas
+find_package(Boost)
+include_directories(${Boost_INCLUDE_DIRS})
+
 set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/nmf.cpp ${PROJECT_SOURCE_DIR}/src_rec/matrix.cpp)
 add_library(find_recsys_lib SHARED ${FIND_RECSYS_LIB})
 target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
@@ -30,7 +33,7 @@ target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_
 option(BUILD_MAIN OFF)
 if (BUILD_MAIN)
     add_executable(${PROJECT_NAME} src_rec/main.cpp)
-    target_link_libraries(${PROJECT_NAME} PRIVATE find_recsys_lib -ldl)
+    target_link_libraries(${PROJECT_NAME} PRIVATE find_recsys_lib -ldl ${Boost_LIBRARIES})
 endif()
 
 # Build test
