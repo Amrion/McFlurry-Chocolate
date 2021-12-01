@@ -1,21 +1,18 @@
 #include <bits/stdc++.h>
 
-#include "matrix.hpp"
+#include <boost/numeric/ublas/matrix.hpp>
 #include "nmf.hpp"
 
-#define mi matrix<int>
-#define mf matrix<float>
+using namespace boost::numeric::ublas;
 
-using namespace std;
-
-void print_m(mf& A) {
-    for (size_t i = 0; i < A.size_n(); ++i) {
-        for (size_t j = 0; j < A.size_m(); ++j) {
-            cout << A[i][j] << ' ';
+void print_m(matrix<float>& A) {
+    for (size_t i = 0; i < A.size1(); ++i) {
+        for (size_t j = 0; j < A.size2(); ++j) {
+            std::cout << A(i, j) << ' ';
         }
-        cout << '\n';
+        std::cout << '\n';
     }
-    cout << "-----------------------------\n";
+    std::cout << "-----------------------------\n";
 }
 
 NMF::NMF() {
@@ -34,42 +31,50 @@ NMF::NMF(const int _k, float _eps, float _learning_rate, int _nb_epoch) {
     nb_epoch = _nb_epoch;
 }
 
-float NMF::Euclidean_norm(mf& A) {
+void NMF::random_init(matrix<float>& A, const float l, const float r) {
+    for (size_t i = 0; i < A.size1(); ++i) {
+        for (size_t j = 0; j < A.size2(); ++j) {
+            A(i, j) = l + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(r-l)));
+        }
+    }
+}
+
+float NMF::Euclidean_norm(const matrix<float>& A) {
     float sum = 0;
-    for (size_t i = 0; i < A.size_n(); ++i) {
-        for (size_t j = 0; j < A.size_m(); ++j) {
-            sum += pow(A[i][j], 2);
+    for (size_t i = 0; i < A.size1(); ++i) {
+        for (size_t j = 0; j < A.size2(); ++j) {
+            sum += pow(A(i, j), 2);
         }
     }
     return 0.5 * sqrt( sum );
 }
 
-float NMF::Frabenius_norm(mf& A, mf& W, mf& H) {
-    mf WH = W * H * (-1) + A;
+float NMF::Frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H) {
+    matrix<float> WH = prod(W, H) * (-1) + A;
     float sum = 0;
-    for (size_t i = 0; i < WH.size_n(); ++i) {
-        for (size_t j = 0; j < WH.size_m(); ++j) {
-            sum += pow(WH[i][j], 2);
+    for (size_t i = 0; i < WH.size1(); ++i) {
+        for (size_t j = 0; j < WH.size2(); ++j) {
+            sum += pow(WH(i, j), 2);
         }
     }
     return 0.5 * sqrt( sum );
 }
 
-void NMF::gradient_descent(mf& A, mf& W, mf& H) {
+void NMF::gradient_descent(matrix<float>& A, matrix<float>& W, matrix<float>& H) {
 
     int epoch_i = 0;
     float error = 0;
+
     do {
         error = Frabenius_norm(A, W, H);
 
-        mf grad_w = ( W*H + (A * -1) ) * (H._T());
-        mf HHT = H * H._T();
+        matrix<float> grad_w = prod(prod(W, H) + A * -1, trans(H));
+        matrix<float> HHT = prod(H, trans(H));
         float t_w = 1 / Euclidean_norm(HHT);
 
-        mf grad_h = (W._T()) * ( W*H + (A * -1) );
-        mf WTW = W._T() * W;
+        matrix<float> grad_h = prod(trans(W), prod(W, H) + (A * -1) );
+        matrix<float> WTW = prod(trans(W), W);
         float t_h = 1 / Euclidean_norm(WTW);
-
 
         W = W + ( grad_w * (learning_rate * t_w * -1) );
         H = H + ( grad_h * (learning_rate * t_h * -1) );
@@ -81,18 +86,18 @@ void NMF::gradient_descent(mf& A, mf& W, mf& H) {
 
 }
 
-mf NMF::matrix_factorization(mf& A) {
-    assert(A.size().first != 0);
-    assert(A.size().second != 0);
+matrix<float> NMF::matrix_factorization(matrix<float>& A) {
+    assert(A.size1() != 0);
+    assert(A.size2() != 0);
+    
+    const int n = A.size1();
+    const int m = A.size2();
 
-    const int n = A.size().first;
-    const int m = A.size().second;
-
-    mf W(n, k); W.random_init(l_value, r_value);
-    mf H(k, m); H.random_init(l_value, r_value);
+    matrix<float> W(n, k); random_init(W, l_value, r_value);
+    matrix<float> H(k, m); random_init(H, l_value, r_value);
 
     gradient_descent(A, W, H);
     
-    matrix<float> REC = W * H;
+    matrix<float> REC = prod(W, H);
     return REC;
 }
