@@ -16,24 +16,26 @@ private:
     matrix<float> create_matrix(const std::vector<std::vector<int>>& V);
 
     void shared_assignment(
-        std::map<int, std::vector<int>>& user_recs, 
+        std::shared_ptr<std::map<int, std::vector<int>>> user_recs, 
         const std::vector<int>& recs, 
         const int user_id);
     void rec_for_user(
-        std::map<int, std::vector<int>>& user_recs, 
-        matrix<float>& REC, 
-        const int user_id);
+        std::shared_ptr<std::map<int, std::vector<int>>> user_recs, 
+        const matrix<float>& REC, 
+        const int user_id,
+        const int user_i,
+        std::vector<int>& users_id);
 public:
     RecSys() = default;
     ~RecSys() = default;
 
-    std::map<int, std::vector<int>> create_recommendations(
+    std::shared_ptr<std::map<int, std::vector<int>>> create_recommendations(
         const std::vector<std::vector<int>>& V, 
+        std::vector<int>& users_id,
         int _k=5, 
         float _eps=0.01, 
         float _learning_rate=0.5, 
         int _nb_epoch=0, 
         int n_jobs=-1,
-        bool use_reg=true,
-        const std::vector<int>& users_id=std::vector<int>(0));
+        bool use_reg=true);
 };

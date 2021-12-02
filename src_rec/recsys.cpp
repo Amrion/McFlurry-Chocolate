@@ -24,9 +24,9 @@ matrix<float> RecSys::create_matrix(const std::vector<std::vector<int>>& V) {
     return A;
 }
 
-void RecSys::shared_assignment(std::map<int, std::vector<int>>& user_recs, const std::vector<int>& recs, const int user_id) {
+void RecSys::shared_assignment(std::shared_ptr< std::map<int, std::vector<int>> > user_recs, const std::vector<int>& recs, const int user_id) {
     mu.lock();
-    user_recs[user_id] = recs;
+    (*user_recs)[user_id] = recs;
     mu.unlock();
 }
 
@@ -40,10 +40,10 @@ struct id_score {
     }
 };
 
-void RecSys::rec_for_user(std::map<int, std::vector<int>>& user_recs, matrix<float>& REC, const int user_id) {
+void RecSys::rec_for_user(std::shared_ptr<std::map<int, std::vector<int>>> user_recs, const matrix<float>& REC, const int user_id, const int user_i, std::vector<int>& users_id) {
     std::vector<id_score> rec_ids;
     for (size_t i = 0; i < REC.size2(); ++i)
-        rec_ids.push_back( id_score({i, REC(user_id, i)}) );
+        rec_ids.push_back( id_score({users_id[i], REC(user_i, i)}) );
     
     sort(rec_ids.begin(), rec_ids.end());
     std::vector<int> recs(REC.size2());
@@ -54,7 +54,7 @@ void RecSys::rec_for_user(std::map<int, std::vector<int>>& user_recs, matrix<flo
     shared_assignment(user_recs, recs, user_id);
 }
 
-std::map<int, std::vector<int>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg, const std::vector<int>& users_id) {
+std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, std::vector<int>& users_id, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg) {
     assert(_k > 0);
     ALS model(_k, _eps=_eps, _learning_rate=_learning_rate, _nb_epoch=_nb_epoch, use_reg=use_reg);
     
@@ -64,16 +64,15 @@ std::map<int, std::vector<int>> RecSys::create_recommendations(const std::vector
     matrix<float> REC = model.matrix_factorization(A);
     print_matrix(REC);
 
-    std::map<int, std::vector<int>> user_recs;
+    std::shared_ptr<std::map<int, std::vector<int>>> user_recs = 
+        std::make_shared<std::map<int, std::vector<int>>>();
 
     std::vector<std::thread> threads;
-
-    if (users_id.size() != 0) 
-        assert(users_id.size() == REC.size1());
     
+    assert(users_id.size() == REC.size1());
     for (size_t i = 0; i < REC.size1(); ++i) {
         // threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
-        rec_for_user(user_recs, REC, (users_id.size() != 0) ? users_id[i] : i);
+        rec_for_user(user_recs, REC, users_id[i], i, users_id);
     }
 
     for (auto &th : threads) {

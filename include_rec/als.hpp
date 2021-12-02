@@ -22,7 +22,7 @@ public:
     void random_init(matrix<float>& A, const float l, const float r);
     float Euclidean_norm(const matrix<float>& A);
     float Frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H);
-    void gradient_descent(matrix<float>& A, matrix<float>& W, matrix<float>& H);
-    void gradient_descent_reg(matrix<float>& A, matrix<float>& W, matrix<float>& H);
+    void gradient_descent(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
+    void gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
     matrix<float> matrix_factorization(matrix<float>& A);
 };

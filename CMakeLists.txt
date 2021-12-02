@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 project(recsys CXX)
 
@@ -44,7 +44,7 @@ if (BUILD_TESTS)
 
     include_directories(${GTEST_INCLUDE_DIRS})
 
-    add_executable(libgtest tests/gtests.cpp)
-    target_link_libraries(libgtest ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
-    gtest_add_tests(TARGET libgtest)
+    add_executable(gtests tests/gtests.cpp)
+    target_link_libraries(gtests ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
+    gtest_add_tests(TARGET gtests)
 endif()

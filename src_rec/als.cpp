@@ -61,7 +61,7 @@ float ALS::Frabenius_norm(const matrix<float>& A, const matrix<float>& W, const 
     return 0.5 * sqrt( sum );
 }
 
-void ALS::gradient_descent(matrix<float>& A, matrix<float>& W, matrix<float>& H) {
+void ALS::gradient_descent(const matrix<float>& A, matrix<float>& W, matrix<float>& H) {
 
     int epoch_i = 0;
     float error = 0;
@@ -86,7 +86,7 @@ void ALS::gradient_descent(matrix<float>& A, matrix<float>& W, matrix<float>& H)
 
 }
 
-void ALS::gradient_descent_reg(matrix<float>& A, matrix<float>& W, matrix<float>& H) {
+void ALS::gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<float>& H) {
 
     int epoch_i = 0;
     float error = 0;
