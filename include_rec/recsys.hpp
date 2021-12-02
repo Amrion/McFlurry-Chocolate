@@ -5,7 +5,7 @@
 #include <mutex>
 
 #include <boost/numeric/ublas/matrix.hpp>
-#include "nmf.hpp"
+#include "als.hpp"
 
 using namespace boost::numeric::ublas;
 
@@ -24,11 +24,16 @@ private:
         matrix<float>& REC, 
         const int user_id);
 public:
+    RecSys() = default;
+    ~RecSys() = default;
+
     std::map<int, std::vector<int>> create_recommendations(
         const std::vector<std::vector<int>>& V, 
         int _k=5, 
         float _eps=0.01, 
         float _learning_rate=0.5, 
         int _nb_epoch=0, 
-        int n_jobs=-1);
+        int n_jobs=-1,
+        bool use_reg=true,
+        const std::vector<int>& users_id=std::vector<int>(0));
 };

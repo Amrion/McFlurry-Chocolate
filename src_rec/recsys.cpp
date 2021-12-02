@@ -11,6 +11,7 @@ void print_matrix(matrix<float>& A) {
     std::cout << "-----------------------------\n";
 }
 
+
 matrix<float> RecSys::create_matrix(const std::vector<std::vector<int>>& V) {
     assert(V.size() > 0);
     assert(V[0].size() > 0);
@@ -53,9 +54,9 @@ void RecSys::rec_for_user(std::map<int, std::vector<int>>& user_recs, matrix<flo
     shared_assignment(user_recs, recs, user_id);
 }
 
-std::map<int, std::vector<int>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs) {
+std::map<int, std::vector<int>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg, const std::vector<int>& users_id) {
     assert(_k > 0);
-    NMF model(_k, _eps=_eps, _learning_rate=_learning_rate, _nb_epoch=_nb_epoch);
+    ALS model(_k, _eps=_eps, _learning_rate=_learning_rate, _nb_epoch=_nb_epoch, use_reg=use_reg);
     
     matrix<float> A = create_matrix(V);
     print_matrix(A);
@@ -66,9 +67,13 @@ std::map<int, std::vector<int>> RecSys::create_recommendations(const std::vector
     std::map<int, std::vector<int>> user_recs;
 
     std::vector<std::thread> threads;
+
+    if (users_id.size() != 0) 
+        assert(users_id.size() == REC.size1());
+    
     for (size_t i = 0; i < REC.size1(); ++i) {
-        // threads.push_back(thread(&RecSys::rec_for_user, this, user_recs, REC, i));
-        rec_for_user(user_recs, REC, i);
+        // threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
+        rec_for_user(user_recs, REC, (users_id.size() != 0) ? users_id[i] : i);
     }
 
     for (auto &th : threads) {
