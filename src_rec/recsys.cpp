@@ -67,11 +67,33 @@ std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(
     std::shared_ptr<std::map<int, std::vector<int>>> user_recs = 
         std::make_shared<std::map<int, std::vector<int>>>();
 
+    if (users_id.size() != 0)
+        assert(users_id.size() == REC.size1());
+    else
+        for (size_t i = 0; i < REC.size1(); ++i)
+            users_id.push_back(i);
+
     std::vector<std::thread> threads;
-    
-    assert(users_id.size() == REC.size1());
     for (size_t i = 0; i < REC.size1(); ++i) {
-        // threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
+
+        // if (n_jobs == -1) {
+        //     threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
+        // }
+        // else if (n_jobs > 0) {
+        //     if (i % n_jobs != 0) {
+        //         threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
+        //     }
+        //     else {
+        //         for (auto &th : threads) {
+        //             th.join();
+        //         }
+        //         threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
+        //     }
+        // }
+        // else {
+        //     rec_for_user(user_recs, REC, users_id[i], i, users_id);
+        // }
+
         rec_for_user(user_recs, REC, users_id[i], i, users_id);
     }
 
