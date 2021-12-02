@@ -20,8 +20,8 @@ public:
     ~ALS() = default;
 
     void random_init(matrix<float>& A, const float l, const float r);
-    float Euclidean_norm(const matrix<float>& A);
-    float Frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H);
+    float euclidean_norm(const matrix<float>& A);
+    float frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H);
     void gradient_descent(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
     void gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
     matrix<float> matrix_factorization(matrix<float>& A);

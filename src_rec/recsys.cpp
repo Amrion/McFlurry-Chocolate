@@ -54,6 +54,44 @@ void RecSys::rec_for_user(std::shared_ptr<std::map<int, std::vector<int>>> user_
     shared_assignment(user_recs, recs, user_id);
 }
 
+void RecSys::rec_multi_thread(const int n_jobs, std::vector<std::thread>& threads, const int i, std::shared_ptr<std::map<int, std::vector<int>>> user_recs, const matrix<float>& REC, std::vector<int>& users_id) {
+    if (n_jobs == -1) {
+        if ((i+1) % max_thread != 0) {
+            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                rec_for_user(user_recs, REC, users_id[i], i, users_id);
+            }));
+        }
+        else {
+            for (auto &th : threads) {
+                th.join();
+            }
+            threads.clear();
+            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                rec_for_user(user_recs, REC, users_id[i], i, users_id);
+            }));
+        }
+    }
+    else if (n_jobs > 0) {
+        if ((i+1) % n_jobs != 0) {
+            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                rec_for_user(user_recs, REC, users_id[i], i, users_id);
+            }));
+        }
+        else {
+            for (auto &th : threads) {
+                th.join();
+            }
+            threads.clear();
+            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                rec_for_user(user_recs, REC, users_id[i], i, users_id);
+            }));
+        }
+    }
+    else {
+        rec_for_user(user_recs, REC, users_id[i], i, users_id);
+    }
+}
+
 std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, std::vector<int>& users_id, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg) {
     assert(_k > 0);
     ALS model(_k, _eps=_eps, _learning_rate=_learning_rate, _nb_epoch=_nb_epoch, use_reg=use_reg);
@@ -75,30 +113,7 @@ std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(
 
     std::vector<std::thread> threads;
     for (size_t i = 0; i < REC.size1(); ++i) {
-
-        if (n_jobs == -1) {
-            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
-                rec_for_user(user_recs, REC, users_id[i], i, users_id);
-            }));
-        }
-        else if (n_jobs > 0) {
-            if (i % n_jobs != 0) {
-                threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
-                    rec_for_user(user_recs, REC, users_id[i], i, users_id);
-                }));
-            }
-            else {
-                for (auto &th : threads) {
-                    th.join();
-                }
-                threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
-                    rec_for_user(user_recs, REC, users_id[i], i, users_id);
-                }));
-            }
-        }
-        else {
-            rec_for_user(user_recs, REC, users_id[i], i, users_id);
-        }
+        rec_multi_thread(n_jobs, threads, i, user_recs, REC, users_id);
     }
 
     for (auto &th : threads) {

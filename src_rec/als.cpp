@@ -40,7 +40,7 @@ void ALS::random_init(matrix<float>& A, const float l, const float r) {
     }
 }
 
-float ALS::Euclidean_norm(const matrix<float>& A) {
+float ALS::euclidean_norm(const matrix<float>& A) {
     float sum = 0;
     for (size_t i = 0; i < A.size1(); ++i) {
         for (size_t j = 0; j < A.size2(); ++j) {
@@ -50,7 +50,7 @@ float ALS::Euclidean_norm(const matrix<float>& A) {
     return 0.5 * sqrt( sum );
 }
 
-float ALS::Frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H) {
+float ALS::frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H) {
     matrix<float> WH = prod(W, H) * (-1) + A;
     float sum = 0;
     for (size_t i = 0; i < WH.size1(); ++i) {
@@ -67,22 +67,22 @@ void ALS::gradient_descent(const matrix<float>& A, matrix<float>& W, matrix<floa
     float error = 0;
 
     do {
-        error = Frabenius_norm(A, W, H);
+        error = frabenius_norm(A, W, H);
 
         matrix<float> grad_w = prod(prod(W, H) + A * -1, trans(H));
         matrix<float> HHT = prod(H, trans(H));
-        float t_w = 1 / Euclidean_norm(HHT);
+        float t_w = 1 / euclidean_norm(HHT);
         W = W + ( grad_w * (learning_rate * t_w * -1) );
 
         matrix<float> grad_h = prod(trans(W), prod(W, H) + (A * -1) );
         matrix<float> WTW = prod(trans(W), W);
-        float t_h = 1 / Euclidean_norm(WTW);
+        float t_h = 1 / euclidean_norm(WTW);
         H = H + ( grad_h * (learning_rate * t_h * -1) );
 
         if (nb_epoch != 0 && epoch_i == nb_epoch)
             break;
         ++epoch_i;
-    } while (error - Frabenius_norm(A, W, H) > eps);
+    } while (error - frabenius_norm(A, W, H) > eps);
 
 }
 
@@ -92,22 +92,22 @@ void ALS::gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<
     float error = 0;
 
     do {
-        error = Frabenius_norm(A, W, H);
+        error = frabenius_norm(A, W, H);
 
         matrix<float> grad_w = prod(prod(W, H) - A, trans(H));
         matrix<float> HHT = prod(H, trans(H));
-        float t_w = 1 / Euclidean_norm(HHT);
+        float t_w = 1 / euclidean_norm(HHT);
         W = W + ( grad_w * (learning_rate * t_w * -1) );
 
         matrix<float> grad_h = prod(trans(W), prod(W, H) + (A * -1) );
         matrix<float> WTW = prod(trans(W), W);
-        float t_h = 1 / Euclidean_norm(WTW);
+        float t_h = 1 / euclidean_norm(WTW);
         H = H + ( grad_h * (learning_rate * t_h * -1) );
 
         if (nb_epoch != 0 && epoch_i == nb_epoch)
             break;
         ++epoch_i;
-    } while (error - Frabenius_norm(A, W, H) > eps);
+    } while (error - frabenius_norm(A, W, H) > eps);
 
 }
 

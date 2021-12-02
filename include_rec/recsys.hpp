@@ -12,6 +12,7 @@ using namespace boost::numeric::ublas;
 class RecSys {
 private:
     std::mutex mu;
+    const unsigned max_thread = 5;
 
     matrix<float> create_matrix(const std::vector<std::vector<int>>& V);
 
@@ -25,6 +26,13 @@ private:
         const int user_id,
         const int user_i,
         std::vector<int>& users_id);
+
+    void rec_multi_thread(const int n_jobs, 
+    std::vector<std::thread>& threads, 
+    const int i, 
+    std::shared_ptr<std::map<int, std::vector<int>>> user_recs, 
+    const matrix<float>& REC, 
+    std::vector<int>& users_id);
 public:
     RecSys() = default;
     ~RecSys() = default;
