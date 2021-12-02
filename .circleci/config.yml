@@ -49,9 +49,7 @@ jobs:
              cd build_rec
              cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
              make
-      - run: |
              valgrind --leak-check=full ./gtests
       - run: |
-             cd ..
              cppcheck ./*/*.cpp ./*/*.hpp
 
