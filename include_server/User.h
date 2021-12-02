@@ -20,7 +20,7 @@ class User
 public:
     User();
 
-    std::string name; /* a copy of auth info's user name */
+    std::string name;
     std::string surname;
     int age;
     std::string gender;

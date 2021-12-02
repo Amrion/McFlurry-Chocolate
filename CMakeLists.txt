@@ -7,6 +7,6 @@ add_executable(server.wt src_server/Session.cpp src_server/tinder.cpp src_server
 
 find_package(Wt REQUIRED)
 
-target_link_libraries(server.wt Wt::Wt Wt::HTTP Wt::Dbo -lwtdbosqlite3)
+target_link_libraries(server.wt Wt::Wt Wt::HTTP Wt::Dbo -lwtdbosqlite3 -lcrypt)
 
 include_directories(include_server)

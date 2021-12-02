@@ -11,6 +11,7 @@ std::unique_ptr<WApplication> createApplication(const WEnvironment& env)
     auto app = std::make_unique<WApplication>(env);
 
     app->setTitle("BMSTU Tinder");
+    app->useStyleSheet("../css/tinder.css");
 
     app->root()->addWidget(std::make_unique<TinderApp>());
 

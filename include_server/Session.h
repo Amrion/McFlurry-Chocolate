@@ -26,15 +26,6 @@ public:
     Auth::AbstractUserDatabase& users();
     Auth::Login& login() { return login_; }
 
-//    std::vector<User> topUsers(int limit);
-
-    /*
-     * These methods deal with the currently logged in user
-     */
-//    std::string userName() const;
-//    int findRanking();
-//    void addToScore(int s);
-
     static const Auth::AuthService& auth();
     static const Auth::AbstractPasswordService& passwordAuth();
     static const std::vector<const Auth::OAuthService *>& oAuth();
