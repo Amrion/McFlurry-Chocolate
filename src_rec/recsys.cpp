@@ -76,25 +76,29 @@ std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(
     std::vector<std::thread> threads;
     for (size_t i = 0; i < REC.size1(); ++i) {
 
-        // if (n_jobs == -1) {
-        //     threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
-        // }
-        // else if (n_jobs > 0) {
-        //     if (i % n_jobs != 0) {
-        //         threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
-        //     }
-        //     else {
-        //         for (auto &th : threads) {
-        //             th.join();
-        //         }
-        //         threads.push_back(std::thread(&RecSys::rec_for_user, this, user_recs, REC, i));
-        //     }
-        // }
-        // else {
-        //     rec_for_user(user_recs, REC, users_id[i], i, users_id);
-        // }
-
-        rec_for_user(user_recs, REC, users_id[i], i, users_id);
+        if (n_jobs == -1) {
+            threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                rec_for_user(user_recs, REC, users_id[i], i, users_id);
+            }));
+        }
+        else if (n_jobs > 0) {
+            if (i % n_jobs != 0) {
+                threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                    rec_for_user(user_recs, REC, users_id[i], i, users_id);
+                }));
+            }
+            else {
+                for (auto &th : threads) {
+                    th.join();
+                }
+                threads.push_back(std::thread([user_recs, REC, i, &users_id, this](){
+                    rec_for_user(user_recs, REC, users_id[i], i, users_id);
+                }));
+            }
+        }
+        else {
+            rec_for_user(user_recs, REC, users_id[i], i, users_id);
+        }
     }
 
     for (auto &th : threads) {

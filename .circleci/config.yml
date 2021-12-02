@@ -49,4 +49,4 @@ jobs:
              cd build_rec
              cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
              make
-             ./libgtest
+             ./gtests
