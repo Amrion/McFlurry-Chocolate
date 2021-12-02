@@ -12,7 +12,7 @@ using namespace boost::numeric::ublas;
 class RecSys {
 private:
     std::mutex mu;
-    const unsigned max_thread = 5;
+    const unsigned max_thread = 100;
 
     matrix<float> create_matrix(const std::vector<std::vector<int>>& V);
 
