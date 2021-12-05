@@ -4,48 +4,48 @@ jobs:
     machine:
       image: ubuntu-2004:202101-01
     steps:
-      - checkout
-      - run: |
-             sudo apt-get update 
-             sudo apt-get install cppcheck 
+#       - checkout
+#       - run: |
+#              sudo apt-get update 
+#              sudo apt-get install cppcheck 
             
-      - run: |
-             sudo apt-get update 
-             sudo apt-get install clang-format 
+#       - run: |
+#              sudo apt-get update 
+#              sudo apt-get install clang-format 
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install valgrind
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install valgrind
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install build-essential
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install build-essential
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install g++
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install g++
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install cmake
-      - run: |
-             sudo apt-get update
-             sudo apt-get install libboost-all-dev
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install cmake
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install libboost-all-dev
           
-      - run: |
-             sudo apt update
-             sudo apt-get install libgtest-dev
-             cd /usr/src/gtest
-             sudo cmake .
-             sudo make
-             sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
+#       - run: |
+#              sudo apt update
+#              sudo apt-get install libgtest-dev
+#              cd /usr/src/gtest
+#              sudo cmake .
+#              sudo make
+#              sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install gcovr
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install gcovr
 
-      - run: |
-             cppcheck ./*/*.cpp ./*/*.hpp
+#       - run: |
+#              cppcheck ./*/*.cpp ./*/*.hpp
 
        #Install postgresql and create user and db
       - run: |
@@ -53,6 +53,7 @@ jobs:
              sudo apt-get install postgresql
              sudo pg_ctlcluster 12 main start     
              service postgresql start
+             1
              psql
              CREATE USER tester WITH PASSWORD 'test_password';
              CREATE DATABASE test_db;  
