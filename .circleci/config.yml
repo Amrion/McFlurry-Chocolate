@@ -78,8 +78,4 @@ jobs:
              make -j4
              sudo make install
 
-       #Install Boost
-      - run: |
-             sudo apt-get update
-             sudo apt-get install libboost-all-dev
 
