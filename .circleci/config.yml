@@ -41,3 +41,39 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install gcovr
+
+       #Install postgresql and create user and db
+       - run: |
+             sudo apt-get update
+             sudo apt-get install postgresql
+             service postgresql start
+             su postgres
+             psql
+             CREATE USER tester WITH PASSWORD 'test_password';
+             CREATE DATABASE test_db;  
+             GRANT ALL PRIVILEGES ON DATABASE "test_db" to tester;
+             
+             CREATE USER server WITH PASSWORD 'server_password';
+             CREATE DATABASE BAUMAN_TINDER;  
+             GRANT ALL PRIVILEGES ON DATABASE "BAUMAN_TINDER" to server;
+
+             exit
+             exit
+       
+       #Install libpqxx
+       - run: |
+             cd ~
+             git clone https://github.com/jtv/libpqxx.git
+             ./configure
+             make -j4
+             sudo make install
+
+       #Install Boost
+       - run: |
+             sudo apt-get update
+             sudo apt-get install libboost-all-dev
+
+       #Install Boost
+       - run: |
+             sudo apt-get update
+             sudo apt-get install libboost-all-dev

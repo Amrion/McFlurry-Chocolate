@@ -16,7 +16,7 @@ TEST(POSTGRE_DB, test_create_tables) {
   string name = user2.name;
   EXPECT_EQ(new_user_id, 0);
   EXPECT_EQ(user_login, "mail.ru");
-  //EXPECT_EQ(name, "USER1");
+  EXPECT_EQ(name, "USER1");
   EXPECT_EQ(pg.user_exist("mail.ru"), 1);
   EXPECT_EQ(pg.user_exist("vk.ru"), 0);
 }
