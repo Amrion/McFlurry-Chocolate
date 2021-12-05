@@ -51,9 +51,7 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install postgresql
-             sudo pg_ctlcluster 12 main start
-             sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"      
-             1      
+             sudo pg_ctlcluster 12 main start     
              service postgresql start
              psql
              CREATE USER tester WITH PASSWORD 'test_password';
