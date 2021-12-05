@@ -52,13 +52,14 @@ jobs:
              sudo apt-get update
              sudo apt-get install postgresql
              sudo -u postgres
-             psql -c "ALTER USER server PASSWORD 'server_password';"
+             pg_ctlcluster 12 main start
              service postgresql start
              psql
              CREATE USER tester WITH PASSWORD 'test_password';
              CREATE DATABASE test_db;  
              GRANT ALL PRIVILEGES ON DATABASE "test_db" to tester;
-
+             
+             CREATE USER server WITH PASSWORD 'server_password';
              CREATE DATABASE BAUMAN_TINDER;  
              GRANT ALL PRIVILEGES ON DATABASE "BAUMAN_TINDER" to server;
 
