@@ -1,16 +1,11 @@
-project(Bauman_Tinder)
+project(Bauman_Tinder CXX)
 
 cmake_minimum_required(VERSION 3.16)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-include_directories(include_db)
-
-set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/USERS_REC.h  ${PROJECT_SOURCE_DIR}/src_db/USERS_REC.cpp ${PROJECT_SOURCE_DIR}/include_db/USERS_INFO.h ${PROJECT_SOURCE_DIR}/include_db/PHOTOS.h ${PROJECT_SOURCE_DIR}/include_db/MARKS.h ${PROJECT_SOURCE_DIR}/include_db/DIALOGS.h ${PROJECT_SOURCE_DIR}/include_db/DataBase.h)
-
-add_library(find_db_lib SHARED ${FIND_DB_LIB})
-target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS "-g -O0 -Wall -Werror -fprofile-arcs -ftest-coverage -fPIC")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -21,11 +16,29 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Boost ublas
+find_package(Boost)
+include_directories(${Boost_INCLUDE_DIRS})
+
+include_directories(include_db)
+include_directories(.build/McFlurry-Chocolate/include_rec)
+
+set(DANIL .build/McFlurry-Chocolate)
+
+set(FIND_REC_LIB ${DANIL}/include_rec/recsys.hpp ${DANIL}/src_rec/recsys.cpp ${DANIL}/src_rec/als.cpp)
+set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
+add_library(find_db_lib SHARED ${FIND_DB_LIB})
+add_library(find_rec_lib SHARED ${FIND_REC_LIB})
+
+
+target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
+target_include_directories(find_rec_lib PUBLIC ${DANIL}/include_rec)
+ 
+add_executable(${PROJECT_NAME} src_db/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
+
 enable_testing()
-
-include_directories(tests)
-add_executable(test_db tests/test.cpp)
-target_link_libraries(test_db find_db_lib gtest_main)
-
+add_executable(test_db test/test.cpp)
+target_link_libraries(test_db find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl gtest_main)
 include(GoogleTest)
 gtest_add_tests(TARGET test_db)
