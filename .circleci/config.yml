@@ -3,7 +3,6 @@ jobs:
   build:
     machine:
       image: ubuntu-2004:202101-01
-     
     steps:
       - checkout
       - run: |
@@ -29,6 +28,9 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install cmake
+      - run: |
+             sudo apt-get update
+             sudo apt-get install libboost-all-dev
           
       - run: |
              sudo apt update
@@ -41,9 +43,17 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install gcovr
+      - run: |
+             mkdir build_rec
+             cd build_rec
+             cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
+             make
+             valgrind --leak-check=full ./gtests
+      - run: |
+             cppcheck ./*/*.cpp ./*/*.hpp
 
        #Install postgresql and create user and db
-       - run: |
+      - run: |
              sudo apt-get update
              sudo apt-get install postgresql
              service postgresql start
@@ -61,7 +71,7 @@ jobs:
              exit
        
        #Install libpqxx
-       - run: |
+      - run: |
              cd ~
              git clone https://github.com/jtv/libpqxx.git
              ./configure
@@ -69,7 +79,7 @@ jobs:
              sudo make install
 
        #Install Boost
-       - run: |
+      - run: |
              sudo apt-get update
              sudo apt-get install libboost-all-dev
-             
+

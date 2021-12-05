@@ -458,6 +458,41 @@ int Postgre_DB::make_recommendations() {
     return 0;
 }
 
+std::vector <string> Postgre_DB::user_rec(string login) {
+    std::vector <string> rec;
+    int us_id = user_id(login);
+    nontransaction N(*PG_conn);
+    string request = "SELECT user_rec FROM USERS_REC WHERE user_id = " + to_string(us_id) + ";";
+    try {
+        result res(N.exec(request));
+        result::const_iterator c = res.begin();
+        N.commit();
+        std::vector <int> rec_id;
+        string row = c[0].as<string>();
+        int kol = 0;
+        if (row != "{}") {
+            for (int i = 0; i < (int) row.size(); ++i) {
+                if ((row[i] != '{') and (row[i] != ' ') and (row[i] != ',') and (row[i] != '}')) {
+                    kol = kol * 10 + (row[i] - '0');
+                }
+                else {
+                    if (i != 0) {
+                        rec_id.push_back(kol);
+                        kol = 0;
+                    }
+                }
+            }
+        }
+        for (auto i : rec_id) {
+            rec.push_back(user_login(i));
+        }
+    }
+    catch (const std::exception &e) {
+        return rec;
+    }
+    return rec;
+}
+
 int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
     int image_id; 
     image_id = max_id("IMAGES", "image_id") + 1;
