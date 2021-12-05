@@ -52,7 +52,6 @@ jobs:
              sudo apt-get update
              sudo apt-get install postgresql
              sudo apt install postgresql-client-12
-             sudo pg_ctlcluster 12 main start
              sudo service postgresql start
              su postgres
              psql
