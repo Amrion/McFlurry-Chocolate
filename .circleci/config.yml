@@ -2,12 +2,7 @@ version: 2.1
 jobs:
   build:
     machine:
-      - image: ubuntu-2004:202101-01
-      - image: circleci/postgres:9.6.7-alpine
-        environment:
-        - POSTGRES_USER: user
-        - POSTGRES_PASSWORD: password
-        - POSTGRES_DB: db_test
+      image: ubuntu-2004:202101-01
     steps:
 #       - checkout
 #       - run: |
@@ -56,7 +51,7 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install postgresql
-             sudo apt-get install -y postgresql-client
+             service postgresql start
              su postgres
              psql "dbname=mydb host=localhost user=postgres password=postgres port=5432" 
              CREATE USER tester WITH PASSWORD 'test_password';
