@@ -43,7 +43,7 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install gcovr
-             
+
       - run: |
              cppcheck ./*/*.cpp ./*/*.hpp
 
@@ -51,6 +51,7 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install postgresql
+             pg_ctlcluster 12 main start
              service postgresql start
              su postgres
              psql
@@ -66,6 +67,13 @@ jobs:
              exit
        
        #Install libpqxx
+      - run: |
+             cd ~
+             git clone https://github.com/jtv/libpqxx.git
+             ./configure
+             make -j4
+             sudo make install
+
       - run: |
              cd ~
              git clone https://github.com/jtv/libpqxx.git
