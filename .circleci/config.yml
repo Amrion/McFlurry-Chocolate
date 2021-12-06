@@ -2,14 +2,14 @@ version: 2.1
 jobs:
   build:
     docker: 
-      image: ubuntu-2004:202101-01
-      image: circleci/postgres:9.6-alpine
-       auth:
-         username: circleci-user
-         password: circleci-password  
-       environment:
-         POSTGRES_USER: tester
-         POSTGRES_DB: test_password
+      - image: ubuntu-2004:202101-01
+      - image: circleci/postgres:9.6-alpine
+        auth:
+          username: circleci-user
+          password: circleci-password  
+        environment:
+          POSTGRES_USER: tester
+          POSTGRES_DB: test_password
     steps:
 #       - checkout
 #       - run: |
