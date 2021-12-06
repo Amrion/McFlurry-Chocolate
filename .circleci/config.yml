@@ -12,47 +12,47 @@ jobs:
           POSTGRES_DB: postgresql
     steps:
       - checkout
-      - run: |
-             sudo apt-get update 
-             sudo apt-get install cppcheck 
+#       - run: |
+#              sudo apt-get update 
+#              sudo apt-get install cppcheck 
             
-      - run: |
-             sudo apt-get update 
-             sudo apt-get install clang-format 
+#       - run: |
+#              sudo apt-get update 
+#              sudo apt-get install clang-format 
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install valgrind
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install valgrind
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install build-essential
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install build-essential
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install g++
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install g++
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install cmake
-      - run: |
-             sudo apt-get update
-             sudo apt-get install libboost-all-dev
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install cmake
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install libboost-all-dev
           
-      - run: |
-             sudo apt update
-             sudo apt-get install libgtest-dev
-             cd /usr/src/gtest
-             sudo cmake .
-             sudo make
-             sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
+#       - run: |
+#              sudo apt update
+#              sudo apt-get install libgtest-dev
+#              cd /usr/src/gtest
+#              sudo cmake .
+#              sudo make
+#              sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
              
-      - run: |
-             sudo apt-get update
-             sudo apt-get install gcovr
+#       - run: |
+#              sudo apt-get update
+#              sudo apt-get install gcovr
 
-      - run: |
-             cppcheck ./*/*.cpp ./*/*.hpp
+#       - run: |
+#              cppcheck ./*/*.cpp ./*/*.hpp
 
        #Install postgresql and create user and db
 
@@ -65,7 +65,7 @@ jobs:
           psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
           psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bauman_tinder;"
           psql -h 127.0.0.1 -U postgres -c "CREATE USER server WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE bauman_tinder TO server;"
-          service postgresql start
+          sudo service postgresql start
 
 
        #Install libpqxx
