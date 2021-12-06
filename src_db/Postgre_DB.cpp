@@ -529,4 +529,3 @@ std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string 
         
     return files;
 }
-
