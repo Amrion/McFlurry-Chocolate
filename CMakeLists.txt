@@ -28,7 +28,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 # Threads
 find_package(Threads)
 
-set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp)
+set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
 add_library(find_recsys_lib SHARED ${FIND_RECSYS_LIB})
 target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
 
@@ -47,7 +47,7 @@ if (BUILD_TESTS)
 
     include_directories(${GTEST_INCLUDE_DIRS})
 
-    add_executable(gtests tests/gtests.cpp)
+    add_executable(gtests tests_rec/gtests.cpp)
     target_link_libraries(gtests ${GTEST_LIBRARIES} find_recsys_lib -ldl gtest_main)
     gtest_add_tests(TARGET gtests)
 endif()

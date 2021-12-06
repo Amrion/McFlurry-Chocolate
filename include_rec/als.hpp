@@ -14,9 +14,15 @@ private:
     float learning_rate;
     float nb_epoch;
     bool use_reg;
+    
+    matrix<float> REC;
 public:
-    ALS();
-    ALS(const int _k, float _eps=0.01, float _learning_rate=0.5, int _nb_epoch=0, bool use_reg=true);
+    ALS(const int _k=5, 
+    float _eps=0.01, 
+    float _learning_rate=0.5, 
+    int _nb_epoch=0, 
+    bool use_reg=true);
+
     ~ALS() = default;
 
     void random_init(matrix<float>& A, const float l, const float r);
@@ -24,5 +30,8 @@ public:
     float frabenius_norm(const matrix<float>& A, const matrix<float>& W, const matrix<float>& H);
     void gradient_descent(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
     void gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<float>& H);
-    matrix<float> matrix_factorization(matrix<float>& A);
+
+
+    void fit(matrix<float>& A);
+    matrix<float> predict();
 };

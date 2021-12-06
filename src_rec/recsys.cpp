@@ -11,7 +11,6 @@ void print_matrix(matrix<float>& A) {
     std::cout << "-----------------------------\n";
 }
 
-
 matrix<float> RecSys::create_matrix(const std::vector<std::vector<int>>& V) {
     assert(V.size() > 0);
     assert(V[0].size() > 0);
@@ -92,24 +91,44 @@ void RecSys::rec_multi_thread(const int n_jobs, std::vector<std::thread>& thread
     }
 }
 
-std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(const std::vector<std::vector<int>>& V, std::vector<int>& users_id, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg) {
+void RecSys::fit(const std::vector<std::vector<int>>& V, std::vector<std::vector<float>> *X, std::vector<int> users_id, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg,float cl_eps, size_t min_sample) {
+    recs = fit_predict(V, users_id, _k, _eps, _learning_rate, _nb_epoch, n_jobs, use_reg);
+    cluster_model = DBScan(cl_eps, min_sample, users_id);
+    cluster_model.fit(X);
+}
+
+std::vector<int> RecSys::predict(const int user_id) {
+    if ( (*recs).find(user_id) != (*recs).end() ) {
+        return (*recs)[user_id];
+    }
+    return cluster_model.predict(user_id);
+}
+
+std::vector<int> RecSys::predict(const std::vector<float>& user_values) {
+    return cluster_model.predict(user_values);
+}
+
+std::shared_ptr<std::map<int, std::vector<int>>> RecSys::fit_predict(const std::vector<std::vector<int>>& V, std::vector<int> users_id, int _k, float _eps, float _learning_rate, int _nb_epoch, int n_jobs, bool use_reg) {
     assert(_k > 0);
     ALS model(_k, _eps=_eps, _learning_rate=_learning_rate, _nb_epoch=_nb_epoch, use_reg=use_reg);
+    DBScan cluster;
     
     matrix<float> A = create_matrix(V);
-    print_matrix(A);
+    // print_matrix(A);
 
-    matrix<float> REC = model.matrix_factorization(A);
-    print_matrix(REC);
+    model.fit(A);
+    matrix<float> REC = model.predict();
+    // print_matrix(REC);
 
     std::shared_ptr<std::map<int, std::vector<int>>> user_recs = 
         std::make_shared<std::map<int, std::vector<int>>>();
 
     if (users_id.size() != 0)
         assert(users_id.size() == REC.size1());
-    else
-        for (size_t i = 0; i < REC.size1(); ++i)
-            users_id.push_back(i);
+    else {
+        users_id = std::vector<int>(REC.size1());
+        std::iota(std::begin(users_id), std::end(users_id), 0);
+    }
 
     std::vector<std::thread> threads;
     for (size_t i = 0; i < REC.size1(); ++i) {
@@ -119,6 +138,6 @@ std::shared_ptr<std::map<int, std::vector<int>>> RecSys::create_recommendations(
     for (auto &th : threads) {
         th.join();
     }
-    
+
     return user_recs;
 }

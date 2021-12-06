@@ -15,14 +15,6 @@ void print_m(matrix<float>& A) {
     std::cout << "-----------------------------\n";
 }
 
-ALS::ALS() {
-    srand(time(NULL));
-    k = 5;
-    eps = 0.01;
-    learning_rate = 0.5;
-    nb_epoch = 0;
-}
-
 ALS::ALS(const int _k, float _eps, float _learning_rate, int _nb_epoch, bool _use_reg) {
     srand(time(NULL));
     k = _k;
@@ -111,7 +103,7 @@ void ALS::gradient_descent_reg(const matrix<float>& A, matrix<float>& W, matrix<
 
 }
 
-matrix<float> ALS::matrix_factorization(matrix<float>& A) {
+void ALS::fit(matrix<float>& A) {
     assert(A.size1() != 0);
     assert(A.size2() != 0);
     
@@ -126,6 +118,9 @@ matrix<float> ALS::matrix_factorization(matrix<float>& A) {
     else
         gradient_descent(A, W, H);
     
-    matrix<float> REC = prod(W, H);
+    REC = prod(W, H);
+}
+
+matrix<float> ALS::predict() {
     return REC;
 }
