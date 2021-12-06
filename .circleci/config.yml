@@ -1,15 +1,8 @@
 version: 2.1
 jobs:
   build:
-    docker: 
-      - image: ubuntu-2004:202101-01
-      - image: circleci/postgres:9.6-alpine
-        auth:
-          username: circleci-user
-          password: circleci-password  
-        environment:
-          POSTGRES_USER: tester
-          POSTGRES_DB: test_password
+    machine:
+      image: ubuntu-2004:202101-01
     steps:
 #       - checkout
 #       - run: |
@@ -55,22 +48,30 @@ jobs:
 #              cppcheck ./*/*.cpp ./*/*.hpp
 
        #Install postgresql and create user and db
-      - run: |
-             sudo apt-get update
-             sudo apt-get install postgresql
-             service postgresql start
-             su postgres
-             psql "dbname=mydb host=localhost user=postgres password=postgres port=5432" 
-             CREATE USER tester WITH PASSWORD 'test_password';
-             CREATE DATABASE test_db;  
-             GRANT ALL PRIVILEGES ON DATABASE "test_db" to tester;
-             
-             CREATE USER server WITH PASSWORD 'server_password';
-             CREATE DATABASE BAUMAN_TINDER;  
-             GRANT ALL PRIVILEGES ON DATABASE "BAUMAN_TINDER" to server;
 
-             exit
-             exit
+      - run: apt-get update -qq && apt-get install -y postgresql
+
+      - run:
+          command: |
+            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE test_db;"
+            psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
+#       - run: |
+      
+#              sudo apt-get update
+#              sudo apt-get install postgresql
+#              service postgresql start
+#              su postgres
+#              psql "dbname=mydb host=localhost user=postgres password=postgres port=5432" 
+#              CREATE USER tester WITH PASSWORD 'test_password';
+#              CREATE DATABASE test_db;  
+#              GRANT ALL PRIVILEGES ON DATABASE "test_db" to tester;
+             
+#              CREATE USER server WITH PASSWORD 'server_password';
+#              CREATE DATABASE BAUMAN_TINDER;  
+#              GRANT ALL PRIVILEGES ON DATABASE "BAUMAN_TINDER" to server;
+
+#              exit
+#              exit
        
        #Install libpqxx
       - run: |
