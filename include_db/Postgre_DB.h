@@ -4,6 +4,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include "recsys.hpp"
+#include "base64.h"
 #include "dirent.h"
 
 class Postgre_DB : DB {

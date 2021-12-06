@@ -508,24 +508,6 @@ int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
     return 0;
 }
 
-
-// #include <boost/archive/iterators/base64_from_binary.hpp>
-// #include <boost/archive/iterators/binary_from_base64.hpp>
-// #include <boost/archive/iterators/transform_width.hpp>
-
-// bool Base64Decode( const string & input, string * output )
-// {
-// 	typedef transform_width<binary_from_base64<string::const_iterator>, 8, 6> Base64DecodeIterator;
-// 	stringstream result;
-// 	try {
-// 		copy( Base64DecodeIterator( input.begin() ), Base64DecodeIterator( input.end() ), ostream_iterator<char>( result ) );
-// 	} catch ( ... ) {
-// 		return false;
-// 	}
-// 	*output = result.str();
-// 	return output->empty() == false;
-// }
-
 std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string image_name) {
     std::vector <string> files;
     string request = "SELECT user_id, image_name, encode(image, 'base64') FROM IMAGES WHERE user_id = " + to_string(user_id);
@@ -537,9 +519,10 @@ std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string 
     result res(N.exec(request));
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
         ofstream fout;
-        fout.open(dirname + "/" + to_string(c[0].as<int>()) + c[1].as<string>() + ".jpg", ios::binary|ios::out);
+        fout.open(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg", ios::out);
         string str = c[2].as<string>();
-        fout << str;
+        string str2 = base64_decode(str, 1); 
+        fout << str2;
         fout.close(); 
         files.push_back(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg");
     }
