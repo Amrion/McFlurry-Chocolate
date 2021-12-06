@@ -17,7 +17,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Boost ublas
+# Boost
 find_package(Boost)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -32,15 +32,24 @@ add_library(find_rec_lib SHARED ${FIND_REC_LIB})
 
 target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
 target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
- 
-add_executable(${PROJECT_NAME} src_db/main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
 
-enable_testing()
-add_executable(tests_db test/tests_db.cpp)
-add_executable(tests_rec test/tests_rec.cpp)
-target_link_libraries(tests_db find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl gtest_main)
-target_link_libraries(tests_rec find_rec_lib -ldl ${Boost_LIBRARIES} gtest_main)
-include(GoogleTest)
-gtest_add_tests(TARGET tests_db)
-gtest_add_tests(TARGET tests_rec)
+# Build main
+option(BUILD_MAIN OFF)
+  if (BUILD_MAIN)
+  add_executable(${PROJECT_NAME} src_db/main.cpp)
+  target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
+endif()
+
+#Build tests
+option(BUILD_TESTS ON)
+if (BUILD_TESTS)
+  enable_testing()
+  add_executable(tests_db test/tests_db.cpp)
+  add_executable(tests_rec test/tests_rec.cpp)
+  target_link_libraries(tests_db find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl gtest_main)
+  target_link_libraries(tests_rec find_rec_lib -ldl ${Boost_LIBRARIES} gtest_main)
+  include(GoogleTest)
+  gtest_add_tests(TARGET tests_db)
+  gtest_add_tests(TARGET tests_rec)
+endif()
+

@@ -11,48 +11,48 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: postgresql
     steps:
-#       - checkout
-#       - run: |
-#              sudo apt-get update 
-#              sudo apt-get install cppcheck 
+      - checkout
+      - run: |
+             sudo apt-get update 
+             sudo apt-get install cppcheck 
             
-#       - run: |
-#              sudo apt-get update 
-#              sudo apt-get install clang-format 
+      - run: |
+             sudo apt-get update 
+             sudo apt-get install clang-format 
              
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install valgrind
+      - run: |
+             sudo apt-get update
+             sudo apt-get install valgrind
              
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install build-essential
+      - run: |
+             sudo apt-get update
+             sudo apt-get install build-essential
              
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install g++
+      - run: |
+             sudo apt-get update
+             sudo apt-get install g++
              
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install cmake
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install libboost-all-dev
+      - run: |
+             sudo apt-get update
+             sudo apt-get install cmake
+      - run: |
+             sudo apt-get update
+             sudo apt-get install libboost-all-dev
           
-#       - run: |
-#              sudo apt update
-#              sudo apt-get install libgtest-dev
-#              cd /usr/src/gtest
-#              sudo cmake .
-#              sudo make
-#              sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
+      - run: |
+             sudo apt update
+             sudo apt-get install libgtest-dev
+             cd /usr/src/gtest
+             sudo cmake .
+             sudo make
+             sudo cp -R /usr/src/gtest/lib/*.a /usr/lib/x86_64-linux-gnu
              
-#       - run: |
-#              sudo apt-get update
-#              sudo apt-get install gcovr
+      - run: |
+             sudo apt-get update
+             sudo apt-get install gcovr
 
-#       - run: |
-#              cppcheck ./*/*.cpp ./*/*.hpp
+      - run: |
+             cppcheck ./*/*.cpp ./*/*.hpp
 
        #Install postgresql and create user and db
 
@@ -60,44 +60,31 @@ jobs:
              sudo apt-get update
              sudo apt-get install -y postgresql
 
-      - run:
-          command: |
-            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE test_db;"
-            psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
+      - run: | 
+          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE test_db;"
+          psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
+          psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE bauman_tinder;"
+          psql -h 127.0.0.1 -U postgres -c "CREATE USER server WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE bauman_tinder TO server;"
+          service postgresql start
 
 
-#       - run: |
-      
-#              sudo apt-get update
-#              sudo apt-get install postgresql
-#              service postgresql start
-#              su postgres
-#              psql "dbname=mydb host=localhost user=postgres password=postgres port=5432" 
-#              CREATE USER tester WITH PASSWORD 'test_password';
-#              CREATE DATABASE test_db;  
-#              GRANT ALL PRIVILEGES ON DATABASE "test_db" to tester;
-             
-#              CREATE USER server WITH PASSWORD 'server_password';
-#              CREATE DATABASE BAUMAN_TINDER;  
-#              GRANT ALL PRIVILEGES ON DATABASE "BAUMAN_TINDER" to server;
-
-#              exit
-#              exit
-       
        #Install libpqxx
 
       - run: |
              cd ~
              git clone https://github.com/jtv/libpqxx.git
+             cd libpqxx
              ./configure
              make -j4
              sudo make install
 
       - run: |
-             cd ~
-             git clone https://github.com/jtv/libpqxx.git
-             ./configure
-             make -j4
-             sudo make install
+             mkdir build_db
+             cd build_db
+             cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
+             make
+             valgrind --leak-check=full ./tests_db ./tests_rec
+      - run: |
+             cppcheck ./*/*.cpp ./*/*.hpp
 
 
