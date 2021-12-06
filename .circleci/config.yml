@@ -5,11 +5,11 @@ jobs:
       - image: cimg/base:2021.04
       - image: circleci/postgres:9.6-alpine
         auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+          username: postgres
+          password: postgresql
         environment:
-          POSTGRES_USER: circleci-demo-go
-          POSTGRES_DB: circle_test
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgresql
     steps:
 #       - checkout
 #       - run: |
