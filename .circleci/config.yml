@@ -5,8 +5,8 @@ jobs:
       - image: cimg/base:2021.04
       - image: circleci/postgres:9.6-alpine
         auth:
-          username: postgres
-          password: postgresql
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: postgresql
