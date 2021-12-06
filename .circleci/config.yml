@@ -82,7 +82,7 @@ jobs:
              cd build_db
              cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
              make
-             valgrind --leak-check=full ./tests_db 
+             valgrind --leak-check=full --show-leak-kinds=all ./tests_db 
              valgrind --leak-check=full ./tests_rec
       - run: |
              cppcheck ./*/*.cpp ./*/*.hpp

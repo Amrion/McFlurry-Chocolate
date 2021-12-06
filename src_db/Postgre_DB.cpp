@@ -102,7 +102,7 @@ int Postgre_DB::save(string table, std::vector <string> values, string where) {
     try {
         result check(N.exec(request));
         N.commit();
-        if (where != "" and check.begin() != check.end()) {
+        if ((where != "") and (check.begin() != check.end())) {
             return update(table, values, where);
         } 
         else {
