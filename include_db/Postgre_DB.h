@@ -16,7 +16,6 @@ class Postgre_DB : DB {
         virtual int delete_(string table, string where = "") override;
         int max_id(string table, string name_id);
     public:
-        
         Postgre_DB(string host, string port, string db_name, string user, string password);
         ~Postgre_DB();
         int init_tables();
