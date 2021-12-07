@@ -7,10 +7,10 @@ using namespace pqxx;
 
 class DB {
   public:
-    virtual int save(string table, std::vector <string> values, string where = "") = 0;
-    virtual int update(string table, std::vector <string> values, string where = "") = 0;
-    virtual int insert(string table, std::vector <string> values) = 0;
-    virtual int delete_(string table, string where = "") = 0;
+    virtual int save(const string & table, std::vector <string> values, string where = "") = 0;
+    virtual int update(const string & table, std::vector <string> values, string where = "") = 0;
+    virtual int insert(const string & table, std::vector <string> values) = 0;
+    virtual int delete_(const string & table, string where = "") = 0;
 };
 
 

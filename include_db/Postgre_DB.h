@@ -10,11 +10,11 @@
 class Postgre_DB : DB {
     private:
         connection * PG_conn;
-        virtual int save(string table, std::vector <string> values, string where = "") override;
-        virtual int update(string table, std::vector <string> values, string where = "") override;
-        virtual int insert(string table, std::vector <string> values) override;
-        virtual int delete_(string table, string where = "") override;
-        int max_id(string table, string name_id);
+        virtual int save(const string & table, std::vector <string> values, string where = "") override;
+        virtual int update(const string & table, std::vector <string> values, string where = "") override;
+        virtual int insert(const string & table, std::vector <string> values) override;
+        virtual int delete_(const string & table, string where = "") override;
+        int max_id(const string & table, string name_id);
     public:
         Postgre_DB(string host, string port, string db_name, string user, string password);
         ~Postgre_DB();
@@ -38,4 +38,3 @@ class Postgre_DB : DB {
         std::vector <string> user_image(string dirname, int user_id, string image_name = "");
         
 };
-

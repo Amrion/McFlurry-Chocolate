@@ -29,7 +29,7 @@ Postgre_DB::~Postgre_DB() {
 // }
 
 
-int Postgre_DB::max_id(string table, string name_id) {
+int Postgre_DB::max_id(const string & table, string name_id) {
     nontransaction N(*PG_conn);
     string check = "SELECT * FROM " + table;
     result res = N.exec(check);
@@ -48,7 +48,7 @@ int Postgre_DB::max_id(string table, string name_id) {
     }
 }
 
-int Postgre_DB::insert(string table, std::vector <string> values) {
+int Postgre_DB::insert(const string & table, std::vector <string> values) {
     work N(*PG_conn);
     string request;
     try {
@@ -67,7 +67,7 @@ int Postgre_DB::insert(string table, std::vector <string> values) {
     return 0;
 }
 
-int Postgre_DB::update(string table, std::vector <string> values, string where) {
+int Postgre_DB::update(const string & table, std::vector <string> values, string where) {
     work N(*PG_conn);
     string request;
     string lower_table = "";
@@ -100,7 +100,7 @@ int Postgre_DB::update(string table, std::vector <string> values, string where) 
     return 0;
 }
 
-int Postgre_DB::save(string table, std::vector <string> values, string where) {
+int Postgre_DB::save(const string & table, std::vector <string> values, string where) {
     work N(*PG_conn);
     string request;
     request = "SELECT * FROM " + table;
@@ -126,7 +126,7 @@ int Postgre_DB::save(string table, std::vector <string> values, string where) {
     }
 }
 
-int Postgre_DB::delete_(string table, string where) {
+int Postgre_DB::delete_(const string & table, string where) {
     work N(*PG_conn);
     string request;
     request = "DELETE FROM " + table;
@@ -320,7 +320,8 @@ int Postgre_DB::save_user(USERS_INFO user_info) {
     user.push_back(user_info.soul_mate_gender);
     string request = "user_id = " + user[0];
     try {
-        save("USERS_INFO", user, request);
+        string users_info = "USERS_INFO";
+        save(users_info, user, request);
     }
     catch (const std::exception &e) {
         return 1;
@@ -371,7 +372,8 @@ int Postgre_DB::set_mark(string login_marker, string login_marked, int mark) {
     mark_vec[3] = to_string(mark);
     string request = "id_marker = '" + mark_vec[1] + "' and id_marked = '" + mark_vec[2] + "'";
     try {
-        save("MARKS", mark_vec, request);
+        string marks = "MARKS";
+        save(marks, mark_vec, request);
     }
     catch (const std::exception &e) {
         return 1;
@@ -396,7 +398,8 @@ std::vector <string> Postgre_DB::pairs_login(string login) {
 }
 
 std::vector <std::vector <int>> Postgre_DB::marks_matrix() {
-    int id_size = max_id("LOGIN", "user_id") + 1;
+    string login = "LOGIN";
+    int id_size = max_id(login, "user_id") + 1;
     std::vector <std::vector <int>> marks;
     for(int i = 0; i < id_size; ++i) {
         std::vector<int> temp;
@@ -476,7 +479,8 @@ int Postgre_DB::make_recommendations() {
         rec += "}";
         user_rec.push_back(rec);
         request = "user_id = " + to_string(kv.first);
-        save("USERS_REC", user_rec, request);
+        string users_rec = "USERS_REC";
+        save(users_rec, user_rec, request);
         user_rec.clear();
     }
     
@@ -520,8 +524,9 @@ std::vector <string> Postgre_DB::user_rec(string login) {
 }
 
 int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
-    int image_id; 
-    image_id = max_id("IMAGES", "image_id") + 1;
+    int image_id;
+    string images = "IMAGES";
+    image_id = max_id(images, "image_id") + 1;
     string request = "INSERT INTO IMAGES VALUES (" + to_string(image_id) + ", " + to_string(user_id) + ", '" + name + "', " + "pg_read_binary_file('" + path_to_file + "')::bytea);";
     try {
         work N(*PG_conn);
