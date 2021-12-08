@@ -2,3 +2,5 @@
 /src_rec/main.cpp
 .DS_Store
 /.vscode
+.clang-format
+
