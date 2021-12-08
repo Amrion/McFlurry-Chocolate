@@ -23,6 +23,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 #Wt
 find_package(Wt REQUIRED)
 
+include_directories(hash)
 include_directories(include_db)
 include_directories(include_rec)
 include_directories(include_server)
@@ -38,7 +39,7 @@ target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec
 
 # Build main
 option(BUILD_MAIN OFF)
-  if (BUILD_MAIN)
+if (BUILD_MAIN)
   add_executable(${PROJECT_NAME} src_db/main.cpp)
   target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
 endif()
@@ -52,11 +53,13 @@ file(GLOB prod_sources
         "src_server/TinderServer.cpp"
         "src_server/TinderApplication.cpp"
         "src_server/User.cpp"
-        "src_server/main.cpp")
+        "src_server/main.cpp"
+        "hash/md5.h"
+        "hash/md5.cpp")
 
 add_executable(${PROJECT_NAME} ${prod_sources})
 
-target_link_libraries(${PROJECT_NAME} Wt::Wt Wt::HTTP find_db_lib find_db_rec)
+target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
 
 #Build tests
 option(BUILD_TESTS ON)
