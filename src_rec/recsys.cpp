@@ -100,7 +100,23 @@ std::vector<int> RecSys::predict(const int user_id) {
     if ((*recs).find(user_id) != (*recs).end()) {
         std::vector<int> als_recs = (*recs)[user_id];
         std::vector<int> dbscan_recs = cluster_model.predict(user_id);
-        return als_recs;
+        std::vector<int> recs;
+
+        auto const predicate = [&dbscan_recs](int const value) {
+            return std::find(dbscan_recs.begin(), dbscan_recs.end(), value) !=
+                   dbscan_recs.end();
+        };
+
+        auto const not_predicate = [&dbscan_recs](int const value) {
+            return std::find(dbscan_recs.begin(), dbscan_recs.end(), value) ==
+                   dbscan_recs.end();
+        };
+        std::copy_if(als_recs.begin(), als_recs.end(), std::back_inserter(recs),
+                     predicate);
+        std::copy_if(als_recs.begin(), als_recs.end(), std::back_inserter(recs),
+                     not_predicate);        
+
+        return recs;
     }
     return std::vector<int>(0);
 }
