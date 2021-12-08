@@ -464,7 +464,7 @@ int Postgre_DB::make_recommendations() {
     std::vector <int> zeros(0);
     RecSys recsys;
     marks = marks_matrix();
-    std::shared_ptr<std::map<int, std::vector<int>>> REC = recsys.create_recommendations(marks, zeros);
+    std::shared_ptr<std::map<int, std::vector<int>>> REC = recsys.fit_predict(marks, zeros);
     for (auto& kv : *REC) {
         std::vector <int> vec_rec = kv.second;
         for (int i = (int) vec_rec.size() - 1; i >= 0; --i) {
@@ -550,7 +550,7 @@ std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string 
     nontransaction N(*PG_conn);
     result res = N.exec(request);
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
-        ofstream fout;
+        std::ofstream fout;
         fout.open(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg", ios::out);
         string str = c[2].as<string>();
         string str2 = base64_decode(str, 1); 

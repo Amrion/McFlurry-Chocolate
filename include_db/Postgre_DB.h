@@ -6,6 +6,7 @@
 #include "recsys.hpp"
 #include "base64.h"
 #include "dirent.h"
+#include <fstream>
 
 class Postgre_DB : DB {
     private:
