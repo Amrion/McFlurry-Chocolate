@@ -44,12 +44,23 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install gcovr
+
+      - run: |
+             cppcheck ./*/*.cpp ./*/*.hpp
+
       - run: |
              mkdir build_rec
              cd build_rec
              cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
              make
-             valgrind --leak-check=full ./gtests
+
       - run: |
-             cppcheck ./*/*.cpp ./*/*.hpp
+             valgrind --leak-check=full ./build_rec/gtests
+
+      - run: |
+             cd build_rec
+             lcov --capture --directory . --output-file coverage.info
+             lcov --remove coverage.info './build/*' --output-file coverage.info
+             lcov --list coverage.info
+             bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
 
