@@ -1,0 +1,32 @@
+body {
+    font-family: arial;
+}
+
+h1 {
+    text-align: center;
+}
+
+.appstack {
+    margin: 20px 40px;
+}
+
+.links {
+    margin: 10px;
+    text-align: center;
+}
+
+.links a {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.selected-link {
+    font-weight: bold;
+}
+
+.Wt-auth-logged-in {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 90%;
+}
