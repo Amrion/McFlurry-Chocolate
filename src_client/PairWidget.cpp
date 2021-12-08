@@ -16,14 +16,26 @@ void PairWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     name = info->addWidget(std::make_unique<Wt::WText>("Оля"));
     name->setStyleClass("nameProfile");
 
+    sex = info->addWidget(std::make_unique<Wt::WText>("Женщина"));
+    sex->setStyleClass("otherAge");
+
     age = info->addWidget(std::make_unique<Wt::WText>("20"));
     age->setStyleClass("otherAge");
+
+    fac = info->addWidget(std::make_unique<Wt::WText>("ИУ5-53Б"));
+    fac->setStyleClass("otherAge");
+
     discr = info->addWidget(std::make_unique<Wt::WText>("Короче, люблю все. Люблю Скрипа, люблю гулять и тусить"));
     discr->setStyleClass("otherDiscr");
 
     Wt::WLink link = Wt::WLink("https://vk.com/id71276649");
     link.setTarget(Wt::LinkTarget::NewWindow);
     net = info->addWidget(std::make_unique<Wt::WAnchor>(link, "https://vk.com/id71276649"));
+    net->setStyleClass("vkNet");
+
+    link = Wt::WLink("https://t.me/vorolga1");
+    link.setTarget(Wt::LinkTarget::NewWindow);
+    net = info->addWidget(std::make_unique<Wt::WAnchor>(link, "https://t.me/vorolga1"));
     net->setStyleClass("vkNet");
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("На страницу поиска"));

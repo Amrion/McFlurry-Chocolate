@@ -308,24 +308,36 @@ body {
     border-radius: 10px;
     width: 20%;
 }
+.deletePhoto {
+
+}
 input[value='file'] {
     display: none;
 }
 .addPhoto {
+    position: relative;
     padding-left: 20px !important;
-    display: block !important;
     margin-bottom: 30px !important;
-
+}
+.delete {
+    background: linear-gradient(
+            225deg,#ff6036, #fd267a);
+    border-radius: 10px;
+    border: 1px solid;
+    color: white;
+    height: 40px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+    margin-bottom: 30px;
+}
+.delete:hover {
+    background: linear-gradient(
+            225deg,#fd267a, #ff6036);
 }
 input[type='file'] {
     font-size: 15px;
-}
-.empty {
-    width: 100px;
-    height: 133px;
-    margin-left: 20px;
-    border-radius: 10px;
-    background-color: gray;
 }
 .exit {
     cursor: pointer;

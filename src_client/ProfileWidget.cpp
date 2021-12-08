@@ -16,8 +16,15 @@ void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     name = info->addWidget(std::make_unique<Wt::WText>("Лиза"));
     name->setStyleClass("nameProfile");
 
+    sex = info->addWidget(std::make_unique<Wt::WText>("Женщина"));
+    sex->setStyleClass("otherAge");
+
     age = info->addWidget(std::make_unique<Wt::WText>("19"));
     age->setStyleClass("otherAge");
+
+    fac = info->addWidget(std::make_unique<Wt::WText>("РК6-52Б"));
+    fac->setStyleClass("otherAge");
+
     discr = info->addWidget(std::make_unique<Wt::WText>("Меня зовут Лиза. Я люблю писать, читать. Хожу в Бомонку. Кушаю суши. В общем, пиши)"));
     discr->setStyleClass("otherDiscr");
 

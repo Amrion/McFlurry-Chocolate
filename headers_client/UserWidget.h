@@ -8,12 +8,14 @@
 #include <Wt/WTextArea.h>
 #include <Wt/WIntValidator.h>
 #include <Wt/WFileUpload.h>
+#include <stack>
 
 class UserWidget : public Wt::WContainerWidget {
 public:
     explicit UserWidget(Wt::WContainerWidget*);
 private:
     Wt::WImage* myPhoto;
+    Wt::WPushButton* deletePhoto;
     Wt::WFileUpload* addPhoto;
     Wt::WPushButton* saveData;
     Wt::WPushButton* back;
@@ -21,6 +23,10 @@ private:
     Wt::WTextArea* discEdit;
     Wt::WText* ageText;
     Wt::WLineEdit* ageEdit;
+    Wt::WText* facText;
+    Wt::WLineEdit* facEdit;
+    Wt::WText* tgText;
+    Wt::WLineEdit* tgEdit;
     Wt::WText* netText;
     Wt::WLineEdit* netEdit;
     Wt::WText* passText;

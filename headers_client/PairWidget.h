@@ -13,6 +13,9 @@ private:
     Wt::WText* name;
     Wt::WText* discr;
     Wt::WText* age;
+    Wt::WText* sex;
+    Wt::WText* fac;
+    Wt::WAnchor* tg;
     Wt::WAnchor* net;
     Wt::WPushButton* back;
 

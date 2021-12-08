@@ -11,8 +11,10 @@ public:
 private:
     Wt::WImage* photo;
     Wt::WText* name;
+    Wt::WText* sex;
     Wt::WText* discr;
     Wt::WText* age;
+    Wt::WText* fac;
     Wt::WPushButton* back;
 
     void createInfoPage(Wt::WContainerWidget*);

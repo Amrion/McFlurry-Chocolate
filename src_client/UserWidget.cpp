@@ -13,18 +13,22 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto photos = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
     photos->setStyleClass("userPhotos");
 
+    Wt::WImage* myPhotos;
+
     myPhoto = photos->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Me.jpg")));
     myPhoto->setStyleClass("userPhoto");
-    auto emptyPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    emptyPhoto->setStyleClass("empty");
-    emptyPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    emptyPhoto->setStyleClass("empty");
-    emptyPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    emptyPhoto->setStyleClass("empty");
 
-    addPhoto = setting->addWidget(std::make_unique<Wt::WFileUpload>());
-    addPhoto->setFileTextSize(500);
+    auto buttons = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
+
+    addPhoto = buttons->addWidget(std::make_unique<Wt::WFileUpload>());
+    addPhoto->setFileTextSize(512);
     addPhoto->setStyleClass("addPhoto");
+
+    deletePhoto = buttons->addWidget(std::make_unique<Wt::WPushButton>("Удалить фото"));
+    deletePhoto->setStyleClass("delete");
+    deletePhoto->clicked().connect([=] {
+        myPhoto->hide();
+    });
 
     ageText = setting->addWidget(std::make_unique<Wt::WText>("Ваш возраст"));
     ageText->setStyleClass("textSetting");
@@ -46,11 +50,25 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     discEdit->setRows(5);
     discEdit->setStyleClass("discSetting");
 
-    netText = setting->addWidget(std::make_unique<Wt::WText>("Ваша социальная сеть"));
+    facText = setting->addWidget(std::make_unique<Wt::WText>("Ваш факультет"));
+    facText->setStyleClass("textSetting");
+    facEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
+    facEdit->setPlaceholderText("Можете поменять свой факультет");
+    facEdit->setValueText("ИУ5-53Б");
+    facEdit->setStyleClass("lineSetting");
+
+    netText = setting->addWidget(std::make_unique<Wt::WText>("Ваша ссылка на ВК"));
     netText->setStyleClass("textSetting");
     netEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
-    netEdit->setPlaceholderText("Можете поменять соц. сеть");
-    netEdit->setValueText("Мой вк - https://vk.com/dtarnovsky");
+    netEdit->setPlaceholderText("Можете поменять ссылку на ВК");
+    netEdit->setValueText("https://vk.com/dtarnovsky");
+    netEdit->setStyleClass("lineSetting");
+
+    netText = setting->addWidget(std::make_unique<Wt::WText>("Ваша ссылка на Телеграмм"));
+    netText->setStyleClass("textSetting");
+    netEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
+    netEdit->setPlaceholderText("Можете поменять ссылку на Телеграмм");
+    netEdit->setValueText("https://t.me/Amrion_Dan");
     netEdit->setStyleClass("lineSetting");
 
     passText = setting->addWidget(std::make_unique<Wt::WText>("Ваш пароль"));
@@ -58,7 +76,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     passEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
     passEdit->setEchoMode(Wt::EchoMode::Password);
     passEdit->setPlaceholderText("Можете поменять ваш пароль");
-    passEdit->setValueText("1qaz2wsx3edc");
+    passEdit->setValueText("1");
     passEdit->setStyleClass("lineSetting");
 
     passTwoText = setting->addWidget(std::make_unique<Wt::WText>("Повторите пароль"));
@@ -77,16 +95,29 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto outPassTwo = setting->addWidget(std::make_unique<Wt::WText>());
     outPassTwo->hide();
 
+    auto outAdd = setting->addWidget(std::make_unique<Wt::WText>());
+    outAdd->hide();
+
     saveData = setting->addWidget(std::make_unique<Wt::WPushButton>("Сохранить изменения"));
     saveData->setStyleClass("info buttonSetting");
 
+    addPhoto->fileTooLarge().connect([=] {
+        outAdd->show();
+        outAdd->setText("Файл слишком большой");
+        outAdd->setStyleClass("invalid");
+    });
+
     saveData->clicked().connect([=] {
+        if (addPhoto->canUpload()) {
+            addPhoto->upload();
+            outAdd->hide();
+        }
         if (ageEdit->validate() == Wt::ValidationState::Invalid) {
             outAge->show();
-            outAge->setInline(true);
             outAge->setText("Только с 18 лет");
             outAge->setStyleClass("invalid");
         } else {
+            std::cout << ageEdit->valueText();
             outAge->hide();
         }
 
