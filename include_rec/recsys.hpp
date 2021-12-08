@@ -1,10 +1,11 @@
 #pragma once
 
-#include <bits/stdc++.h>
-
-#include <boost/numeric/ublas/matrix.hpp>
+#include <vector>
+#include <map>
+#include <numeric>
 #include <mutex>
 #include <thread>
+#include <boost/numeric/ublas/matrix.hpp>
 
 #include "als.hpp"
 #include "dbscan.hpp"

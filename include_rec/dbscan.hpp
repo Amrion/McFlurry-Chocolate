@@ -1,6 +1,11 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <cmath>
+#include <cassert>
+#include <numeric>
 
 #define UNCLASSIFIED -1
 #define SUCCESS 0

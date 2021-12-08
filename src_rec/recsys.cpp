@@ -98,9 +98,11 @@ void RecSys::fit(const std::vector<std::vector<int>>& V,
 
 std::vector<int> RecSys::predict(const int user_id) {
     if ((*recs).find(user_id) != (*recs).end()) {
-        return (*recs)[user_id];
+        std::vector<int> als_recs = (*recs)[user_id];
+        std::vector<int> dbscan_recs = cluster_model.predict(user_id);
+        return als_recs;
     }
-    return cluster_model.predict(user_id);
+    return std::vector<int>(0);
 }
 
 std::vector<int> RecSys::predict(const std::vector<float>& user_values) {

@@ -1,9 +1,5 @@
 #include "als.hpp"
 
-#include <bits/stdc++.h>
-
-#include <boost/numeric/ublas/matrix.hpp>
-
 using namespace boost::numeric::ublas;
 
 ALS::ALS(const int _k, float _eps, float _learning_rate, int _nb_epoch,
