@@ -1,0 +1,386 @@
+body {
+    font-family: ProximaNova,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;
+    margin: 0;
+}
+.page {
+    display: flex;
+}
+
+.me {
+    width: 430px;
+}
+.myName {
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    height: 70px;
+    width: 425px;
+    background: linear-gradient(
+            225deg,#ff6036, #fd267a);
+}
+.name {
+    text-decoration: none;
+    cursor: pointer;
+    position: relative !important;
+    font-weight:bold;
+    color: white;
+    font-size: 20px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.name:hover {
+    color: darkred;
+}
+.avatar {
+    margin-right: 10px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+.pair {
+    display: flex;
+    justify-content: center;
+    width: 425px;
+}
+.pairText {
+    font-size: 20px;
+    font-weight:bold;
+    margin-top: 20px;
+}
+.pairAvatar {
+    cursor: pointer;
+    width: 30%;
+    margin-left: 15px;
+    border-radius: 5%;
+    border: 2px solid white;
+    transition: all .15s ease-in-out, opacity .3s ease-in-out;
+}
+.pairDiv {
+    padding-left: 15px;
+    margin-top: 20px;
+    width: 425px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.pairName {
+    text-decoration: none;
+    text-align: center;
+    font-size: 20px;
+    margin-left: 10px;
+    color: black;
+    border-radius: 20px;
+    transition: all .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.pairName:hover {
+    color: red;
+}
+.photo {
+    text-align: center;
+    border-radius: 5%;
+    width: 400px;
+    box-shadow: 0 0 10px;
+}
+.people {
+    background-color: #f2f2f2;
+    height: 920px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.photos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dislike {
+    border-radius: 10px;
+    border: 2px solid red;
+    width: 100px;
+    margin-right: 20px;
+    height: 50px;
+    background-color: #f2f2f2;
+    font-size: 30px;
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.dislike:hover {
+    background-color: red;
+    color:  #f2f2f2;
+    border: 2px solid red;
+}
+.dislike:after {
+    content: "\2718";
+}
+.like {
+    border-radius: 10px;
+    border: 2px solid green;
+    width: 100px;
+    margin-left: 20px;
+    height: 50px;
+    background-color: #f2f2f2;
+    font-size: 30px;
+    font-weight: bold;
+    color: green;
+    cursor: pointer;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.like:hover {
+    background-color: green;
+    color:  #f2f2f2;
+    border: 2px solid green;
+}
+.like:after {
+    content: "\2764";
+}
+.butLeft {
+    display: flex;
+    flex-direction: column;
+}
+.butRight {
+    display: flex;
+    flex-direction: column;
+}
+.back {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 2px solid black;
+    width: 100px;
+    margin-right: 20px;
+    height: 50px;
+    background-color: #f2f2f2;
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.back:hover {
+    background-color: black;
+    color:  #f2f2f2;
+    border: 2px solid black;
+}
+.back:after {
+    content: "\003C";
+}
+.forward {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: 2px solid black;
+    width: 100px;
+    margin-left: 20px;
+    height: 50px;
+    background-color: #f2f2f2;
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,opacity .3s ease-in-out;
+}
+.forward:hover {
+    background-color: black;
+    color:  #f2f2f2;
+    border: 2px solid black;
+}
+.forward:after {
+    content: "\003E";
+}
+.info {
+    display: block;
+    height: 50px;
+    width: 300px;
+    margin-top: 20px;
+    background: linear-gradient(
+            225deg,#ff6036, #fd267a);
+    border-radius: 10px;
+    border: 1px solid;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.info:hover {
+    width: 400px;
+    background: linear-gradient(
+            225deg,#fd267a, #ff6036);
+}
+.profileInfo {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 0 solid;
+    background-color: white;
+    width: 400px;
+    height: 500px;
+    box-shadow: 0 0 10px;
+}
+.test {
+    font-size: 100px;
+    color: black;
+}
+.nameProfile {
+    margin-bottom: 15px;
+    font-size: 30px;
+    font-weight: bold;
+}
+.otherAge {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+.otherDiscr {
+    margin-bottom: 15px;
+    font-size: 20px;
+    padding: 0 20px;
+}
+.photoProfile {
+    height: 100%;
+    width: 100%;
+}
+::-webkit-scrollbar {
+    width: 0;
+}
+.vkNet {
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+.aboutMe {
+    overflow-y: scroll;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+    border: 0 solid;
+    background-color: #f2f2f2;
+    width: 500px;
+    height: 600px;
+    box-shadow: 0 0 10px;
+}
+.textSetting {
+    padding-left: 20px;
+    font-size: 20px;
+    color: grey;
+    font-weight: bold;
+}
+.lineSetting {
+    padding-left: 20px;
+    margin-bottom: 30px;
+    font-size: 15px;
+    outline: none;
+    border: 0;
+    width: 478px;
+    height: 50px;
+}
+.discSetting {
+    padding-left: 20px;
+    font-size: 15px;
+    outline: none;
+    border: 0;
+    width: 478px;
+    height: 150px;
+    margin-bottom: 30px;
+}
+.buttonSetting {
+    margin-left: 20%;
+    height: 50px;
+}
+.buttonSetting:hover {
+    width: 300px;
+}
+.invalid {
+    padding-left: 20px;
+    font-size: 15px;
+    color: red;
+    margin-bottom: 20px;
+}
+.userPhotos {
+    display: flex;
+    margin-bottom: 30px;
+}
+.userPhoto {
+    margin-left: 20px;
+    border-radius: 10px;
+    width: 20%;
+}
+.deletePhoto {
+
+}
+input[value='file'] {
+    display: none;
+}
+.addPhoto {
+    position: relative;
+    padding-left: 20px !important;
+    margin-bottom: 30px !important;
+}
+.delete {
+    background: linear-gradient(
+            225deg,#ff6036, #fd267a);
+    border-radius: 10px;
+    border: 1px solid;
+    color: white;
+    height: 40px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+    margin-bottom: 30px;
+}
+.delete:hover {
+    background: linear-gradient(
+            225deg,#fd267a, #ff6036);
+}
+input[type='file'] {
+    font-size: 15px;
+}
+.exit {
+    cursor: pointer;
+    border: 0;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    background: transparent;
+    margin-left: 220px;
+    width: 60px;
+    height: 40px;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.exit:hover {
+    border-radius: 10px;
+    background-color: darkred;
+}
+h1 {
+    text-align: center;
+}
+.appstack {
+    margin: 20px 40px;
+}
+
+.links {
+    margin: 10px;
+    text-align: center;
+}
+
+.links a {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.selected-link {
+    font-weight: bold;
+}
+
+.Wt-auth-logged-in {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 90%;
+}
+

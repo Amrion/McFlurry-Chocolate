@@ -1,7 +1,4 @@
-#ifndef PROJECT_INCLUDE_SERVER_TINDERAPPLICATION_HPP_
-#define PROJECT_INCLUDE_SERVER_TINDERAPPLICATION_HPP_
-
-
+#pragma once
 #include <Wt/WApplication.h>
 #include <Wt/WEnvironment.h>
 #include <Wt/WServer.h>
@@ -20,6 +17,3 @@ private:
     const Wt::WEnvironment      &env_;
     std::unique_ptr<Wt::WTimer>  timer_;
 };
-
-
-#endif  // PROJECT_INCLUDE_SERVER_TINDERAPPLICATION_HPP_

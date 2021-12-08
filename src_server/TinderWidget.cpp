@@ -17,14 +17,13 @@
 #include <chrono>
 #include <codecvt>
 
-#include "TinderServer.hpp"
 #include "TinderWidget.hpp"
+#include "MainPageWidget.h"
 
-
-static inline int64_t getTimeMs() {
-    return std::chrono::duration_cast<std::chrono::milliseconds>
-            (std::chrono::system_clock::now().time_since_epoch()).count();
-}
+//static inline int64_t getTimeMs() {
+//    return std::chrono::duration_cast<std::chrono::milliseconds>
+//            (std::chrono::system_clock::now().time_since_epoch()).count();
+//}
 
 std::string ws2s(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -33,10 +32,12 @@ std::string ws2s(const std::wstring &wstr) {
     return converterX.to_bytes(wstr);
 }
 
-TinderWidget::TinderWidget(TinderServer &server)
+TinderWidget::TinderWidget(TinderServer &server, TinderApplication* app)
         : WContainerWidget(),
+          app(app),
           server_(server),
-          loggedIn_(false) {
+          loggedIn_(false)
+           {
 
     letLogin();
 }
@@ -367,10 +368,13 @@ void TinderWidget::login() {
     user_ = User();
     user_.username = username;
     user_.password = password;
-
+    std::cout <<"dasdasd!!!!!!!!!!!!" << user_.username;
     if (server_.login(user_)) {
         loggedIn_ = true;
+        clear();
+        addWidget(std::make_unique<MainPageWidget>(server_, app));
     } else {
         statusMsg_->setText("Неверный логин или пароль");
     }
 }
+

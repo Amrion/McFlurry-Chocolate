@@ -1,5 +1,5 @@
 .build
 images
 src_db/main.cpp
-.idea
+.idea/
 cmake-build-debug

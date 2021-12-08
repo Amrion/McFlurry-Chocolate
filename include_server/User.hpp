@@ -1,5 +1,4 @@
-#ifndef MCFLURRY_CHOCOLATE_USER_H
-#define MCFLURRY_CHOCOLATE_USER_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -32,5 +31,3 @@ public:
         this->~User();
     }
 };
-
-#endif //MCFLURRY_CHOCOLATE_USER_H

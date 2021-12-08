@@ -27,6 +27,7 @@ include_directories(hash)
 include_directories(include_db)
 include_directories(include_rec)
 include_directories(include_server)
+include_directories(headers_client)
 
 set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp  ${PROJECT_SOURCE_DIR}/src_db/base64.cpp)
@@ -54,6 +55,11 @@ file(GLOB prod_sources
         "src_server/TinderApplication.cpp"
         "src_server/User.cpp"
         "src_server/main.cpp"
+        "src_client/MainPageWidget.cpp"
+        "src_client/PairWidget.cpp"
+        "src_client/ProfileWidget.cpp"
+        "src_client/UserWidget.cpp"
+        "src_client/SearchPageWidget.cpp"
         "hash/md5.h"
         "hash/md5.cpp")
 

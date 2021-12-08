@@ -1,13 +1,14 @@
-#ifndef PROJECT_INCLUDE_SERVER_TINDERWIDGET_HPP_
-#define PROJECT_INCLUDE_SERVER_TINDERWIDGET_HPP_
+#pragma once
 
 #include <Wt/WContainerWidget.h>
 
 #include "TinderServer.hpp"
+#include "TinderApplication.hpp"
 
 class TinderWidget : public Wt::WContainerWidget {
 public:
-    explicit TinderWidget(TinderServer& server);
+    TinderWidget(TinderServer& server, TinderApplication* app);
+
     ~TinderWidget() override;
 
     void letSignUp();
@@ -23,6 +24,7 @@ private:
     void login();
 
 private:
+    TinderApplication* app;
     TinderServer    &server_;
 
     bool                loggedIn_;
@@ -47,5 +49,3 @@ private:
     typedef Wt::Core::observing_ptr<Wt::WPushButton> ButtonPtr;
 };
 
-
-#endif  // PROJECT_INCLUDE_SERVER_TINDERWIDGET_HPP_

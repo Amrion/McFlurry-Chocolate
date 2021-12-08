@@ -1,6 +1,4 @@
-#ifndef PROJECT_INCLUDE_SERVER_TINDERSERVER_HPP_
-#define PROJECT_INCLUDE_SERVER_TINDERSERVER_HPP_
-
+#pragma once
 
 #include <map>
 #include <thread>
@@ -8,6 +6,7 @@
 
 #include "User.hpp"
 #include "Postgre_DB.h"
+
 
 class TinderServer {
 public:
@@ -28,6 +27,3 @@ private:
 
     User user_;
 };
-
-
-#endif  // PROJECT_INCLUDE_SERVER_TINDERSERVER_HPP_

@@ -6,9 +6,9 @@ TinderApplication::TinderApplication(const Wt::WEnvironment& env,
           server_(server),
           env_(env) {
     setTitle("BMSTU Tinder");
-    useStyleSheet("../css/tinder.css");
+    useStyleSheet("../css/Tinder.css");
 
     TinderWidget *tinderWidget =
-            root()->addWidget(std::make_unique<TinderWidget>(server_));
+            root()->addWidget(std::make_unique<TinderWidget>(server_, this));
     tinderWidget->setStyleClass("Tinder");
 }
