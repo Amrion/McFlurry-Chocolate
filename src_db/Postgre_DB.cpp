@@ -245,11 +245,11 @@ int Postgre_DB::drop_tables() {
     return 0;
 }
 
-int Postgre_DB::user_exist(string login, float password) {
+int Postgre_DB::user_exist(string login, string password) {
     nontransaction N(*PG_conn);
     string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'"; 
-    if (password != -1) {
-        request += " password = '" + to_string(password) + "'";
+    if (password != "") {
+        request += " password = '" + password + "'";
     }
     request += ";";
     try {
@@ -290,7 +290,7 @@ USERS_INFO Postgre_DB::user_info(string login) {
     return user;
 }
 
-int Postgre_DB::user_register(string login, float password) {
+int Postgre_DB::user_register(string login, string password) {
     if (user_exist(login)) {
         return -1;
     }
@@ -299,7 +299,7 @@ int Postgre_DB::user_register(string login, float password) {
         std::vector <string> user_vec(3);
         user_vec[0] = to_string(id);
         user_vec[1] = to_string(login);
-        user_vec[2] = to_string(password);
+        user_vec[2] = password;
         save("login", user_vec);
         return id;
     }

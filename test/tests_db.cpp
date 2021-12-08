@@ -4,7 +4,7 @@
 TEST(POSTGRE_DB, test_create_tables) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-  user.user_id = pg.user_register("mail.ru", 1049284876844);
+  user.user_id = pg.user_register("mail.ru", "1049284876844");
   user.name = "USER1";
   user.age = 18;
   user.gender = "M";
@@ -23,7 +23,7 @@ TEST(POSTGRE_DB, test_create_tables) {
 TEST(POSTGRE_DB, test_set_mark) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-  user.user_id = pg.user_register("vk.ru", 9054783478543);
+  user.user_id = pg.user_register("vk.ru", "9054783478543");
   user.name = "USER2";
   user.age = 18;
   user.gender = "W";
