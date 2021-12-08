@@ -52,6 +52,7 @@ void TinderWidget::letSignUp() {
 
     auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
 
+
     auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
     auto container = hLayout->addWidget(std::make_unique<Wt::WContainerWidget>(), 1);
@@ -368,7 +369,7 @@ void TinderWidget::login() {
     user_ = User();
     user_.username = username;
     user_.password = password;
-    std::cout <<"dasdasd!!!!!!!!!!!!" << user_.username;
+
     if (server_.login(user_)) {
         loggedIn_ = true;
         clear();

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Wt/WApplication.h>
 #include <Wt/WContainerWidget.h>
 #include <Wt/WText.h>
 #include <Wt/WImage.h>

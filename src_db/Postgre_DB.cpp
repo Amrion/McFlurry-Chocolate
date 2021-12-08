@@ -148,7 +148,7 @@ int Postgre_DB::delete_(const string & table, string where) {
 int Postgre_DB::init_tables() {
     string create_table = "CREATE TABLE ";
     string users_info = create_table + "USERS_INFO (user_id int, age int, course_number int, num_pairs int, name text, surname text, gender text, faculty text, vk_link text, telegram_link text, description text, soul_mate_gender text);";
-    string login = create_table + "LOGIN (user_id int, login text, password float);";
+    string login = create_table + "LOGIN (user_id int, login text, password text);";
     string  users_rec = create_table + "USERS_REC (user_id int, user_rec int[]);";
     string marks = create_table + "MARKS (mark_id int, id_marker int, id_marked int, mark int);";
     string images = create_table + "IMAGES (image_id int, user_id int, image_name text, image bytea);";
@@ -249,7 +249,7 @@ int Postgre_DB::user_exist(string login, string password) {
     nontransaction N(*PG_conn);
     string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'";
     if (password != "") {
-        request += " password = '" + password + "'";
+        request += " and password = '" + password + "'";
     }
     request += ";";
     try {
@@ -258,6 +258,7 @@ int Postgre_DB::user_exist(string login, string password) {
             res.clear();
             return 1;
         }
+        res.clear();
     }
     catch (const std::exception &e) {
         return 0;

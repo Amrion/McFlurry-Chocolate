@@ -5,7 +5,6 @@
 #include <Wt/WTimer.h>
 
 #include "TinderServer.hpp"
-#include "TinderWidget.hpp"
 
 
 class TinderApplication : public Wt::WApplication {

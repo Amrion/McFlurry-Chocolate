@@ -1,4 +1,5 @@
 #include "TinderApplication.hpp"
+#include "TinderWidget.hpp"
 
 TinderApplication::TinderApplication(const Wt::WEnvironment& env,
                                  TinderServer& server)
