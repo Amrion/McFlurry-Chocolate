@@ -6,7 +6,7 @@ std::unique_ptr<Wt::WApplication> createApplication(const Wt::WEnvironment &env,
 
 int main(int argc, char *argv[]) {
     Wt::WServer server(argc, argv, WTHTTP_CONFIGURATION);
-    Postgre_DB db("127.0.0.1", "5432", "BAUMAN_TINDER", "server", "server_password");
+    Postgre_DB db("127.0.0.1", "5432", "bauman_tinder", "server", "server_password");
 
     TinderServer tinderServer(server, db);
 

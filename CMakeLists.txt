@@ -9,8 +9,8 @@ set(CMAKE_CXX_FLAGS_PROFILE --coverage)
 
 include(FetchContent)
 FetchContent_Declare(
-  googletest
-  URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+        googletest
+        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
 )
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -38,7 +38,7 @@ target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec
 
 # Build main
 option(BUILD_MAIN OFF)
-  if (BUILD_MAIN)
+if (BUILD_MAIN)
   add_executable(${PROJECT_NAME} src_db/main.cpp)
   target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
 endif()
@@ -56,7 +56,7 @@ file(GLOB prod_sources
 
 add_executable(${PROJECT_NAME} ${prod_sources})
 
-target_link_libraries(${PROJECT_NAME} Wt::Wt Wt::HTTP find_db_lib find_db_rec)
+target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
 
 #Build tests
 option(BUILD_TESTS ON)
@@ -70,4 +70,3 @@ if (BUILD_TESTS)
   gtest_add_tests(TARGET tests_db)
   gtest_add_tests(TARGET tests_rec)
 endif()
-
