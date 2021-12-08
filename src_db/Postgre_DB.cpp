@@ -56,7 +56,7 @@ int Postgre_DB::insert(const string & table, std::vector <string> values) {
         request = "INSERT INTO " + table + " VALUES('";
         for (size_t i = 0; i < values.size(); ++i) {
             request += values[i] + "', '";
-        } 
+        }
         request = request.substr(0, request.size() - 3);
         request += ");";
         N.exec(request);
@@ -107,7 +107,7 @@ int Postgre_DB::save(const string & table, std::vector <string> values, string w
     request = "SELECT * FROM " + table;
     if (where != "") {
         request += " WHERE " + where;
-    } 
+    }
     request += ";";
     result check = N.exec(request);
     try {
@@ -115,7 +115,7 @@ int Postgre_DB::save(const string & table, std::vector <string> values, string w
         if ((where != "") and (check.begin() != check.end())) {
             check.clear();
             return update(table, values, where);
-        } 
+        }
         else {
             check.clear();
             return insert(table, values);
@@ -133,7 +133,7 @@ int Postgre_DB::delete_(const string & table, string where) {
     request = "DELETE FROM " + table;
     if (where != "") {
         request += " WHERE " + where;
-    } 
+    }
     request += ";";
     try {
         N.exec(request);
@@ -157,7 +157,7 @@ int Postgre_DB::init_tables() {
         N.exec(users_info);
     }
     catch (const std::exception &e) {
-        
+
     }
     N.commit();
     work N1(*PG_conn);
@@ -165,7 +165,7 @@ int Postgre_DB::init_tables() {
         N1.exec(login);
     }
     catch (const std::exception &e) {
-        
+
     }
     N1.commit();
     work N2(*PG_conn);
@@ -173,7 +173,7 @@ int Postgre_DB::init_tables() {
         N2.exec(users_rec);
     }
     catch (const std::exception &e) {
-        
+
     }
     N2.commit();
     work N3(*PG_conn);
@@ -181,7 +181,7 @@ int Postgre_DB::init_tables() {
         N3.exec(marks);
     }
     catch (const std::exception &e) {
-        
+
     }
     N3.commit();
     work N4(*PG_conn);
@@ -190,7 +190,7 @@ int Postgre_DB::init_tables() {
         N4.commit();
     }
     catch (const std::exception &e) {
-        
+
     }
     return 0;
 }
@@ -245,11 +245,11 @@ int Postgre_DB::drop_tables() {
     return 0;
 }
 
-int Postgre_DB::user_exist(string login, float password) {
+int Postgre_DB::user_exist(string login, string password) {
     nontransaction N(*PG_conn);
-    string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'"; 
-    if (password != -1) {
-        request += " password = '" + to_string(password) + "'";
+    string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'";
+    if (password != "") {
+        request += " password = '" + password + "'";
     }
     request += ";";
     try {
@@ -262,13 +262,13 @@ int Postgre_DB::user_exist(string login, float password) {
     catch (const std::exception &e) {
         return 0;
     }
-    
+
     return 0;
 }
 
 USERS_INFO Postgre_DB::user_info(string login) {
     nontransaction N(*PG_conn);
-    string request = "SELECT * FROM USERS_INFO WHERE (SELECT user_id FROM LOGIN WHERE login = '" + login + "') = user_id;"; 
+    string request = "SELECT * FROM USERS_INFO WHERE (SELECT user_id FROM LOGIN WHERE login = '" + login + "') = user_id;";
     result res = N.exec(request);
     USERS_INFO user;
     if (res.begin() != res.end()) {
@@ -290,7 +290,7 @@ USERS_INFO Postgre_DB::user_info(string login) {
     return user;
 }
 
-int Postgre_DB::user_register(string login, float password) {
+int Postgre_DB::user_register(string login, string password) {
     if (user_exist(login)) {
         return -1;
     }
@@ -299,7 +299,7 @@ int Postgre_DB::user_register(string login, float password) {
         std::vector <string> user_vec(3);
         user_vec[0] = to_string(id);
         user_vec[1] = to_string(login);
-        user_vec[2] = to_string(password);
+        user_vec[2] = password;
         save("login", user_vec);
         return id;
     }
@@ -332,23 +332,23 @@ int Postgre_DB::save_user(USERS_INFO user_info) {
 
 int Postgre_DB::user_id(string login) {
     nontransaction N(*PG_conn);
-    string request = "SELECT user_id FROM LOGIN WHERE login = '" + login + "';"; 
+    string request = "SELECT user_id FROM LOGIN WHERE login = '" + login + "';";
     result res = N.exec(request);
     if (res.begin() == res.end()) {
         res.clear();
         return -1;
     }
     else {
-         result::const_iterator c = res.begin();
-         int m = c[0].as<int>();
-         res.clear();
-         return m;
+        result::const_iterator c = res.begin();
+        int m = c[0].as<int>();
+        res.clear();
+        return m;
     }
 }
 
 string Postgre_DB::user_login(int id) {
     nontransaction N(*PG_conn);
-    string request = "SELECT login FROM LOGIN WHERE user_id = '" + to_string(id) + "';"; 
+    string request = "SELECT login FROM LOGIN WHERE user_id = '" + to_string(id) + "';";
     result res = N.exec(request);
     if (res.begin() == res.end()) {
         res.clear();
@@ -484,7 +484,7 @@ int Postgre_DB::make_recommendations() {
         save(users_rec, user_rec, request);
         user_rec.clear();
     }
-    
+
     return 0;
 }
 
@@ -553,9 +553,9 @@ std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string 
         std::ofstream fout;
         fout.open(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg", ios::out);
         string str = c[2].as<string>();
-        string str2 = base64_decode(str, 1); 
+        string str2 = base64_decode(str, 1);
         fout << str2;
-        fout.close(); 
+        fout.close();
         files.push_back(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg");
     }
     res.clear();

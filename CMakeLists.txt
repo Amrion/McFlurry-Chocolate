@@ -23,6 +23,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 #Wt
 find_package(Wt REQUIRED)
 
+include_directories(hash)
 include_directories(include_db)
 include_directories(include_rec)
 include_directories(include_server)
@@ -52,7 +53,9 @@ file(GLOB prod_sources
         "src_server/TinderServer.cpp"
         "src_server/TinderApplication.cpp"
         "src_server/User.cpp"
-        "src_server/main.cpp")
+        "src_server/main.cpp"
+        "hash/md5.h"
+        "hash/md5.cpp")
 
 add_executable(${PROJECT_NAME} ${prod_sources})
 

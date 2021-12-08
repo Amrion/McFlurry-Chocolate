@@ -165,6 +165,27 @@ void TinderWidget::letSignUp() {
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
+    hLayout->addWidget(std::make_unique<Wt::WLabel>("Какой пол интересует:"), 1);
+
+    container = hLayout->addWidget(std::make_unique<Wt::WContainerWidget>(), 1);
+    auto groupSoul = std::make_shared<Wt::WButtonGroup>();
+    Wt::WRadioButton *rbSoul;
+
+    rbSoul = container->addNew<Wt::WRadioButton>("Мужской");
+    rbSoul->setInline(false);
+    groupSoul->addButton(rbSoul, 1);
+
+    rbSoul = container->addNew<Wt::WRadioButton>("Женский");
+    rbSoul->setInline(false);
+    groupSoul->addButton(rbSoul, 2);
+
+    groupSoul->setSelectedButtonIndex(0);
+
+    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+
+    soulMateGenderBtn_ = group.get();
+
+    hLayout = std::make_unique<Wt::WHBoxLayout>();
 
     hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
 
@@ -293,8 +314,16 @@ void TinderWidget::signUp() {
     std::string telegram = ws2s(telegramEdit_->text());
     std::string description = ws2s(descriptionEdit_->text());
     std::string gender = genderBtn_->id();
+    std::string soulMateGender = soulMateGenderBtn_->id();
     std::string  age = ws2s(ageEdit_->text());
 
+
+
+    if (password.empty() || username.empty() || name.empty() || surname.empty() || faculty.empty() ||
+        courseNumber.empty() || vkLink.empty() || telegram.empty() || description.empty()) {
+        statusMsg_->setText("Все поля должны быть заполнены");
+        return;
+    }
 
     if (std::stoi(age) < 18) {
         statusMsg_->setText("Возраст должен быть больше 18");
@@ -302,11 +331,6 @@ void TinderWidget::signUp() {
     }
     if (password != confirmPassword) {
         statusMsg_->setText("Пароли не совпадают");
-        return;
-    }
-    if (password.empty() || username.empty() || name.empty() || surname.empty() || faculty.empty() ||
-    courseNumber.empty() || vkLink.empty() || telegram.empty() || description.empty()) {
-        statusMsg_->setText("Все поля должны быть заполнены");
         return;
     }
 
@@ -323,6 +347,7 @@ void TinderWidget::signUp() {
     user_.telegram_link = telegram;
     user_.username = username;
     user_.password = password;
+    user_.soulMateGender = soulMateGender;
 
     if (server_.signUp(user_)) {
         login();
@@ -349,6 +374,3 @@ void TinderWidget::login() {
         statusMsg_->setText("Неверный логин или пароль");
     }
 }
-
-
-

@@ -23,9 +23,14 @@ public:
     int num_pairs;
     std::vector <std::string> rec_users;
     std::string image;
+    std::string soulMateGender;
 
     std::string username;
     std::string password;
+
+    void kill() {
+        this->~User();
+    }
 };
 
 #endif //MCFLURRY_CHOCOLATE_USER_H

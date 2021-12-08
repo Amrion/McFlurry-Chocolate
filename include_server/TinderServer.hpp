@@ -19,7 +19,7 @@ public:
 
     bool signUp(User& user);
     bool login(User& user);
-    void logout(const User &user);
+    void logout(User &user);
 
 private:
     Wt::WServer&            server_;
