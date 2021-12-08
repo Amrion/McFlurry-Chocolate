@@ -15,10 +15,10 @@ class Postgre_DB : DB {
         virtual int insert(const string & table, std::vector <string> values) override;
         virtual int delete_(const string & table, string where = "") override;
         int max_id(const string & table, string name_id);
+        int init_tables();
     public:
         Postgre_DB(string host, string port, string db_name, string user, string password);
         ~Postgre_DB();
-        int init_tables();
         int drop_tables();
         int user_exist(string login, float password = -1);
         int user_register(string login, float password); 

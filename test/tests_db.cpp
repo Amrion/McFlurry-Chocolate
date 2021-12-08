@@ -3,7 +3,6 @@
 
 TEST(POSTGRE_DB, test_create_tables) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
-  pg.init_tables();
   USERS_INFO user;
   user.user_id = pg.user_register("mail.ru", 1049284876844);
   user.name = "USER1";

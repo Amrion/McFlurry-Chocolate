@@ -13,6 +13,7 @@ Postgre_DB::Postgre_DB(string host, string port, string db_name, string user, st
     {
         cerr << e.what() << std::endl;
     }
+    init_tables();
 }
 
 Postgre_DB::~Postgre_DB() {
@@ -156,7 +157,7 @@ int Postgre_DB::init_tables() {
         N.exec(users_info);
     }
     catch (const std::exception &e) {
-        cout << "TABLE USERS_INFO is already exists" << endl;
+        
     }
     N.commit();
     work N1(*PG_conn);
@@ -164,7 +165,7 @@ int Postgre_DB::init_tables() {
         N1.exec(login);
     }
     catch (const std::exception &e) {
-        cout << "TABLE LOGIN is already exists" << endl;
+        
     }
     N1.commit();
     work N2(*PG_conn);
@@ -172,7 +173,7 @@ int Postgre_DB::init_tables() {
         N2.exec(users_rec);
     }
     catch (const std::exception &e) {
-        cout << "TABLE USERS_REC is already exists" << endl;
+        
     }
     N2.commit();
     work N3(*PG_conn);
@@ -180,7 +181,7 @@ int Postgre_DB::init_tables() {
         N3.exec(marks);
     }
     catch (const std::exception &e) {
-        cout << "TABLE MARKS is already exists" << endl;
+        
     }
     N3.commit();
     work N4(*PG_conn);
@@ -189,7 +190,7 @@ int Postgre_DB::init_tables() {
         N4.commit();
     }
     catch (const std::exception &e) {
-        cout << "TABLE IMAGES is already exists" << endl;
+        
     }
     return 0;
 }
