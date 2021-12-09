@@ -1,6 +1,6 @@
 #include "UserWidget.h"
 
-std::string ws2s(const std::wstring &wstr) {
+std::string ws2str(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_typeX, wchar_t> converterX;
 
@@ -83,29 +83,8 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     tgEdit->setValueText(user.telegram_link);
     tgEdit->setStyleClass("lineSetting");
 
-    passText = setting->addWidget(std::make_unique<Wt::WText>("Ваш пароль"));
-    passText->setStyleClass("textSetting");
-    passEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
-    passEdit->setEchoMode(Wt::EchoMode::Password);
-    passEdit->setPlaceholderText("Можете поменять ваш пароль");
-    passEdit->setValueText(user.password);
-    passEdit->setStyleClass("lineSetting");
-
-    passTwoText = setting->addWidget(std::make_unique<Wt::WText>("Повторите пароль"));
-    passTwoText->setStyleClass("textSetting");
-    passTwoEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
-    passTwoEdit->setEchoMode(Wt::EchoMode::Password);
-    passTwoEdit->setStyleClass("lineSetting");
-
-    auto validatorPassTwo = std::make_shared<Wt::WValidator>();
-    validatorPassTwo->setMandatory(true);
-    passTwoEdit->setValidator(validatorPassTwo);
-
     auto outAge = setting->addWidget(std::make_unique<Wt::WText>());
     outAge->hide();
-
-    auto outPassTwo = setting->addWidget(std::make_unique<Wt::WText>());
-    outPassTwo->hide();
 
     auto outAdd = setting->addWidget(std::make_unique<Wt::WText>());
     outAdd->hide();
@@ -114,7 +93,6 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     saveData->setStyleClass("info buttonSetting");
 
     bool checkAge = false;
-    bool checkPass = false;
     addPhoto->fileTooLarge().connect([=] {
         outAdd->show();
         outAdd->setText("Файл слишком большой");
@@ -124,41 +102,26 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     saveData->clicked().connect([&] {
         if (addPhoto->canUpload()) {
             addPhoto->upload();
-            outAdd->hide();
         }
         if (ageEdit->validate() == Wt::ValidationState::Invalid) {
             outAge->show();
             outAge->setText("Только с 18 лет");
             outAge->setStyleClass("invalid");
         } else {
-            outAge->hide();
             checkAge = true;
         }
 
-        if (passTwoEdit->validate() == Wt::ValidationState::InvalidEmpty) {
-            outPassTwo->show();
-            outPassTwo->setText("Повторите пароль!");
-            outPassTwo->setStyleClass("invalid");
-        } else {
-            if (passEdit->valueText() != passTwoEdit->valueText()) {
-                outPassTwo->show();
-                outPassTwo->setText("Пароли не совпадают");
-                outPassTwo->setStyleClass("invalid");
-            } else {
-                outPassTwo->hide();
-                checkPass = true;
-            }
-        }
-        if (checkAge && checkPass) {
-            user.age = std::stoi(ws2s(ageEdit->text()));
-            user.description = ws2s(discEdit->text());
-            user.faculty = ws2s(facEdit->text());
-            user.course_number = std::stoi(ws2s(courseEdit->text()));
-            user.telegram_link = ws2s(tgEdit->text());
-            user.vk_link = ws2s(netEdit->text());
+        if (checkAge) {
+            user.age = std::stoi(ws2str(ageEdit->text()));
+            user.description = ws2str(discEdit->text());
+            user.faculty = ws2str(facEdit->text());
+            user.course_number = std::stoi(ws2str(courseEdit->text()));
+            user.telegram_link = ws2str(tgEdit->text());
+            user.vk_link = ws2str(netEdit->text());
             int id = db.user_id(user.username);
 
             USERS_INFO usersInfo;
+            usersInfo.user_id = id;
             usersInfo.age = user.age;
             usersInfo.faculty = user.faculty;
             usersInfo.course_number = user.course_number;

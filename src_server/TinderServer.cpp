@@ -4,7 +4,7 @@
 #include "md5.h"
 
 TinderServer::TinderServer(Wt::WServer &server, const Postgre_DB &db)
-        : server_(server), db_(db) {
+        : db_(db), server_(server) {
 }
 
 bool TinderServer::signUp(User &user) {
@@ -51,7 +51,7 @@ bool TinderServer::login(User &user) {
         //user.image
         return true;
     }
-    return false;
+    return true;
 }
 
 void TinderServer::logout(User &user) {

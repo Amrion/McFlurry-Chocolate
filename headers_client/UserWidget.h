@@ -34,10 +34,6 @@ private:
     Wt::WLineEdit* tgEdit;
     Wt::WText* netText;
     Wt::WLineEdit* netEdit;
-    Wt::WText* passText;
-    Wt::WLineEdit* passEdit;
-    Wt::WText* passTwoText;
-    Wt::WLineEdit* passTwoEdit;
 
     User& user;
 

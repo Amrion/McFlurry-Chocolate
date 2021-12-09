@@ -20,14 +20,12 @@ public:
     bool login(User& user);
     void logout(User &user);
 
-    Postgre_DB getBd() const {
-        return db_;
-    }
+    Postgre_DB db_;
 
 private:
     Wt::WServer&            server_;
     std::recursive_mutex    mutex_;
-    Postgre_DB db_;
+
 
     User user_;
 };
