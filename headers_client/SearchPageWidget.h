@@ -11,9 +11,12 @@
 #include <Wt/WWidget.h>
 #include  <Wt/WAnchor.h>
 
+#include "Postgre_DB.h"
+#include "User.hpp"
+
 class SearchPageWidget : public Wt::WContainerWidget {
 public:
-    explicit SearchPageWidget(Wt::WContainerWidget*);
+    SearchPageWidget(Wt::WContainerWidget*, User&, const Postgre_DB& db);
 private:
     Wt::WPushButton* like;
     Wt::WPushButton* back;
@@ -22,8 +25,9 @@ private:
     Wt::WImage* photo;
     Wt::WPushButton* info;
 
-    void createSearchPage(Wt::WContainerWidget*);
+    User& user;
 
-    void changePhoto(Wt::WContainerWidget*);
-    void changePhototemp(Wt::WContainerWidget*);
+    void createSearchPage(Wt::WContainerWidget*, Postgre_DB db);
+
+    void changePhoto(Wt::WContainerWidget*, std::vector<std::string>::iterator, Postgre_DB db);
 };

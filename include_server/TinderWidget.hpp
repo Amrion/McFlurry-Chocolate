@@ -48,4 +48,3 @@ private:
 
     typedef Wt::Core::observing_ptr<Wt::WPushButton> ButtonPtr;
 };
-

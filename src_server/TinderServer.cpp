@@ -24,6 +24,7 @@ bool TinderServer::signUp(User &user) {
         usersInfo.soul_mate_gender = user.soulMateGender;
         //db_.save_image();
         db_.save_user(usersInfo);
+        std::cout << "AAAAAAAAAAAAAAAAAAAAaONE!!!" << user.name << std::endl;
         return true;
     }
     return false;
@@ -31,8 +32,8 @@ bool TinderServer::signUp(User &user) {
 
 bool TinderServer::login(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
-    std::cout << db_.user_exist(user.username, md5(user.password));
-    if (db_.user_exist(user.username, md5(user.password))) {
+    std::cout << db_.user_exist(user.username);
+    if (db_.user_exist(user.username)) {
         USERS_INFO usersInfo;
         usersInfo = db_.user_info(user.username);
         user.name = usersInfo.name;
@@ -45,11 +46,12 @@ bool TinderServer::login(User &user) {
         user.telegram_link = usersInfo.telegram_link;
         user.description = usersInfo.description;
         user.soulMateGender = usersInfo.soul_mate_gender;
+        std::cout << "NAMEONE!!!" << user.name << std::endl;
         //user.rec_users
         //user.image
         return true;
     }
-    return true;
+    return false;
 }
 
 void TinderServer::logout(User &user) {

@@ -20,6 +20,10 @@ public:
     bool login(User& user);
     void logout(User &user);
 
+    Postgre_DB getBd() const {
+        return db_;
+    }
+
 private:
     Wt::WServer&            server_;
     std::recursive_mutex    mutex_;

@@ -1,11 +1,15 @@
 #include "ProfileWidget.h"
 
-ProfileWidget::ProfileWidget(Wt::WContainerWidget* mainPageRight) {
-    createInfoPage(mainPageRight);
+#include <utility>
+
+ProfileWidget::ProfileWidget(Wt::WContainerWidget* mainPageRight, std::string login, const Postgre_DB& db) {
+    createInfoPage(mainPageRight, std::move(login), db);
 }
 
-void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
+void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, std::string login, Postgre_DB db) {
     mainPageRight->clear();
+
+    USERS_INFO profile = db.user_info(std::move(login));
 
     auto info = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     info->setStyleClass("profileInfo");
@@ -13,19 +17,19 @@ void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
     photo->setStyleClass("photoProfile");
 
-    name = info->addWidget(std::make_unique<Wt::WText>("Лиза"));
+    name = info->addWidget(std::make_unique<Wt::WText>(profile.name));
     name->setStyleClass("nameProfile");
 
-    sex = info->addWidget(std::make_unique<Wt::WText>("Женщина"));
+    sex = info->addWidget(std::make_unique<Wt::WText>(profile.gender));
     sex->setStyleClass("otherAge");
 
-    age = info->addWidget(std::make_unique<Wt::WText>("19"));
+    age = info->addWidget(std::make_unique<Wt::WText>(std::to_string(profile.age)));
     age->setStyleClass("otherAge");
 
-    fac = info->addWidget(std::make_unique<Wt::WText>("РК6-52Б"));
+    fac = info->addWidget(std::make_unique<Wt::WText>(profile.faculty + " - " + std::to_string(profile.course_number) + " Курс"));
     fac->setStyleClass("otherAge");
 
-    discr = info->addWidget(std::make_unique<Wt::WText>("Меня зовут Лиза. Я люблю писать, читать. Хожу в Бомонку. Кушаю суши. В общем, пиши)"));
+    discr = info->addWidget(std::make_unique<Wt::WText>(profile.description));
     discr->setStyleClass("otherDiscr");
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));

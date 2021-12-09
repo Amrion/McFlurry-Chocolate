@@ -10,6 +10,8 @@
 #include <Wt/WWidget.h>
 #include  <Wt/WAnchor.h>
 
+#include "User.hpp"
+#include "Postgre_DB.h"
 #include "TinderServer.hpp"
 #include "ProfileWidget.h"
 #include "TinderApplication.hpp"
@@ -19,11 +21,11 @@
 
 class MainPageWidget : public Wt::WContainerWidget {
 public:
-    MainPageWidget(TinderServer&, TinderApplication*);
+    MainPageWidget(User&, TinderServer&, TinderApplication*);
 
-    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*);
+    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*, std::vector<USERS_INFO>);
 private:
-    Wt::WAnchor* name;
+    Wt::WAnchor* userName;
     Wt::WImage* avatar;
     Wt::WText* pair;
     Wt::WAnchor* pairName;
@@ -36,12 +38,13 @@ private:
     PairWidget* pairWidget;
     SearchPageWidget* searchPageWidget;
 
+    User& user;
     TinderServer& server;
     Wt::WStackedWidget* wStackedWidget;
     std::map<std::string, std::string> data;
 
     void showSearchPhoto(Wt::WContainerWidget*);
-    void showInfoPair(Wt::WContainerWidget*);
-    void showInfoProfile(Wt::WContainerWidget*);
+    void showInfoPair(Wt::WContainerWidget*, const USERS_INFO&);
+    void showInfoProfile(Wt::WContainerWidget*, const std::string&);
     void showInfoUser(Wt::WContainerWidget*);
 };

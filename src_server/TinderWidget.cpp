@@ -373,7 +373,7 @@ void TinderWidget::login() {
     if (server_.login(user_)) {
         loggedIn_ = true;
         clear();
-        addWidget(std::make_unique<MainPageWidget>(server_, app));
+        addWidget(std::make_unique<MainPageWidget>(user_,server_, app));
     } else {
         statusMsg_->setText("Неверный логин или пароль");
     }

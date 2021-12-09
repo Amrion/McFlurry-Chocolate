@@ -287,6 +287,7 @@ USERS_INFO Postgre_DB::user_info(string login) {
         user.description = c[10].as<string>();
         user.soul_mate_gender = c[11].as<string>();
     }
+    std::cout << "DDDDDDDDDD!!!" << user.name << std::endl;
     res.clear();
     return user;
 }
@@ -299,7 +300,7 @@ int Postgre_DB::user_register(string login, string password) {
         int id = max_id("LOGIN", "user_id") + 1;
         std::vector <string> user_vec(3);
         user_vec[0] = to_string(id);
-        user_vec[1] = to_string(login);
+        user_vec[1] = login;
         user_vec[2] = password;
         save("login", user_vec);
         return id;

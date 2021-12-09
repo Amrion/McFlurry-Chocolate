@@ -379,11 +379,17 @@ h1 {
 
 .Wt-auth-logged-in {
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     font-size: 90%;
 }
 .Tinder {
     padding: 0 !important;
+}
+.errorPhoto {
+    font-weight: bold;
+    color: red;
+    font-size: 30px;
+    text-align: center;
 }
 

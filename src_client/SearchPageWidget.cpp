@@ -1,11 +1,11 @@
 #include "SearchPageWidget.h"
 
 
-SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight) {
-    createSearchPage(mainPageRight);
+SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& user, const Postgre_DB& db) : user(user) {
+    createSearchPage(mainPageRight, db);
 }
 
-void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
+void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Postgre_DB db) {
     mainPageRight->clear();
 
     auto photos = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -20,6 +20,9 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     dislike = buttonsLeft->addWidget(std::make_unique<Wt::WPushButton>(""));
     dislike->setStyleClass("dislike");
 
+    auto iter = user.rec_users.begin();
+    USERS_INFO profile = db.user_info(*iter);
+
     auto mainPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
     photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
     photo->setStyleClass("photo");
@@ -33,12 +36,14 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     like = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
     like->setStyleClass("like");
 
-    dislike->clicked().connect([=] {
-        changePhoto(mainPhoto);
-    });
-    like->clicked().connect([=] {
-        changePhototemp(mainPhoto);
-    });
+    if (iter != user.rec_users.end()) {
+        dislike->clicked().connect([&] {
+            changePhoto(mainPhoto, iter, db);
+        });
+        like->clicked().connect([&] {
+            changePhoto(mainPhoto, iter, db);
+        });
+    }
 
     auto infoProfile = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     info = infoProfile->addWidget(std::make_unique<Wt::WPushButton>("Посмотреть профиль"));
@@ -47,14 +52,16 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     info->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/profile"));
 }
 
-void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto) {
+void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto,
+                                                                 std::vector<std::string>::iterator iter, Postgre_DB db) {
     contPhoto->removeWidget(photo);
-    photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
-    photo->setStyleClass("photo");
-}
-
-void SearchPageWidget::changePhototemp(Wt::WContainerWidget* contPhoto) {
-    contPhoto->removeWidget(photo);
-    photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
-    photo->setStyleClass("photo");
+    iter++;
+    if (iter == user.rec_users.end()) {
+        Wt::WText* error = contPhoto->addWidget(std::make_unique<Wt::WText>("Больше никого нет. Приходи завтра"));
+        error->setStyleClass("errorPhoto");
+    } else {
+        USERS_INFO profile = db.user_info(*iter);
+        photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
+        photo->setStyleClass("photo");
+    }
 }

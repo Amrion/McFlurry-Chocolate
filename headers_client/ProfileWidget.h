@@ -4,10 +4,12 @@
 #include <Wt/WText.h>
 #include <Wt/WImage.h>
 #include <Wt/WPushButton.h>
+#include "Postgre_DB.h"
+#include "User.hpp"
 
 class ProfileWidget : public Wt::WContainerWidget {
 public:
-    explicit ProfileWidget(Wt::WContainerWidget*);
+    ProfileWidget(Wt::WContainerWidget*, std::string, const Postgre_DB& db);
 private:
     Wt::WImage* photo;
     Wt::WText* name;
@@ -17,5 +19,5 @@ private:
     Wt::WText* fac;
     Wt::WPushButton* back;
 
-    void createInfoPage(Wt::WContainerWidget*);
+    void createInfoPage(Wt::WContainerWidget*, std::string, Postgre_DB db);
 };

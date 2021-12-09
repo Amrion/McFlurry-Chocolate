@@ -10,9 +10,12 @@
 #include <Wt/WFileUpload.h>
 #include <stack>
 
+#include "Postgre_DB.h"
+#include "User.hpp"
+
 class UserWidget : public Wt::WContainerWidget {
 public:
-    explicit UserWidget(Wt::WContainerWidget*);
+    explicit UserWidget(Wt::WContainerWidget*, User&, const Postgre_DB& db);
 private:
     Wt::WImage* myPhoto;
     Wt::WPushButton* deletePhoto;
@@ -25,6 +28,8 @@ private:
     Wt::WLineEdit* ageEdit;
     Wt::WText* facText;
     Wt::WLineEdit* facEdit;
+    Wt::WText* courseText;
+    Wt::WLineEdit* courseEdit;
     Wt::WText* tgText;
     Wt::WLineEdit* tgEdit;
     Wt::WText* netText;
@@ -34,5 +39,7 @@ private:
     Wt::WText* passTwoText;
     Wt::WLineEdit* passTwoEdit;
 
-    void createInfoPage(Wt::WContainerWidget*);
+    User& user;
+
+    void createInfoPage(Wt::WContainerWidget*, Postgre_DB db);
 };

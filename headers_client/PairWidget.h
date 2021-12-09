@@ -5,9 +5,12 @@
 #include <Wt/WImage.h>
 #include <Wt/WPushButton.h>
 
+#include "User.hpp"
+#include "Postgre_DB.h"
+
 class PairWidget : public Wt::WContainerWidget {
 public:
-    explicit PairWidget(Wt::WContainerWidget*);
+    PairWidget(Wt::WContainerWidget*, const USERS_INFO&);
 private:
     Wt::WImage* photo;
     Wt::WText* name;
@@ -19,5 +22,5 @@ private:
     Wt::WAnchor* net;
     Wt::WPushButton* back;
 
-    void createInfoPage(Wt::WContainerWidget*);
+    void createInfoPage(Wt::WContainerWidget*, const USERS_INFO&);
 };
