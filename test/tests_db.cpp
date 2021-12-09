@@ -19,6 +19,9 @@ TEST(POSTGRE_DB, test_create_tables) {
   EXPECT_EQ(pg.user_exist("mail.ru"), 1);
   EXPECT_EQ(pg.user_exist("mail.ru", "mail123"), 1);
   EXPECT_EQ(pg.user_exist("vk.ru"), 0);
+  EXPECT_EQ(pg.user_exist("vk.ru", "mail123"), 0);
+  EXPECT_EQ(pg.user_exist("mail.ru", "mail12"), 0);
+  EXPECT_EQ(pg.user_exist("maru", "mail2"), 0);
 }
 
 TEST(POSTGRE_DB, test_set_mark) {
