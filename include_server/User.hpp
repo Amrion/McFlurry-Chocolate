@@ -22,8 +22,7 @@ public:
     std::string description;
     int num_pairs;
     std::vector <std::string> rec_users;
-    std::string image;
-    std::string soulMateGender;
+    std::vector <std::string> user_image;
 
     std::string username;
     std::string password;
