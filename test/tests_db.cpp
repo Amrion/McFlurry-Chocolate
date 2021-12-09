@@ -4,7 +4,7 @@
 TEST(POSTGRE_DB, test_create_tables) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-  user.user_id = pg.user_register("mail.ru", 1049284876844);
+  user.user_id = pg.user_register("mail.ru", "1049284876844");
   user.name = "USER1";
   user.age = 18;
   user.gender = "M";
@@ -17,13 +17,16 @@ TEST(POSTGRE_DB, test_create_tables) {
   EXPECT_EQ(user_login, "mail.ru");
   EXPECT_EQ(name, "USER1");
   EXPECT_EQ(pg.user_exist("mail.ru"), 1);
+  EXPECT_EQ(pg.user_exist("mail.ru", "1049284876844"), 1);
+  EXPECT_EQ(pg.user_exist("mail.ru", "1049284876843"), 0);
   EXPECT_EQ(pg.user_exist("vk.ru"), 0);
+  EXPECT_EQ(pg.user_exist("vk.ru", "1049284876844"), 0);
 }
 
 TEST(POSTGRE_DB, test_set_mark) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-  user.user_id = pg.user_register("vk.ru", 9054783478543);
+  user.user_id = pg.user_register("vk.ru", "efefegr34t34");
   user.name = "USER2";
   user.age = 18;
   user.gender = "W";
