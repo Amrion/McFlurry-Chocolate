@@ -21,7 +21,6 @@ struct USERS_INFO {
     string telegram_link;
     int num_pairs;
     string description;
-    string soul_mate_gender; 
     USERS_INFO();
 };
 

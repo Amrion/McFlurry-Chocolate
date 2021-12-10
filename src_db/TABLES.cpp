@@ -12,5 +12,4 @@ USERS_INFO::USERS_INFO() {
     telegram_link = "";
     num_pairs = 0;
     description = "";
-    soul_mate_gender = "";
 }
