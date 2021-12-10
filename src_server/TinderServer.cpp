@@ -11,7 +11,8 @@ bool TinderServer::signUp(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
     USERS_INFO usersInfo;
     usersInfo.user_id = db_.user_register(user.username, md5(user.password));
-    if (usersInfo.user_id > 0) {
+    std::cout << usersInfo.user_id << std::endl;
+    if (usersInfo.user_id >= 0) {
         usersInfo.name = user.name;
         usersInfo.surname = user.surname;
         usersInfo.age = user.age;
@@ -32,8 +33,8 @@ bool TinderServer::signUp(User &user) {
 
 bool TinderServer::login(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
-    std::cout << db_.user_exist(user.username);
-    if (db_.user_exist(user.username)) {
+    std::cout << db_.user_exist(user.username) << endl;;
+    if (db_.user_exist(user.username, md5(user.password))) {
         USERS_INFO usersInfo;
         usersInfo = db_.user_info(user.username);
         user.name = usersInfo.name;

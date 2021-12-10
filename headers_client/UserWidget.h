@@ -20,6 +20,7 @@ private:
     Wt::WImage* myPhoto;
     Wt::WPushButton* deletePhoto;
     Wt::WFileUpload* addPhoto;
+    Wt::WPushButton* savePhoto;
     Wt::WPushButton* saveData;
     Wt::WPushButton* back;
     Wt::WText* discText;
@@ -34,6 +35,7 @@ private:
     Wt::WLineEdit* tgEdit;
     Wt::WText* netText;
     Wt::WLineEdit* netEdit;
+
 
     User& user;
 

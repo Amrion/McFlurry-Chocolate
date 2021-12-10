@@ -1,4 +1,6 @@
 #include "UserWidget.h"
+#include <string>
+#include "Wt/WProgressBar.h"
 
 std::string ws2str(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -26,13 +28,26 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     auto buttons = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
 
     addPhoto = buttons->addWidget(std::make_unique<Wt::WFileUpload>());
-    addPhoto->setFileTextSize(512);
+    addPhoto->setFileTextSize(2048);
     addPhoto->setStyleClass("addPhoto");
 
     deletePhoto = buttons->addWidget(std::make_unique<Wt::WPushButton>("Удалить фото"));
     deletePhoto->setStyleClass("delete");
     deletePhoto->clicked().connect([=] {
         myPhoto->hide();
+    });
+
+    savePhoto = setting->addWidget(std::make_unique<Wt::WPushButton>("Начать загрузку фото"));
+    savePhoto->setStyleClass("save");
+
+    auto outPhoto = setting->addWidget(std::make_unique<Wt::WText>());
+    outPhoto->hide();
+
+    savePhoto->clicked().connect([=] {
+        addPhoto->upload();
+        outPhoto->setText("Загрузка фото успешно началась. Чтобы добавить фото, нажмите Сохранить внизу");
+        outPhoto->show();
+        outPhoto->setStyleClass("valid");
     });
 
     ageText = setting->addWidget(std::make_unique<Wt::WText>("Ваш возраст"));
@@ -92,46 +107,48 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     saveData = setting->addWidget(std::make_unique<Wt::WPushButton>("Сохранить изменения"));
     saveData->setStyleClass("info buttonSetting");
 
-    bool checkAge = false;
+    //bool checkAge = false;
     addPhoto->fileTooLarge().connect([=] {
         outAdd->show();
         outAdd->setText("Файл слишком большой");
         outAdd->setStyleClass("invalid");
     });
 
-    saveData->clicked().connect([&] {
-        if (addPhoto->canUpload()) {
-            addPhoto->upload();
-        }
+    saveData->clicked().connect([=] {
+        addPhoto->upload();
+        std::string mFilename = addPhoto->spoolFileName();
+        std::vector<Wt::Http::UploadedFile> mFileContents = addPhoto->uploadedFiles();
+
+        system(("mv " + mFilename + " /home/daniil/test").c_str());
         if (ageEdit->validate() == Wt::ValidationState::Invalid) {
             outAge->show();
             outAge->setText("Только с 18 лет");
             outAge->setStyleClass("invalid");
         } else {
-            checkAge = true;
+            //checkAge = true;
         }
 
-        if (checkAge) {
-            user.age = std::stoi(ws2str(ageEdit->text()));
-            user.description = ws2str(discEdit->text());
-            user.faculty = ws2str(facEdit->text());
-            user.course_number = std::stoi(ws2str(courseEdit->text()));
-            user.telegram_link = ws2str(tgEdit->text());
-            user.vk_link = ws2str(netEdit->text());
-            int id = db.user_id(user.username);
-
-            USERS_INFO usersInfo;
-            usersInfo.user_id = id;
-            usersInfo.age = user.age;
-            usersInfo.faculty = user.faculty;
-            usersInfo.course_number = user.course_number;
-            usersInfo.vk_link = user.vk_link;
-            usersInfo.telegram_link = user.telegram_link;
-            usersInfo.description = user.description;
-            //db.save_image();
-            db.save_user(usersInfo);
-            saveData->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/start"));
-        }
+//        if (checkAge) {
+//            user.age = std::stoi(ws2str(ageEdit->text()));
+//            user.description = ws2str(discEdit->text());
+//            user.faculty = ws2str(facEdit->text());
+//            user.course_number = std::stoi(ws2str(courseEdit->text()));
+//            user.telegram_link = ws2str(tgEdit->text());
+//            user.vk_link = ws2str(netEdit->text());
+//            int id = db.user_id(user.username);
+//
+//            USERS_INFO usersInfo;
+//            usersInfo.user_id = id;
+//            usersInfo.age = user.age;
+//            usersInfo.faculty = user.faculty;
+//            usersInfo.course_number = user.course_number;
+//            usersInfo.vk_link = user.vk_link;
+//            usersInfo.telegram_link = user.telegram_link;
+//            usersInfo.description = user.description;
+//            //db.save_image();
+//            db.save_user(usersInfo);
+//            saveData->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/start"));
+//        }
     });
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));
