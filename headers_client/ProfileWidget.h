@@ -6,10 +6,11 @@
 #include <Wt/WPushButton.h>
 #include "Postgre_DB.h"
 #include "User.hpp"
+#include "TinderServer.hpp"
 
 class ProfileWidget : public Wt::WContainerWidget {
 public:
-    ProfileWidget(Wt::WContainerWidget*, std::string, const Postgre_DB& db);
+    ProfileWidget(Wt::WContainerWidget*, std::string, TinderServer&);
 private:
     Wt::WImage* photo;
     Wt::WText* name;
@@ -19,5 +20,7 @@ private:
     Wt::WText* fac;
     Wt::WPushButton* back;
 
-    void createInfoPage(Wt::WContainerWidget*, std::string, Postgre_DB db);
+    TinderServer& server;
+
+    void createInfoPage(Wt::WContainerWidget*, std::string);
 };

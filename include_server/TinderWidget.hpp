@@ -42,7 +42,7 @@ private:
     Wt::WLineEdit *ageEdit_;
     Wt::WTextArea *descriptionEdit_;
     Wt::WButtonGroup *genderBtn_;
-    Wt::WButtonGroup *soulMateGenderBtn_;
+    Wt::WFileUpload *avatar_;
 
     Wt::WText     *statusMsg_;
 

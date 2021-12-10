@@ -13,10 +13,11 @@
 
 #include "Postgre_DB.h"
 #include "User.hpp"
+#include "TinderServer.hpp"
 
 class SearchPageWidget : public Wt::WContainerWidget {
 public:
-    SearchPageWidget(Wt::WContainerWidget*, User&, const Postgre_DB& db);
+    SearchPageWidget(Wt::WContainerWidget*, User&, TinderServer&);
 private:
     Wt::WPushButton* like;
     Wt::WPushButton* back;
@@ -26,8 +27,9 @@ private:
     Wt::WPushButton* info;
 
     User& user;
+    TinderServer& server;
 
-    void createSearchPage(Wt::WContainerWidget*, Postgre_DB db);
+    void createSearchPage(Wt::WContainerWidget*);
 
-    void changePhoto(Wt::WContainerWidget*, std::vector<std::string>::iterator, Postgre_DB db);
+    void changePhoto(Wt::WContainerWidget*, std::vector<std::string>::iterator);
 };

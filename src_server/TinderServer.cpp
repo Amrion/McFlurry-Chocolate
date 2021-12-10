@@ -1,9 +1,12 @@
+#include <stdlib.h>
+#include <filesystem>
 #include <Wt/WServer.h>
+#include <Wt/WFileResource.h>
 
 #include "TinderServer.hpp"
 #include "md5.h"
 
-TinderServer::TinderServer(Wt::WServer &server, const Postgre_DB &db)
+TinderServer::TinderServer(Wt::WServer &server, Postgre_DB &db)
         : db_(db), server_(server) {
 }
 
@@ -11,7 +14,6 @@ bool TinderServer::signUp(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
     USERS_INFO usersInfo;
     usersInfo.user_id = db_.user_register(user.username, md5(user.password));
-    std::cout << usersInfo.user_id << std::endl;
     if (usersInfo.user_id >= 0) {
         usersInfo.name = user.name;
         usersInfo.surname = user.surname;
@@ -22,10 +24,15 @@ bool TinderServer::signUp(User &user) {
         usersInfo.vk_link = user.vk_link;
         usersInfo.telegram_link = user.telegram_link;
         usersInfo.description = user.description;
-        usersInfo.soul_mate_gender = user.soulMateGender;
-        //db_.save_image();
+        std::string command = "mkdir -p ../users_images";
+        system(command.c_str());
+        command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
+        system(command.c_str());
+        std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
+        command = "mv ../users_images/" + string(p.stem()) + " ../users_images/avatar" + std::to_string(usersInfo.user_id);
+        system(command.c_str());
+        db_.save_image("../users_images/avatar" + std::to_string(usersInfo.user_id), usersInfo.user_id, "avatar" + std::to_string(usersInfo.user_id));
         db_.save_user(usersInfo);
-        std::cout << "AAAAAAAAAAAAAAAAAAAAaONE!!!" << user.name << std::endl;
         return true;
     }
     return false;
@@ -33,7 +40,6 @@ bool TinderServer::signUp(User &user) {
 
 bool TinderServer::login(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
-    std::cout << db_.user_exist(user.username) << endl;;
     if (db_.user_exist(user.username, md5(user.password))) {
         USERS_INFO usersInfo;
         usersInfo = db_.user_info(user.username);
@@ -46,13 +52,11 @@ bool TinderServer::login(User &user) {
         user.vk_link = usersInfo.vk_link;
         user.telegram_link = usersInfo.telegram_link;
         user.description = usersInfo.description;
-        user.soulMateGender = usersInfo.soul_mate_gender;
-        std::cout << "NAMEONE!!!" << user.name << std::endl;
-        //user.rec_users
-        //user.image
+        user.rec_users = db_.user_rec(user.username);
+        //user.user_image = db_.user_image();
         return true;
     }
-    return true;
+    return false;
 }
 
 void TinderServer::logout(User &user) {

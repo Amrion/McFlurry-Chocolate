@@ -2,6 +2,7 @@
 #include <string>
 #include "Wt/WProgressBar.h"
 
+
 std::string ws2str(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_typeX, wchar_t> converterX;
@@ -9,11 +10,11 @@ std::string ws2str(const std::wstring &wstr) {
     return converterX.to_bytes(wstr);
 }
 
-UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, const Postgre_DB& db) : user(user) {
-    createInfoPage(mainPageRight, db);
+UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user), server(server) {
+    createInfoPage(mainPageRight);
 }
 
-void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB db) {
+void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     mainPageRight->clear();
 
     auto setting = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -49,6 +50,13 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
         outPhoto->show();
         outPhoto->setStyleClass("valid");
     });
+
+    nameText = setting->addWidget(std::make_unique<Wt::WText>("Ваше имя"));
+    nameText->setStyleClass("textSetting");
+    nameEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
+    nameEdit->setPlaceholderText("Можете поменять свое имя");
+    nameEdit->setValueText(user.name);
+    nameEdit->setStyleClass("lineSetting");
 
     ageText = setting->addWidget(std::make_unique<Wt::WText>("Ваш возраст"));
     ageText->setStyleClass("textSetting");
@@ -104,51 +112,65 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, Postgre_DB 
     auto outAdd = setting->addWidget(std::make_unique<Wt::WText>());
     outAdd->hide();
 
+    auto success = setting->addWidget(std::make_unique<Wt::WText>());
+    success->hide();
+
     saveData = setting->addWidget(std::make_unique<Wt::WPushButton>("Сохранить изменения"));
     saveData->setStyleClass("info buttonSetting");
 
-    //bool checkAge = false;
+    bool checkAge = false;
     addPhoto->fileTooLarge().connect([=] {
         outAdd->show();
         outAdd->setText("Файл слишком большой");
         outAdd->setStyleClass("invalid");
     });
 
-    saveData->clicked().connect([=] {
+    saveData->clicked().connect([=, &checkAge] {
         addPhoto->upload();
         std::string mFilename = addPhoto->spoolFileName();
-        std::vector<Wt::Http::UploadedFile> mFileContents = addPhoto->uploadedFiles();
+        user.user_image.push_back(mFilename);
 
-        system(("mv " + mFilename + " /home/daniil/test").c_str());
         if (ageEdit->validate() == Wt::ValidationState::Invalid) {
             outAge->show();
             outAge->setText("Только с 18 лет");
             outAge->setStyleClass("invalid");
         } else {
-            //checkAge = true;
+            checkAge = true;
         }
 
-//        if (checkAge) {
-//            user.age = std::stoi(ws2str(ageEdit->text()));
-//            user.description = ws2str(discEdit->text());
-//            user.faculty = ws2str(facEdit->text());
-//            user.course_number = std::stoi(ws2str(courseEdit->text()));
-//            user.telegram_link = ws2str(tgEdit->text());
-//            user.vk_link = ws2str(netEdit->text());
-//            int id = db.user_id(user.username);
-//
-//            USERS_INFO usersInfo;
-//            usersInfo.user_id = id;
-//            usersInfo.age = user.age;
-//            usersInfo.faculty = user.faculty;
-//            usersInfo.course_number = user.course_number;
-//            usersInfo.vk_link = user.vk_link;
-//            usersInfo.telegram_link = user.telegram_link;
-//            usersInfo.description = user.description;
-//            //db.save_image();
-//            db.save_user(usersInfo);
-//            saveData->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/start"));
-//        }
+        if (checkAge) {
+            user.name = ws2str(nameEdit->text());
+            user.age = std::stoi(ws2str(ageEdit->text()));
+            user.description = ws2str(discEdit->text());
+            user.faculty = ws2str(facEdit->text());
+            user.course_number = std::stoi(ws2str(courseEdit->text()));
+            user.telegram_link = ws2str(tgEdit->text());
+            user.vk_link = ws2str(netEdit->text());
+            std::cout << "ASDASDASDASD" << user.username << std::endl;
+            int id = server.db_.user_id(user.username);
+
+            USERS_INFO usersInfo;
+            usersInfo.user_id = id;
+            usersInfo.age = user.age;
+            usersInfo.name = user.name;
+            usersInfo.faculty = user.faculty;
+            usersInfo.course_number = user.course_number;
+            usersInfo.vk_link = user.vk_link;
+            usersInfo.telegram_link = user.telegram_link;
+            usersInfo.description = user.description;
+            std::string command = "mkdir -p ../users_images";
+            system(command.c_str());
+            command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
+            system(command.c_str());
+            std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
+            command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1);
+            system(command.c_str());
+            server.db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id), usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1));
+            server.db_.save_user(usersInfo);
+            outAdd->show();
+            outAdd->setText("Настройки успешно изменены");
+            outAdd->setStyleClass("valid");
+        }
     });
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));

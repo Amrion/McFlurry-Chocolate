@@ -1,11 +1,11 @@
 #include "SearchPageWidget.h"
 
 
-SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& user, const Postgre_DB& db) : user(user) {
-    createSearchPage(mainPageRight, db);
+SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user), server(server) {
+    createSearchPage(mainPageRight);
 }
 
-void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Postgre_DB db) {
+void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     mainPageRight->clear();
 
     auto photos = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -21,7 +21,7 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Pos
     dislike->setStyleClass("dislike");
 
     auto iter = user.rec_users.begin();
-    USERS_INFO profile = db.user_info(*iter);
+    USERS_INFO profile = server.db_.user_info(*iter);
 
     auto mainPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
     photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
@@ -38,10 +38,10 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Pos
 
     if (iter != user.rec_users.end()) {
         dislike->clicked().connect([&] {
-            changePhoto(mainPhoto, iter, db);
+            changePhoto(mainPhoto, iter);
         });
         like->clicked().connect([&] {
-            changePhoto(mainPhoto, iter, db);
+            changePhoto(mainPhoto, iter);
         });
     }
 
@@ -53,14 +53,14 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Pos
 }
 
 void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto,
-                                                                 std::vector<std::string>::iterator iter, Postgre_DB db) {
+                                                                 std::vector<std::string>::iterator iter) {
     contPhoto->removeWidget(photo);
     iter++;
     if (iter == user.rec_users.end()) {
         Wt::WText* error = contPhoto->addWidget(std::make_unique<Wt::WText>("Больше никого нет. Приходи завтра"));
         error->setStyleClass("errorPhoto");
     } else {
-        USERS_INFO profile = db.user_info(*iter);
+        USERS_INFO profile = server.db_.user_info(*iter);
         photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
         photo->setStyleClass("photo");
     }

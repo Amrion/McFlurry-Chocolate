@@ -11,7 +11,7 @@
 class TinderServer {
 public:
 
-    explicit TinderServer(Wt::WServer& server, const Postgre_DB &db);
+    explicit TinderServer(Wt::WServer& server, Postgre_DB &db);
 
     TinderServer(const TinderServer &) = delete;
     TinderServer &operator=(const TinderServer &) = delete;

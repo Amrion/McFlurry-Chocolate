@@ -249,7 +249,7 @@ int Postgre_DB::user_exist(string login, string password) {
     nontransaction N(*PG_conn);
     string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'";
     if (password != "") {
-        request += " and password = '" + password + "'";
+        request += " AND password = '" + password + "'";
     }
     request += ";";
     try {

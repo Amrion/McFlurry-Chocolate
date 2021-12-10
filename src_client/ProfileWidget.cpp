@@ -2,14 +2,14 @@
 
 #include <utility>
 
-ProfileWidget::ProfileWidget(Wt::WContainerWidget* mainPageRight, std::string login, const Postgre_DB& db) {
-    createInfoPage(mainPageRight, std::move(login), db);
+ProfileWidget::ProfileWidget(Wt::WContainerWidget* mainPageRight, std::string login, TinderServer& server) : server(server) {
+    createInfoPage(mainPageRight, std::move(login));
 }
 
-void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, std::string login, Postgre_DB db) {
+void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, std::string login) {
     mainPageRight->clear();
 
-    USERS_INFO profile = db.user_info(std::move(login));
+    USERS_INFO profile = server.db_.user_info(std::move(login));
 
     auto info = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     info->setStyleClass("profileInfo");

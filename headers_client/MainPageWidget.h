@@ -18,10 +18,11 @@
 #include "SearchPageWidget.h"
 #include "PairWidget.h"
 #include "UserWidget.h"
+#include "TinderWidget.hpp"
 
 class MainPageWidget : public Wt::WContainerWidget {
 public:
-    MainPageWidget(User&, TinderServer&, TinderApplication*);
+    MainPageWidget(User&, TinderServer&, TinderApplication*, TinderWidget*);
 
     void handleInternalPath(TinderApplication*, Wt::WContainerWidget*, std::vector<USERS_INFO>);
 private:
@@ -47,4 +48,5 @@ private:
     void showInfoPair(Wt::WContainerWidget*, const USERS_INFO&);
     void showInfoProfile(Wt::WContainerWidget*, const std::string&);
     void showInfoUser(Wt::WContainerWidget*);
+    void showLoginPage(TinderWidget*);
 };
