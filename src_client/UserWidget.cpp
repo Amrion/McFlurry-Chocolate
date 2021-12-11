@@ -38,7 +38,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     deletePhoto->setStyleClass("delete");
     deletePhoto->clicked().connect([=] {
         myPhoto->hide();
-
+        server.db_.
     });
 
     savePhoto = setting->addWidget(std::make_unique<Wt::WPushButton>("Начать загрузку фото"));

@@ -469,7 +469,8 @@ std::vector <std::vector<float>> Postgre_DB::users_params() {
     }
     res.clear();
     return users_params;
-}
+}  
+
 
 int Postgre_DB::make_recommendations() {
     std::vector <std::vector <int>> marks = marks_matrix();;
@@ -543,7 +544,6 @@ std::vector <string> Postgre_DB::user_rec(string login) {
         if (u_params.size() <= 1) return rec;
         recsys.fit(marks, &u_params);
         rec_id = recsys.predict(us_id);
-
         for (int i = (int) rec_id.size() - 1; i >= 0; --i) {
             if (!gender_is_different(us_id, rec_id[i])) {
                 rec_id[i] = rec_id[rec_id.size() - 1];
