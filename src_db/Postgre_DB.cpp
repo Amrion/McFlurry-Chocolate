@@ -4,7 +4,7 @@ Postgre_DB::Postgre_DB(string host, string port, string db_name, string user, st
     string request = "dbname=" + db_name + " user=" + user + " password=" + password + " host=" + host + " port=" + port;
     try
     {
-        PG_conn = new connection(request);
+        PG_conn = std::make_shared <connection>(request);
         if (!PG_conn->is_open()) {
             cout << "Can't open database" << endl;
         }
@@ -20,15 +20,7 @@ Postgre_DB::~Postgre_DB() {
     if (PG_conn->is_open()) {
         PG_conn->close();
     }
-    delete PG_conn;
 }
-
-// result Postgre_DB::select(string request) {
-//     nontransaction N(*PG_conn);
-//     result result res = N.exec(request));
-//     return res;
-// }
-
 
 int Postgre_DB::max_id(const string & table, string name_id) {
     nontransaction N(*PG_conn);
