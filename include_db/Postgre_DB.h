@@ -1,12 +1,10 @@
 #pragma once
 #include "DataBase.h"
 #include "TABLES.h"
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 #include "recsys.hpp"
-#include "base64.h"
 #include "dirent.h"
 #include <fstream>
+#include <memory>
 
 class Postgre_DB : DB {
     private:
@@ -38,4 +36,5 @@ class Postgre_DB : DB {
         int save_image(string path_to_file, int user_id, string name = "");
         std::vector <string> user_image(int user_id, string image_name = "");
         std::vector <std::vector<float>> users_params();
+        int delete_image(int user_id, string image_name = "");
 };
