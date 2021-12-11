@@ -9,12 +9,13 @@ ProfileWidget::ProfileWidget(Wt::WContainerWidget* mainPageRight, std::string lo
 void ProfileWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, std::string login) {
     mainPageRight->clear();
 
+    std::vector<std::string> photoes = server.db_.user_image(server.db_.user_id(login));
     USERS_INFO profile = server.db_.user_info(std::move(login));
 
     auto info = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     info->setStyleClass("profileInfo");
 
-    photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
+    photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
     photo->setStyleClass("photoProfile");
 
     name = info->addWidget(std::make_unique<Wt::WText>(profile.name));

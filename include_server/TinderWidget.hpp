@@ -9,8 +9,6 @@ class TinderWidget : public Wt::WContainerWidget {
 public:
     TinderWidget(TinderServer& server, TinderApplication* app);
 
-    ~TinderWidget() override;
-
     void letSignUp();
     void letLogin();
 
@@ -45,6 +43,8 @@ private:
     Wt::WFileUpload *avatar_;
 
     Wt::WText     *statusMsg_;
+
+    bool isImageEmpty = true;
 
     typedef Wt::Core::observing_ptr<Wt::WPushButton> ButtonPtr;
 };

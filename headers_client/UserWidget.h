@@ -26,6 +26,8 @@ private:
     Wt::WPushButton* back;
     Wt::WText* discText;
     Wt::WTextArea* discEdit;
+    Wt::WText* genderText;
+    Wt::WLineEdit* genderEdit;
     Wt::WText* nameText;
     Wt::WLineEdit* nameEdit;
     Wt::WText* ageText;

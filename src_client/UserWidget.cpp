@@ -2,7 +2,6 @@
 #include <string>
 #include "Wt/WProgressBar.h"
 
-
 std::string ws2str(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
     std::wstring_convert<convert_typeX, wchar_t> converterX;
@@ -23,10 +22,13 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto photos = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
     photos->setStyleClass("userPhotos");
 
-    myPhoto = photos->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Me.jpg")));
-    myPhoto->setStyleClass("userPhoto");
+    for (auto & i : user.user_image) {
+        myPhoto = photos->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(i)));
+        myPhoto->setStyleClass("userPhoto");
+    }
 
     auto buttons = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
+
 
     addPhoto = buttons->addWidget(std::make_unique<Wt::WFileUpload>());
     addPhoto->setFileTextSize(2048);
@@ -36,15 +38,23 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     deletePhoto->setStyleClass("delete");
     deletePhoto->clicked().connect([=] {
         myPhoto->hide();
+
     });
 
     savePhoto = setting->addWidget(std::make_unique<Wt::WPushButton>("Начать загрузку фото"));
     savePhoto->setStyleClass("save");
 
+    if (user.user_image.size() == 4) {
+        addPhoto->hide();
+        savePhoto->hide();
+    }
+
     auto outPhoto = setting->addWidget(std::make_unique<Wt::WText>());
     outPhoto->hide();
 
-    savePhoto->clicked().connect([=] {
+    bool checkAdd = false;
+    savePhoto->clicked().connect([=, &checkAdd] {
+        checkAdd = true;
         addPhoto->upload();
         outPhoto->setText("Загрузка фото успешно началась. Чтобы добавить фото, нажмите Сохранить внизу");
         outPhoto->show();
@@ -68,6 +78,13 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto validatorAge = std::make_shared<Wt::WIntValidator>(18, 100);
     validatorAge->setMandatory(true);
     ageEdit->setValidator(validatorAge);
+
+    genderText = setting->addWidget(std::make_unique<Wt::WText>("Ваш пол"));
+    genderText->setStyleClass("textSetting");
+    genderEdit = setting->addWidget(std::make_unique<Wt::WLineEdit>());
+    genderEdit->setPlaceholderText("Можете поменять свой пол, только ЗАЧЕМ!");
+    genderEdit->setValueText(user.gender);
+    genderEdit->setStyleClass("lineSetting");
 
     discText = setting->addWidget(std::make_unique<Wt::WText>("Расскажите о себе"));
     discText->setStyleClass("textSetting");
@@ -125,7 +142,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
         outAdd->setStyleClass("invalid");
     });
 
-    saveData->clicked().connect([=, &checkAge] {
+    saveData->clicked().connect([=, &checkAge, &checkAdd] {
         addPhoto->upload();
         std::string mFilename = addPhoto->spoolFileName();
         user.user_image.push_back(mFilename);
@@ -141,6 +158,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
         if (checkAge) {
             user.name = ws2str(nameEdit->text());
             user.age = std::stoi(ws2str(ageEdit->text()));
+            user.gender = ws2str(genderEdit->text());
             user.description = ws2str(discEdit->text());
             user.faculty = ws2str(facEdit->text());
             user.course_number = std::stoi(ws2str(courseEdit->text()));
@@ -158,14 +176,19 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             usersInfo.vk_link = user.vk_link;
             usersInfo.telegram_link = user.telegram_link;
             usersInfo.description = user.description;
-            std::string command = "mkdir -p ../users_images";
-            system(command.c_str());
-            command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
-            system(command.c_str());
-            std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
-            command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1);
-            system(command.c_str());
-            server.db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id), usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1));
+            if (checkAdd) {
+                std::string command = "mkdir -p ../users_images";
+                system(command.c_str());
+                command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
+                system(command.c_str());
+                std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
+                command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" +
+                          std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1);
+                system(command.c_str());
+                server.db_.save_image("../users_images/profilePhoto" +
+                                      std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1), usersInfo.user_id, "profilePhoto" +
+                                                                                                                                         std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1));
+            }
             server.db_.save_user(usersInfo);
             outAdd->show();
             outAdd->setText("Настройки успешно изменены");

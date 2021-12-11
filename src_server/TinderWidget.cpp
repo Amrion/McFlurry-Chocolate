@@ -42,9 +42,9 @@ TinderWidget::TinderWidget(TinderServer &server, TinderApplication* app)
     letLogin();
 }
 
-TinderWidget::~TinderWidget() {
-    logout();
-}
+//TinderWidget::~TinderWidget() {
+//    logout();
+//}
 
 
 void TinderWidget::letSignUp() {
@@ -268,6 +268,7 @@ void TinderWidget::letLogin() {
 void TinderWidget::logout() {
     if (loggedIn()) {
         loggedIn_ = false;
+        isImageEmpty = true;
 
         server_.logout(user_);
 
@@ -285,6 +286,11 @@ void TinderWidget::signUp() {
     }
 
     std::string avatar;
+
+    avatar_->changed().connect([this] {
+        isImageEmpty = false;
+    });
+
     avatar_->upload();
 
     std::string username = ws2s(userLoginEdit_->text());
@@ -301,7 +307,7 @@ void TinderWidget::signUp() {
     std::string  age = ws2s(ageEdit_->text());
 
     if (password.empty() || username.empty() || name.empty() || surname.empty() || faculty.empty() ||
-        courseNumber.empty() || vkLink.empty() || telegram.empty() || description.empty()) {
+        courseNumber.empty() || vkLink.empty() || telegram.empty() || description.empty() || isImageEmpty) {
         statusMsg_->setText("Все поля должны быть заполнены");
         return;
     }

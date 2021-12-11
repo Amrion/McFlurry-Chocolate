@@ -53,7 +53,7 @@ bool TinderServer::login(User &user) {
         user.telegram_link = usersInfo.telegram_link;
         user.description = usersInfo.description;
         user.rec_users = db_.user_rec(user.username);
-        //user.user_image = db_.user_image();
+        user.user_image = db_.user_image(db_.user_id(user.username));
         return true;
     }
     return false;

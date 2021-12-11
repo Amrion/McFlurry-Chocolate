@@ -1,6 +1,5 @@
 #include "MainPageWidget.h"
 
-
 MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplication* app, TinderWidget* menu)
     : user(user), server(server) {
     auto mainPage = addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -13,7 +12,7 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     auto myNameWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
     myNameWidget->setStyleClass("myName");
 
-    avatar = myNameWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Me.jpg")));
+    avatar = myNameWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(user.user_image[0])));
     avatar->setStyleClass("avatar");
 
     Wt::WLink link = Wt::WLink("/user");
@@ -35,7 +34,9 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     int j = 0;
     std::vector<std::string> pairsLogin = server.db_.pairs_login(user.username);
     std::vector<USERS_INFO> pairsInfo(user.num_pairs);
+
     while (j < user.num_pairs) {
+        std::vector<std::string> photoes = server.db_.user_image(pairsInfo[j].user_id);
         auto pairAvatarWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
         pairAvatarWidget->setStyleClass("pairDiv");
 
@@ -46,7 +47,7 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
             pairName->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/pair/" + pairsInfo[j].name));
             pairName->setStyleClass("pairName");
 
-            pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/pair" + std::to_string(j + 1) + ".jpg")));
+            pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
             pairAvatar->setStyleClass("pairAvatar");
             ++j;
         } while (j % 2 != 0 && j != user.num_pairs);
@@ -88,8 +89,6 @@ void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWi
     }
     if (app->internalPath() == "/user") {
         showInfoUser(mainPageRight);
-    } else {
-        app->setInternalPath("/",  true);
     }
 }
 

@@ -20,11 +20,14 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     dislike = buttonsLeft->addWidget(std::make_unique<Wt::WPushButton>(""));
     dislike->setStyleClass("dislike");
 
-    auto iter = user.rec_users.begin();
-    USERS_INFO profile = server.db_.user_info(*iter);
+    size_t kol = 0;
+    USERS_INFO profile = server.db_.user_info(user.rec_users[kol]);
+    std::vector<std::string> photoes = server.db_.user_image(server.db_.user_id(user.rec_users[kol]));
+    size_t number = 0;
+
 
     auto mainPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/Liza1.jpg")));
+    photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[number])));
     photo->setStyleClass("photo");
 
     auto buttonsRight = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -36,22 +39,13 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     like = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
     like->setStyleClass("like");
 
-    if (iter != user.rec_users.end()) {
-        dislike->clicked().connect([&] {
-            changeMan(mainPhoto, iter);
+    USERS_INFO profileInfo = server.db_.user_info(user.rec_users[kol]);
+    if (number != photoes.size() - 1) {
+        forward->clicked().connect([=, &number] {
+            changePhotoBack(mainPhoto, photoes, number);
         });
-        like->clicked().connect([&] {
-            changeMan(mainPhoto, iter);
-        });
-    }
-
-    USERS_INFO profileInfo = server.db_.user_info(*iter);
-    if (profileInfo.) {
-        dislike->clicked().connect([&] {
-            changePhoto(mainPhoto, profileInfo);
-        });
-        like->clicked().connect([&] {
-            changePhoto(mainPhoto, profileInfo);
+        back->clicked().connect([=, &number] {
+            changePhotoForward(mainPhoto, photoes, number);
         });
     }
 
@@ -59,30 +53,63 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     info = infoProfile->addWidget(std::make_unique<Wt::WPushButton>("Посмотреть профиль"));
     info->setStyleClass("info");
 
+    dislike->clicked().connect([=, &kol] {
+        changeMan(mainPhoto, user.rec_users, kol);
+
+    });
+    like->clicked().connect([=, &kol] {
+        changeMan(mainPhoto, user.rec_users, kol);
+
+    });
+
+
     info->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/profile"));
 }
 
 void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto,
-                                                                 std::vector<std::string>::iterator iter) {
+                                 std::vector<std::string> man, size_t& kol) {
     contPhoto->removeWidget(photo);
-    iter++;
-    if (iter == user.rec_users.end()) {
+    if (kol > 1000000000) {
+        kol = 0;
+    }
+    kol++;
+    if (kol == user.rec_users.size()) {
         Wt::WText* error = contPhoto->addWidget(std::make_unique<Wt::WText>("Больше никого нет. Приходи завтра"));
         error->setStyleClass("errorPhoto");
+        info->hide();
+        dislike->hide();
+        like->hide();
+        forward->hide();
+        back->hide();
     } else {
-        USERS_INFO profile = server.db_.user_info(*iter);
-        photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
+        USERS_INFO profile = server.db_.user_info(man[kol]);
+        std::vector<std::string> avatar = server.db_.user_image(server.db_.user_id(man[kol]));
+        photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(avatar[0])));
         photo->setStyleClass("photo");
     }
 }
 
-void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto, USERS_INFO& profile) {
+void SearchPageWidget::changePhotoForward(Wt::WContainerWidget* contPhoto, std::vector<std::string> photoes, size_t& number) {
     contPhoto->removeWidget(photo);
 
-    if (true) {
-        photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
+    if (number != photoes.size() - 1) {
+        number++;
     } else {
-
+        number = 0;
     }
+    photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[number])));
+    photo->setStyleClass("photo");
+}
+
+void SearchPageWidget::changePhotoBack(Wt::WContainerWidget* contPhoto, std::vector<std::string> photoes, size_t& number) {
+    contPhoto->removeWidget(photo);
+
+    if (number != photoes.size() - photoes.size()) {
+        number--;
+    } else {
+        number = photoes.size() - 1;
+    }
+    photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[number])));
+    photo->setStyleClass("photo");
 }
 

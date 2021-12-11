@@ -320,6 +320,7 @@ input[value='file'] {
     margin-bottom: 30px !important;
 }
 .delete {
+    margin-left: 20px;
     background: linear-gradient(
             225deg,#ff6036, #fd267a);
     border-radius: 10px;
