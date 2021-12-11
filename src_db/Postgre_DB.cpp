@@ -4,7 +4,7 @@ Postgre_DB::Postgre_DB(string host, string port, string db_name, string user, st
     string request = "dbname=" + db_name + " user=" + user + " password=" + password + " host=" + host + " port=" + port;
     try
     {
-        PG_conn = new connection(request);
+        PG_conn = std::make_shared <connection>(request);
         if (!PG_conn->is_open()) {
             cout << "Can't open database" << endl;
         }
@@ -20,15 +20,7 @@ Postgre_DB::~Postgre_DB() {
     if (PG_conn->is_open()) {
         PG_conn->close();
     }
-    delete PG_conn;
 }
-
-// result Postgre_DB::select(string request) {
-//     nontransaction N(*PG_conn);
-//     result result res = N.exec(request));
-//     return res;
-// }
-
 
 int Postgre_DB::max_id(const string & table, string name_id) {
     nontransaction N(*PG_conn);
@@ -147,11 +139,15 @@ int Postgre_DB::delete_(const string & table, string where) {
 
 int Postgre_DB::init_tables() {
     string create_table = "CREATE TABLE ";
+<<<<<<< HEAD
     string users_info = create_table + "USERS_INFO (user_id int, age int, course_number int, num_pairs int, name text, surname text, gender text, faculty text, vk_link text, telegram_link text, description text, soul_mate_gender text);";
+=======
+    string users_info = create_table + "USERS_INFO (user_id int, age int, course_number int, num_pairs int, name text, surname text, gender text, faculty text, vk_link text, telegram_link text, description text);";
+>>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
     string login = create_table + "LOGIN (user_id int, login text, password text);";
     string  users_rec = create_table + "USERS_REC (user_id int, user_rec int[]);";
     string marks = create_table + "MARKS (mark_id int, id_marker int, id_marked int, mark int);";
-    string images = create_table + "IMAGES (image_id int, user_id int, image_name text, image bytea);";
+    string images = create_table + "IMAGES (image_id int, user_id int, image_name text, image_path text);";
     work N(*PG_conn);
     try {
         N.exec(users_info);
@@ -249,7 +245,11 @@ int Postgre_DB::user_exist(string login, string password) {
     nontransaction N(*PG_conn);
     string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'"; 
     if (password != "") {
+<<<<<<< HEAD
         request += " and password = '" + password + "'";
+=======
+        request += " AND password = '" + password + "'";
+>>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
     }
     request += ";";
     try {
@@ -285,7 +285,6 @@ USERS_INFO Postgre_DB::user_info(string login) {
         user.vk_link = c[8].as<string>();
         user.telegram_link = c[9].as<string>();
         user.description = c[10].as<string>();
-        user.soul_mate_gender = c[11].as<string>();
     }
     res.clear();
     return user;
@@ -319,7 +318,6 @@ int Postgre_DB::save_user(USERS_INFO user_info) {
     user.push_back(user_info.vk_link);
     user.push_back(user_info.telegram_link);
     user.push_back(user_info.description);
-    user.push_back(user_info.soul_mate_gender);
     string request = "user_id = " + user[0];
     try {
         string users_info = "USERS_INFO";
@@ -457,30 +455,50 @@ int Postgre_DB::is_pair(int id1, int id2) {
     return 0;
 }
 
+std::vector <std::vector<float>> Postgre_DB::users_params() {
+    std::vector <std::vector<float>> users_params;
+    nontransaction N(*PG_conn);
+    string request = "SELECT age, course_number, num_pairs FROM USERS_INFO;";
+    result res = N.exec(request);
+
+    for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
+        std::vector <float> temp;
+        temp.push_back(c[0].as<float>());
+        temp.push_back(c[1].as<float>());
+        temp.push_back(c[2].as<float>());
+        users_params.push_back(temp);
+    }
+    res.clear();
+    return users_params;
+}  
+
 int Postgre_DB::make_recommendations() {
-    std::vector <std::vector <int>> marks;
+    std::vector <std::vector <int>> marks = marks_matrix();;
+    std::vector <std::vector <float>> u_params = users_params();;
     std::vector <string> user_rec;
     string rec;
     string request;
     std::vector <int> zeros(0);
     RecSys recsys;
-    marks = marks_matrix();
-    std::shared_ptr<std::map<int, std::vector<int>>> REC = recsys.fit_predict(marks, zeros);
-    for (auto& kv : *REC) {
-        std::vector <int> vec_rec = kv.second;
-        for (int i = (int) vec_rec.size() - 1; i >= 0; --i) {
-            if (!(gender_is_different(kv.first, vec_rec[i])) or seen(kv.first, vec_rec[i])) {
-                vec_rec[i] = vec_rec[vec_rec.size() - 1];
-                vec_rec.pop_back();
+
+    if (u_params.size() <= 1) return 0;
+    recsys.fit(marks, &u_params);
+
+    for (int i = 0; i < (int) u_params.size(); ++i) {
+        std::vector<int> recs_for_user = recsys.predict(i);
+        for (int j = (int) recs_for_user.size() - 1; j >= 0; --j) {
+            if (!(gender_is_different(i, recs_for_user[j])) or seen(i, recs_for_user[j])) {
+                recs_for_user[j] = recs_for_user[recs_for_user.size() - 1];
+                recs_for_user.pop_back();
             }
         }
-        user_rec.push_back(to_string(kv.first));
+        user_rec.push_back(to_string(i));
         rec = "{ ";
-        for (size_t i = 0; i < vec_rec.size(); ++i) rec += to_string(vec_rec[i]) + ",";
+        for (size_t i = 0; i < recs_for_user.size(); ++i) rec += to_string(recs_for_user[i]) + ",";
         rec = rec.substr(0, rec.size() - 1);
         rec += "}";
         user_rec.push_back(rec);
-        request = "user_id = " + to_string(kv.first);
+        request = "user_id = " + to_string(i);
         string users_rec = "USERS_REC";
         save(users_rec, user_rec, request);
         user_rec.clear();
@@ -491,14 +509,14 @@ int Postgre_DB::make_recommendations() {
 
 std::vector <string> Postgre_DB::user_rec(string login) {
     std::vector <string> rec;
+    std::vector<int> rec_id;
     int us_id = user_id(login);
     nontransaction N(*PG_conn);
     string request = "SELECT user_rec FROM USERS_REC WHERE user_id = " + to_string(us_id) + ";";
-    try {
-        result res = N.exec(request);
+    result res = N.exec(request);
+    if (res.begin() != res.end()) {
         result::const_iterator c = res.begin();
         N.commit();
-        std::vector <int> rec_id;
         string row = c[0].as<string>();
         res.clear();
         int kol = 0;
@@ -515,12 +533,31 @@ std::vector <string> Postgre_DB::user_rec(string login) {
                 }
             }
         }
-        for (auto i : rec_id) {
+    }
+
+    else {
+        N.commit();
+        res.clear();
+        std::vector <std::vector <int>> marks = marks_matrix();
+        std::vector <std::vector <float>> u_params = users_params();
+        RecSys recsys;
+        if (u_params.size() <= 1) return rec;
+        recsys.fit(marks, &u_params);
+        rec_id = recsys.predict(us_id);
+        
+        for (int i = (int) rec_id.size() - 1; i >= 0; --i) {
+            if (!gender_is_different(us_id, rec_id[i])) {
+                rec_id[i] = rec_id[rec_id.size() - 1];
+                rec_id.pop_back();
+            }
+        }
+
+    }
+
+    for (auto i : rec_id) {
+        if (!seen(us_id, i)) {
             rec.push_back(user_login(i));
         }
-    }
-    catch (const std::exception &e) {
-        return rec;
     }
     return rec;
 }
@@ -528,12 +565,18 @@ std::vector <string> Postgre_DB::user_rec(string login) {
 int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
     int image_id;
     string images = "IMAGES";
+    string where = "";
+    if (name != "") {
+        where = "image_name = " + name;
+    }
     image_id = max_id(images, "image_id") + 1;
-    string request = "INSERT INTO IMAGES VALUES (" + to_string(image_id) + ", " + to_string(user_id) + ", '" + name + "', " + "pg_read_binary_file('" + path_to_file + "')::bytea);";
+    std::vector <string> values;
+    values.push_back(to_string(image_id));
+    values.push_back(to_string(user_id));
+    values.push_back(name);
+    values.push_back(path_to_file);
     try {
-        work N(*PG_conn);
-        N.exec(request);
-        N.commit();
+        save(images, values);
     }
     catch (const std::exception &e) {
         return 1;
@@ -541,24 +584,30 @@ int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
     return 0;
 }
 
-std::vector <string> Postgre_DB::user_image(string dirname, int user_id, string image_name) {
-    std::vector <string> files;
-    string request = "SELECT user_id, image_name, encode(image, 'base64') FROM IMAGES WHERE user_id = " + to_string(user_id);
+std::vector <string> Postgre_DB::user_image(int user_id, string image_name) {
+    std::vector <string> paths;
+    string request = "SELECT * FROM IMAGES WHERE user_id = " + to_string(user_id);
     if (image_name != "") {
-        request += ", image_name = " + image_name;
+        request += " AND image_name = '" + image_name + "'";
     }
-    request += ";";
+    request += " ORDER BY image_id;";
     nontransaction N(*PG_conn);
     result res = N.exec(request);
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
-        std::ofstream fout;
-        fout.open(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg", ios::out);
-        string str = c[2].as<string>();
-        string str2 = base64_decode(str, 1); 
-        fout << str2;
-        fout.close(); 
-        files.push_back(dirname + "/" + to_string(c[0].as<int>()) + "_" + c[1].as<string>() + ".jpg");
+        paths.push_back(c[3].as<string>());
     }
     res.clear();
-    return files;
+    return paths;
+}
+
+int Postgre_DB::delete_image(int user_id, string image_name) {
+    string img_req = "user_id = " + to_string(user_id) + " AND ";
+    string table = "IMAGES";
+    if (image_name != "") {
+        img_req += "image_name = '" + image_name + "'";
+    }
+    else {
+        img_req += "image_id = (SELECT MAX(image_id) FROM IMAGES WHERE user_id = " + to_string(user_id) + ")";
+    }
+    return delete_(table, img_req);
 }
