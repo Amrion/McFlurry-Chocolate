@@ -35,7 +35,7 @@ public:
     int seen(int id1, int id2);
     int make_recommendations();
     std::vector <string> user_rec(string login);
-    int save_image(string path_to_file, int user_id, string name);
-    std::vector <string> user_image(string dirname, int user_id, string image_name = "");
-
+    int save_image(string path_to_file, int user_id, string name = "");
+    std::vector <string> user_image(int user_id, string image_name = "");
+    std::vector <std::vector<float>> users_params();
 };
