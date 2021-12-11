@@ -31,5 +31,7 @@ private:
 
     void createSearchPage(Wt::WContainerWidget*);
 
-    void changePhoto(Wt::WContainerWidget*, std::vector<std::string>::iterator);
+    void changeMan(Wt::WContainerWidget*, std::vector<std::string>::iterator);
+
+    void changePhoto(Wt::WContainerWidget*, USERS_INFO&);
 };

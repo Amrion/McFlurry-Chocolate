@@ -38,10 +38,20 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
 
     if (iter != user.rec_users.end()) {
         dislike->clicked().connect([&] {
-            changePhoto(mainPhoto, iter);
+            changeMan(mainPhoto, iter);
         });
         like->clicked().connect([&] {
-            changePhoto(mainPhoto, iter);
+            changeMan(mainPhoto, iter);
+        });
+    }
+
+    USERS_INFO profileInfo = server.db_.user_info(*iter);
+    if (profileInfo.) {
+        dislike->clicked().connect([&] {
+            changePhoto(mainPhoto, profileInfo);
+        });
+        like->clicked().connect([&] {
+            changePhoto(mainPhoto, profileInfo);
         });
     }
 
@@ -52,7 +62,7 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     info->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/profile"));
 }
 
-void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto,
+void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto,
                                                                  std::vector<std::string>::iterator iter) {
     contPhoto->removeWidget(photo);
     iter++;
@@ -65,3 +75,14 @@ void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto,
         photo->setStyleClass("photo");
     }
 }
+
+void SearchPageWidget::changePhoto(Wt::WContainerWidget* contPhoto, USERS_INFO& profile) {
+    contPhoto->removeWidget(photo);
+
+    if (true) {
+        photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/main.jpg")));
+    } else {
+
+    }
+}
+
