@@ -18,7 +18,7 @@ class UserWidget : public Wt::WContainerWidget {
 public:
     explicit UserWidget(Wt::WContainerWidget*, User&, TinderServer&);
 private:
-    Wt::WImage* myPhoto;
+    Wt::WImage** myPhoto;
     Wt::WPushButton* deletePhoto;
     Wt::WFileUpload* addPhoto;
     Wt::WPushButton* savePhoto;
@@ -44,6 +44,8 @@ private:
 
     User& user;
     TinderServer& server;
+
+    bool checkAdd;
 
     void createInfoPage(Wt::WContainerWidget*);
 };

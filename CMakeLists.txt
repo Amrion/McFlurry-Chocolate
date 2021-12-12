@@ -30,7 +30,7 @@ include_directories(include_server)
 include_directories(headers_client)
 
 set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
-set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp  ${PROJECT_SOURCE_DIR}/src_db/base64.cpp)
+set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 add_library(find_rec_lib SHARED ${FIND_REC_LIB})
 

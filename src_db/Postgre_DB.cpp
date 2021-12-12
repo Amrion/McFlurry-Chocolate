@@ -4,7 +4,7 @@ Postgre_DB::Postgre_DB(string host, string port, string db_name, string user, st
     string request = "dbname=" + db_name + " user=" + user + " password=" + password + " host=" + host + " port=" + port;
     try
     {
-        PG_conn = new connection(request);
+        PG_conn = std::make_shared <connection>(request);
         if (!PG_conn->is_open()) {
             cout << "Can't open database" << endl;
         }
@@ -20,15 +20,7 @@ Postgre_DB::~Postgre_DB() {
     if (PG_conn->is_open()) {
         PG_conn->close();
     }
-    delete PG_conn;
 }
-
-// result Postgre_DB::select(string request) {
-//     nontransaction N(*PG_conn);
-//     result result res = N.exec(request));
-//     return res;
-// }
-
 
 int Postgre_DB::max_id(const string & table, string name_id) {
     nontransaction N(*PG_conn);
@@ -585,23 +577,28 @@ int Postgre_DB::save_image(string path_to_file, int user_id, string name) {
 
 std::vector <string> Postgre_DB::user_image(int user_id, string image_name) {
     std::vector <string> paths;
-    string avatar = "avatar" + to_string(user_id);
-    string request = "SELECT user_id, image_name, image_path FROM IMAGES WHERE user_id = " + to_string(user_id);
+    string request = "SELECT * FROM IMAGES WHERE user_id = " + to_string(user_id);
     if (image_name != "") {
         request += " AND image_name = '" + image_name + "'";
     }
-    request += ";";
+    request += " ORDER BY image_id;";
     nontransaction N(*PG_conn);
     result res = N.exec(request);
-    paths.push_back("");
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
-        if (c[1].as<string>() != avatar) {
-            paths.push_back(c[2].as<string>());
-        }
-        else {
-            paths[0] = c[2].as<string>();
-        }
+        paths.push_back(c[3].as<string>());
     }
     res.clear();
     return paths;
+}
+
+int Postgre_DB::delete_image(int user_id, string image_name) {
+    string img_req = "user_id = " + to_string(user_id) + " AND ";
+    string table = "IMAGES";
+    if (image_name != "") {
+        img_req += "image_name = '" + image_name + "'";
+    }
+    else {
+        img_req += "image_id = (SELECT MAX(image_id) FROM IMAGES WHERE user_id = " + to_string(user_id) + ")";
+    }
+    return delete_(table, img_req);
 }

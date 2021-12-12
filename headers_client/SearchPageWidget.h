@@ -26,13 +26,27 @@ private:
     Wt::WImage* photo;
     Wt::WPushButton* info;
 
+    Wt::WImage* photoProf;
+    Wt::WText* name;
+    Wt::WText* sex;
+    Wt::WText* discr;
+    Wt::WText* age;
+    Wt::WText* fac;
+    Wt::WPushButton* backSearch;
+
     User& user;
     TinderServer& server;
 
+    size_t number;
+    size_t kol;
+    std::vector<std::string> photoes;
+
     void createSearchPage(Wt::WContainerWidget*);
 
-    void changeMan(Wt::WContainerWidget*, std::vector<std::string>, size_t&);
+    void showInfoProfile(Wt::WContainerWidget*);
 
-    void changePhotoForward(Wt::WContainerWidget*, std::vector<std::string>, size_t&);
-    void changePhotoBack(Wt::WContainerWidget*, std::vector<std::string>, size_t&);
+    void changeMan(Wt::WContainerWidget*, Wt::WContainerWidget*);
+
+    void changePhotoForward(Wt::WContainerWidget*);
+    void changePhotoBack(Wt::WContainerWidget*);
 };

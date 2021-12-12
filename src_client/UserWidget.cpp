@@ -9,7 +9,7 @@ std::string ws2str(const std::wstring &wstr) {
     return converterX.to_bytes(wstr);
 }
 
-UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user), server(server) {
+UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user), server(server), checkAdd(false) {
     createInfoPage(mainPageRight);
 }
 
@@ -22,13 +22,13 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto photos = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
     photos->setStyleClass("userPhotos");
 
-    for (auto & i : user.user_image) {
-        myPhoto = photos->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(i)));
-        myPhoto->setStyleClass("userPhoto");
+    myPhoto = new Wt::WImage*[user.user_image.size()];
+    for (size_t i = 0; i < user.user_image.size(); ++i) {
+        myPhoto[i] = photos->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(user.user_image[i])));
+        myPhoto[i]->setStyleClass("userPhoto");
     }
 
     auto buttons = setting->addWidget(std::make_unique<Wt::WContainerWidget>());
-
 
     addPhoto = buttons->addWidget(std::make_unique<Wt::WFileUpload>());
     addPhoto->setFileTextSize(2048);
@@ -36,9 +36,14 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
 
     deletePhoto = buttons->addWidget(std::make_unique<Wt::WPushButton>("Удалить фото"));
     deletePhoto->setStyleClass("delete");
+
     deletePhoto->clicked().connect([=] {
-        myPhoto->hide();
-        server.db_.
+        myPhoto[user.user_image.size() - 1]->hide();
+        int id = server.db_.user_id(user.username);
+        server.db_.delete_image(id, "");
+        std::string deleteP = "rm ../users_images/profilePhoto" + std::to_string(id) + std::to_string(user.user_image.size() - 1);
+        system(deleteP.c_str());
+        user.user_image.pop_back();
     });
 
     savePhoto = setting->addWidget(std::make_unique<Wt::WPushButton>("Начать загрузку фото"));
@@ -52,8 +57,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     auto outPhoto = setting->addWidget(std::make_unique<Wt::WText>());
     outPhoto->hide();
 
-    bool checkAdd = false;
-    savePhoto->clicked().connect([=, &checkAdd] {
+    savePhoto->clicked().connect([=] {
         checkAdd = true;
         addPhoto->upload();
         outPhoto->setText("Загрузка фото успешно началась. Чтобы добавить фото, нажмите Сохранить внизу");
@@ -142,7 +146,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
         outAdd->setStyleClass("invalid");
     });
 
-    saveData->clicked().connect([=, &checkAge, &checkAdd] {
+    saveData->clicked().connect([=, &checkAge] {
         addPhoto->upload();
         std::string mFilename = addPhoto->spoolFileName();
         user.user_image.push_back(mFilename);
@@ -164,7 +168,6 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             user.course_number = std::stoi(ws2str(courseEdit->text()));
             user.telegram_link = ws2str(tgEdit->text());
             user.vk_link = ws2str(netEdit->text());
-            std::cout << "ASDASDASDASD" << user.username << std::endl;
             int id = server.db_.user_id(user.username);
 
             USERS_INFO usersInfo;
@@ -176,6 +179,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             usersInfo.vk_link = user.vk_link;
             usersInfo.telegram_link = user.telegram_link;
             usersInfo.description = user.description;
+            usersInfo.gender = user.gender;
             if (checkAdd) {
                 std::string command = "mkdir -p ../users_images";
                 system(command.c_str());
@@ -193,7 +197,10 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             outAdd->show();
             outAdd->setText("Настройки успешно изменены");
             outAdd->setStyleClass("valid");
+            checkAdd = false;
         }
+        delete [] myPhoto;
+        createInfoPage(mainPageRight);
     });
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));

@@ -70,14 +70,6 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
 
 void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWidget* mainPageRight,
                                         std::vector<USERS_INFO> pairsInfo) {
-    auto iter = user.rec_users.begin();
-    while (iter != user.rec_users.end()) {
-        if (app->internalPath() == "/profile") {
-            showInfoProfile(mainPageRight, *iter);
-            break;
-        }
-        iter++;
-    }
     if (app->internalPath() == "/start") {
         showSearchPhoto(mainPageRight);
     }
@@ -96,11 +88,6 @@ void MainPageWidget::showSearchPhoto(Wt::WContainerWidget* mainPageRight) {
     searchPageWidget = wStackedWidget->addWidget(std::make_unique<SearchPageWidget>(mainPageRight, user, server));
 
     wStackedWidget->setCurrentWidget(searchPageWidget);
-}
-void MainPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight, const std::string& profile) {
-    profileWidget = wStackedWidget->addWidget(std::make_unique<ProfileWidget>(mainPageRight, profile, server));
-
-    wStackedWidget->setCurrentWidget(profileWidget);
 }
 
 void MainPageWidget::showInfoPair(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo) {
