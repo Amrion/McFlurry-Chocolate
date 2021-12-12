@@ -17,5 +17,3 @@ struct USERS_INFO {
     string description;
     USERS_INFO();
 };
-
-
