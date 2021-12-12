@@ -3,12 +3,6 @@
 #include <string>
 using namespace std;
 
-struct LOGIN {
-    int user_id;
-    string login;
-    double password;
-};
-
 struct USERS_INFO {
     int user_id;
     string name;
@@ -24,21 +18,4 @@ struct USERS_INFO {
     USERS_INFO();
 };
 
-struct USERS_REC {
-    int user_id;
-    std::vector <int> id_rec_users;
-};
-
-struct MARKS {
-    int mark_id;
-    int user_id_marker;
-    int user_id_marked;
-    int mark;
-};
-
-struct IMAGES {
-    int image_id;
-    int user_id;
-    string image;
-};
 
