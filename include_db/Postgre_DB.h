@@ -21,12 +21,7 @@ class Postgre_DB : DB {
         Postgre_DB(string host, string port, string db_name, string user, string password);
         ~Postgre_DB();
         int drop_tables();
-<<<<<<< HEAD
-        int user_exist(string login, string password = "");
-        int user_register(string login, string password); 
-=======
         
->>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
         int user_id(string login);
         string user_login(int id);
 

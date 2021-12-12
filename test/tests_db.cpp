@@ -4,11 +4,7 @@
 TEST(POSTGRE_DB, test_user_login) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-<<<<<<< HEAD
-  user.user_id = pg.user_register("mail.ru", "mail123");
-=======
   user.user_id = pg.user_register("mail.ru", "1049284876844");
->>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
   user.name = "USER1";
   user.age = 18;
   user.gender = "M";
@@ -21,28 +17,16 @@ TEST(POSTGRE_DB, test_user_login) {
   EXPECT_EQ(user_login, "mail.ru");
   EXPECT_EQ(name, "USER1");
   EXPECT_EQ(pg.user_exist("mail.ru"), 1);
-<<<<<<< HEAD
-  EXPECT_EQ(pg.user_exist("mail.ru", "mail123"), 1);
-  EXPECT_EQ(pg.user_exist("vk.ru"), 0);
-  EXPECT_EQ(pg.user_exist("vk.ru", "mail123"), 0);
-  EXPECT_EQ(pg.user_exist("mail.ru", "mail12"), 0);
-  EXPECT_EQ(pg.user_exist("maru", "mail2"), 0);
-=======
   EXPECT_EQ(pg.user_exist("mail.ru", "1049284876844"), 1);
   EXPECT_EQ(pg.user_exist("mail.ru", "1049284876843"), 0);
   EXPECT_EQ(pg.user_exist("vk.ru"), 0);
   EXPECT_EQ(pg.user_exist("vk.ru", "1049284876844"), 0);
->>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
 }
 
 TEST(POSTGRE_DB, test_set_mark) {
   Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
   USERS_INFO user;
-<<<<<<< HEAD
-  user.user_id = pg.user_register("vk.ru", "9054783478543");
-=======
   user.user_id = pg.user_register("vk.ru", "efefegr34t34");
->>>>>>> 64cbca220ca8cb01e425eb0d3da086e188269cbf
   user.name = "USER2";
   user.age = 18;
   user.gender = "W";
