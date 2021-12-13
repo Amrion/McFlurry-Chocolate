@@ -7,10 +7,11 @@
 
 #include "User.hpp"
 #include "Postgre_DB.h"
+#include "TinderServer.hpp"
 
 class PairWidget : public Wt::WContainerWidget {
 public:
-    PairWidget(Wt::WContainerWidget*, const USERS_INFO&);
+    PairWidget(Wt::WContainerWidget*, const USERS_INFO&, TinderServer&);
 private:
     Wt::WImage* photo;
     Wt::WText* name;
@@ -21,6 +22,8 @@ private:
     Wt::WAnchor* tg;
     Wt::WAnchor* net;
     Wt::WPushButton* back;
+
+    TinderServer& server;
 
     void createInfoPage(Wt::WContainerWidget*, const USERS_INFO&);
 };

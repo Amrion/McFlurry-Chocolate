@@ -1,6 +1,6 @@
 #include "PairWidget.h"
 
-PairWidget::PairWidget(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo) {
+PairWidget::PairWidget(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo, TinderServer& server) : server(server) {
     createInfoPage(mainPageRight, pairInfo);
 }
 
@@ -10,7 +10,9 @@ void PairWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, const USERS
     auto info = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     info->setStyleClass("profileInfo");
 
-    photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/pair1.jpg")));
+    std::vector<std::string> photoes = server.db_.user_image(pairInfo.user_id);
+
+    photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
     photo->setStyleClass("photoProfile");
 
     name = info->addWidget(std::make_unique<Wt::WText>(pairInfo.name));

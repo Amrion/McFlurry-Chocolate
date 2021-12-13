@@ -4,10 +4,9 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     : user(user), server(server) {
     auto mainPage = addWidget(std::make_unique<Wt::WContainerWidget>());
     mainPage->setStyleClass("page");
+
     auto mainPageLeft = mainPage->addWidget(std::make_unique<Wt::WContainerWidget>());
     mainPageLeft->setStyleClass("me");
-    auto mainPageRight = mainPage->addWidget(std::make_unique<Wt::WContainerWidget>());
-    mainPageRight->setStyleClass("people");
 
     auto myNameWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
     myNameWidget->setStyleClass("myName");
@@ -31,17 +30,17 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     pair = pWidget->addWidget(std::make_unique<Wt::WText>("Пары"));
     pair->setStyleClass("pairText");
 
-    int j = 0;
-    std::vector<std::string> pairsLogin = server.db_.pairs_login(user.username);
-    std::vector<USERS_INFO> pairsInfo(user.num_pairs);
+    size_t j = 0;
+    pairsLogin = server.db_.pairs_login(user.username);
+    pairsInfo.resize(pairsLogin.size());
 
-    while (j < user.num_pairs) {
-        std::vector<std::string> photoes = server.db_.user_image(pairsInfo[j].user_id);
+    while (j < pairsLogin.size()) {
         auto pairAvatarWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
         pairAvatarWidget->setStyleClass("pairDiv");
 
         do  {
             pairsInfo[j] = server.db_.user_info(pairsLogin[j]);
+            std::vector<std::string> photoes = server.db_.user_image(pairsInfo[j].user_id);
             link = Wt::WLink("/pair/" + pairsInfo[j].name);
             pairName = pairAvatarWidget->addWidget(std::make_unique<Wt::WAnchor>(link, pairsInfo[j].name));
             pairName->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/pair/" + pairsInfo[j].name));
@@ -50,8 +49,11 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
             pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
             pairAvatar->setStyleClass("pairAvatar");
             ++j;
-        } while (j % 2 != 0 && j != user.num_pairs);
+        } while (j % 2 != 0 && j != pairsLogin.size());
     }
+
+    auto mainPageRight = mainPage->addWidget(std::make_unique<Wt::WContainerWidget>());
+    mainPageRight->setStyleClass("people");
 
     auto infoProfile = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     start = infoProfile->addWidget(std::make_unique<Wt::WPushButton>("Найти свою пару!"));
@@ -63,17 +65,16 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     addWidget(std::unique_ptr<Wt::WStackedWidget>(wStackedWidget));
 
     app->internalPathChanged().connect([=] {
-        handleInternalPath(app, mainPageRight, pairsInfo);
+        handleInternalPath(app, mainPageRight);
     }
     );
 }
 
-void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWidget* mainPageRight,
-                                        std::vector<USERS_INFO> pairsInfo) {
+void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWidget* mainPageRight) {
     if (app->internalPath() == "/start") {
-        showSearchPhoto(mainPageRight);
+        showSearchPhoto(mainPageRight, app);
     }
-    for (int i = 0; i < user.num_pairs; ++i) {
+    for (size_t i = 0; i < pairsLogin.size(); ++i) {
         if (app->internalPath() == "/pair/" + pairsInfo[i].name) {
             showInfoPair(mainPageRight, pairsInfo[i]);
             break;
@@ -84,14 +85,14 @@ void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWi
     }
 }
 
-void MainPageWidget::showSearchPhoto(Wt::WContainerWidget* mainPageRight) {
-    searchPageWidget = wStackedWidget->addWidget(std::make_unique<SearchPageWidget>(mainPageRight, user, server));
+void MainPageWidget::showSearchPhoto(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
+    searchPageWidget = wStackedWidget->addWidget(std::make_unique<SearchPageWidget>(mainPageRight, user, server, app));
 
     wStackedWidget->setCurrentWidget(searchPageWidget);
 }
 
 void MainPageWidget::showInfoPair(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo) {
-    pairWidget = wStackedWidget->addWidget(std::make_unique<PairWidget>(mainPageRight, pairInfo));
+    pairWidget = wStackedWidget->addWidget(std::make_unique<PairWidget>(mainPageRight, pairInfo, server));
 
     wStackedWidget->setCurrentWidget(pairWidget);
 }
