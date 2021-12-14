@@ -13,7 +13,6 @@
 #include "User.hpp"
 #include "Postgre_DB.h"
 #include "TinderServer.hpp"
-#include "ProfileWidget.h"
 #include "TinderApplication.hpp"
 #include "SearchPageWidget.h"
 #include "PairWidget.h"
@@ -24,7 +23,7 @@ class MainPageWidget : public Wt::WContainerWidget {
 public:
     MainPageWidget(User&, TinderServer&, TinderApplication*, TinderWidget*);
 
-    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*, std::vector<USERS_INFO>);
+    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*);
 private:
     Wt::WAnchor* userName;
     Wt::WImage* avatar;
@@ -34,7 +33,6 @@ private:
     Wt::WPushButton* start;
     Wt::WPushButton* exit;
 
-    ProfileWidget* profileWidget;
     UserWidget* userWidget;
     PairWidget* pairWidget;
     SearchPageWidget* searchPageWidget;
@@ -42,11 +40,12 @@ private:
     User& user;
     TinderServer& server;
     Wt::WStackedWidget* wStackedWidget;
-    std::map<std::string, std::string> data;
 
-    void showSearchPhoto(Wt::WContainerWidget*);
+    std::vector<std::string> pairsLogin;
+    std::vector<USERS_INFO> pairsInfo;
+
+    void showSearchPhoto(Wt::WContainerWidget*, TinderApplication*);
     void showInfoPair(Wt::WContainerWidget*, const USERS_INFO&);
-    void showInfoProfile(Wt::WContainerWidget*, const std::string&);
     void showInfoUser(Wt::WContainerWidget*);
     void showLoginPage(TinderWidget*);
 };

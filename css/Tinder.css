@@ -48,7 +48,7 @@ body {
 }
 .pairAvatar {
     cursor: pointer;
-    width: 30%;
+    width: 28%;
     margin-left: 15px;
     border-radius: 5%;
     border: 2px solid white;
@@ -204,6 +204,27 @@ body {
     transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
 }
 .info:hover {
+    width: 400px;
+    background: linear-gradient(
+            225deg,#fd267a, #ff6036);
+}
+.infoPair {
+    margin-left: 300px;
+    display: block;
+    height: 50px;
+    width: 300px;
+    margin-top: 30px;
+    background: linear-gradient(
+            225deg,#ff6036, #fd267a);
+    border-radius: 10px;
+    border: 1px solid;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.infoPair:hover {
     width: 400px;
     background: linear-gradient(
             225deg,#fd267a, #ff6036);
@@ -390,6 +411,12 @@ h1 {
 .errorPhoto {
     font-weight: bold;
     color: red;
+    font-size: 30px;
+    text-align: center;
+}
+.addPair {
+    font-weight: bold;
+    color: green;
     font-size: 30px;
     text-align: center;
 }

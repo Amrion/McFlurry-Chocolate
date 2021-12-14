@@ -1,14 +1,15 @@
 #include "SearchPageWidget.h"
 
 
-SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user),
+SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server, TinderApplication* app)
+    : user(user),
     server(server),
     number(0),
     kol(0) {
-    createSearchPage(mainPageRight);
+    createSearchPage(mainPageRight, app);
 }
 
-void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
+void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
     mainPageRight->clear();
 
     auto photos = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -23,52 +24,66 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight) {
     dislike = buttonsLeft->addWidget(std::make_unique<Wt::WPushButton>(""));
     dislike->setStyleClass("dislike");
 
-    USERS_INFO profile = server.db_.user_info(user.rec_users[kol]);
-    photoes = server.db_.user_image(server.db_.user_id(user.rec_users[kol]));
-
-
     auto mainPhoto = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[number])));
-    photo->setStyleClass("photo");
 
-    auto buttonsRight = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
-    buttonsRight->setStyleClass("butRight");
+    if (user.rec_users.empty()) {
+        Wt::WText* error = mainPhoto->addWidget(std::make_unique<Wt::WText>("Больше никого нет. Приходи завтра"));
+        error->setStyleClass("errorPhoto");
+        dislike->hide();
+        back->hide();
+    } else {
+        photoes = server.db_.user_image(server.db_.user_id(user.rec_users[kol]));
 
-    forward = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
-    forward->setStyleClass("forward");
+        photo = mainPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[number])));
+        photo->setStyleClass("photo");
 
-    like = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
-    like->setStyleClass("like");
+        auto buttonsRight = photos->addWidget(std::make_unique<Wt::WContainerWidget>());
+        buttonsRight->setStyleClass("butRight");
 
-    USERS_INFO profileInfo = server.db_.user_info(user.rec_users[kol]);
-    if (number != photoes.size() - 1) {
-        forward->clicked().connect([=] {
-            changePhotoBack(mainPhoto);
+        forward = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
+        forward->setStyleClass("forward");
+
+        like = buttonsRight->addWidget(std::make_unique<Wt::WPushButton>(""));
+        like->setStyleClass("like");
+
+
+        if (number != photoes.size() - 1) {
+            forward->clicked().connect([=] {
+                changePhotoBack(mainPhoto);
+            });
+            back->clicked().connect([=] {
+                changePhotoForward(mainPhoto);
+            });
+        }
+
+        auto infoProfile = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
+        info = infoProfile->addWidget(std::make_unique<Wt::WPushButton>("Посмотреть профиль"));
+        info->setStyleClass("info");
+
+        dislike->clicked().connect([=] {
+            server.db_.set_mark(user.username, user.rec_users[kol], -1);
+            changeMan(mainPhoto, mainPageRight, app);
+
         });
-        back->clicked().connect([=] {
-            changePhotoForward(mainPhoto);
+        like->clicked().connect([=] {
+            server.db_.set_mark(user.username, user.rec_users[kol], 1);
+            int id = server.db_.user_id(user.username);
+            USERS_INFO pairInfo = server.db_.user_info(user.rec_users[kol]);
+
+            if (server.db_.is_pair(id, pairInfo.user_id) == 1) {
+                addPair(mainPhoto, app);
+            } else {
+                changeMan(mainPhoto, mainPageRight, app);
+            }
+        });
+
+        info->clicked().connect([=] {
+            showInfoProfile(mainPageRight, app);
         });
     }
-
-    auto infoProfile = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
-    info = infoProfile->addWidget(std::make_unique<Wt::WPushButton>("Посмотреть профиль"));
-    info->setStyleClass("info");
-
-    dislike->clicked().connect([=] {
-        changeMan(mainPhoto, mainPageRight);
-
-    });
-    like->clicked().connect([=] {
-        changeMan(mainPhoto, mainPageRight);
-
-    });
-
-    info->clicked().connect([=] {
-            showInfoProfile(mainPageRight);
-    });
 }
 
-void SearchPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight) {
+void SearchPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
     mainPageRight->clear();
 
 
@@ -98,11 +113,30 @@ void SearchPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight) {
     backSearch = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));
     backSearch->setStyleClass("info");
     backSearch->clicked().connect([=] {
-        createSearchPage(mainPageRight);
+        createSearchPage(mainPageRight, app);
     });
 }
 
-void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, Wt::WContainerWidget* mainPageRight) {
+void SearchPageWidget::addPair(Wt::WContainerWidget* contPhoto, TinderApplication* app) {
+    contPhoto->removeWidget(photo);
+    Wt::WText* error = contPhoto->addWidget(std::make_unique<Wt::WText>("У тебя появилась пара. Нажми обновить снизу для просмотра"));
+    error->setStyleClass("addPair");
+    info->hide();
+    dislike->hide();
+    like->hide();
+    forward->hide();
+    back->hide();
+
+    Wt::WPushButton* showPair = contPhoto->addWidget(std::make_unique<Wt::WPushButton>("Посмотреть новую пару"));
+    showPair->setStyleClass("infoPair");
+
+    showPair->clicked().connect([&] {
+        Wt::WWebWidget::doJavaScript("location.reload()");
+    });
+
+}
+
+void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
     contPhoto->removeWidget(photo);
     kol++;
     if (kol == user.rec_users.size()) {
@@ -118,7 +152,7 @@ void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, Wt::WContainer
         photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
         photo->setStyleClass("photo");
         number = 0;
-        createSearchPage(mainPageRight);
+        createSearchPage(mainPageRight, app);
     }
 }
 

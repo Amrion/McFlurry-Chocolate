@@ -14,10 +14,11 @@
 #include "Postgre_DB.h"
 #include "User.hpp"
 #include "TinderServer.hpp"
+#include "TinderApplication.hpp"
 
 class SearchPageWidget : public Wt::WContainerWidget {
 public:
-    SearchPageWidget(Wt::WContainerWidget*, User&, TinderServer&);
+    SearchPageWidget(Wt::WContainerWidget*, User&, TinderServer&, TinderApplication*);
 private:
     Wt::WPushButton* like;
     Wt::WPushButton* back;
@@ -41,12 +42,14 @@ private:
     size_t kol;
     std::vector<std::string> photoes;
 
-    void createSearchPage(Wt::WContainerWidget*);
+    void createSearchPage(Wt::WContainerWidget*, TinderApplication*);
 
-    void showInfoProfile(Wt::WContainerWidget*);
+    void showInfoProfile(Wt::WContainerWidget*, TinderApplication* app);
 
-    void changeMan(Wt::WContainerWidget*, Wt::WContainerWidget*);
+    void changeMan(Wt::WContainerWidget*, Wt::WContainerWidget*, TinderApplication* app);
 
     void changePhotoForward(Wt::WContainerWidget*);
     void changePhotoBack(Wt::WContainerWidget*);
+
+    void addPair(Wt::WContainerWidget*, TinderApplication*);
 };

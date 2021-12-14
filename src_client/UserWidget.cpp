@@ -15,6 +15,7 @@ UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderSe
 
 void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     mainPageRight->clear();
+    user.user_image = server.db_.user_image(server.db_.user_id(user.username));
 
     auto setting = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
     setting->setStyleClass("aboutMe");
@@ -41,7 +42,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
         myPhoto[user.user_image.size() - 1]->hide();
         int id = server.db_.user_id(user.username);
         server.db_.delete_image(id, "");
-        std::string deleteP = "rm ../users_images/profilePhoto" + std::to_string(id) + std::to_string(user.user_image.size() - 1);
+        std::string deleteP = "rm ../users_images/profilePhoto" + std::to_string(id) + std::to_string(3);
         system(deleteP.c_str());
         user.user_image.pop_back();
     });
@@ -187,11 +188,11 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
                 system(command.c_str());
                 std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
                 command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" +
-                          std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1);
+                          std::to_string(usersInfo.user_id) + std::to_string(5);
                 system(command.c_str());
                 server.db_.save_image("../users_images/profilePhoto" +
-                                      std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1), usersInfo.user_id, "profilePhoto" +
-                                                                                                                                         std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1));
+                                      std::to_string(usersInfo.user_id) + std::to_string(5), usersInfo.user_id, "profilePhoto" +
+                                                                                                                                         std::to_string(usersInfo.user_id) + std::to_string(5));
             }
             server.db_.save_user(usersInfo);
             outAdd->show();

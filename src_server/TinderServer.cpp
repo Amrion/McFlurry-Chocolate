@@ -49,6 +49,7 @@ bool TinderServer::login(User &user) {
         user.gender = usersInfo.gender;
         user.faculty = usersInfo.faculty;
         user.course_number = usersInfo.course_number;
+        user.num_pairs = usersInfo.num_pairs;
         user.vk_link = usersInfo.vk_link;
         user.telegram_link = usersInfo.telegram_link;
         user.description = usersInfo.description;

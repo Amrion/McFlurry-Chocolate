@@ -222,51 +222,78 @@ void TinderWidget::letSignUp() {
 }
 
 void TinderWidget::letLogin() {
-    clear();
+    auto cookie = app->environment().getCookie("userToken");
+    if (cookie == 0 || !cookie || cookie->empty()) {
+        clear();
 
-    auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
-
-
-    auto hLayout = std::make_unique<Wt::WHBoxLayout>();
-
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
-
-    userLoginEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
-    userLoginEdit_->setPlaceholderText("Логин");
-
-    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+        auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
 
 
-    hLayout = std::make_unique<Wt::WHBoxLayout>();
+        auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+        hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
 
-    passwordEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
-    passwordEdit_->setPlaceholderText("Пароль");
-    passwordEdit_->setAttributeValue("type", "password");
+        userLoginEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
+        userLoginEdit_->setPlaceholderText("Логин");
 
-    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
-
-
-    auto logIn = vLayout->addWidget(std::make_unique<Wt::WPushButton>("Войти"), 0, Wt::AlignmentFlag::Center);
-
-    logIn->clicked().connect(this, &TinderWidget::login);
-    userLoginEdit_->enterPressed().connect(this, [&] {
-        passwordEdit_->setFocus();
-    });
-    passwordEdit_->enterPressed().connect(this, &TinderWidget::login);
+        vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
 
-    auto signUp = vLayout->addWidget(std::make_unique<Wt::WText>("Зарегистрироваться"), 0, Wt::AlignmentFlag::Center);
-    signUp->setStyleClass("text-link");
-    signUp->clicked().connect(this, &TinderWidget::letSignUp);
+        hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    statusMsg_ = vLayout->addWidget(std::make_unique<Wt::WText>(), 1, Wt::AlignmentFlag::Center);
-    statusMsg_->setTextFormat(Wt::TextFormat::Plain);
+        hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+
+        passwordEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
+        passwordEdit_->setPlaceholderText("Пароль");
+        passwordEdit_->setAttributeValue("type", "password");
+
+        vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+
+
+        auto logIn = vLayout->addWidget(std::make_unique<Wt::WPushButton>("Войти"), 0, Wt::AlignmentFlag::Center);
+
+        logIn->clicked().connect(this, &TinderWidget::login);
+        userLoginEdit_->enterPressed().connect(this, [&] {
+            passwordEdit_->setFocus();
+        });
+        passwordEdit_->enterPressed().connect(this, &TinderWidget::login);
+
+
+        auto signUp = vLayout->addWidget(std::make_unique<Wt::WText>("Зарегистрироваться"), 0, Wt::AlignmentFlag::Center);
+        signUp->setStyleClass("text-link");
+        signUp->clicked().connect(this, &TinderWidget::letSignUp);
+
+        statusMsg_ = vLayout->addWidget(std::make_unique<Wt::WText>(), 1, Wt::AlignmentFlag::Center);
+        statusMsg_->setTextFormat(Wt::TextFormat::Plain);
+    } else {
+        app->setInternalPath("/", true);
+
+        loggedIn_ = true;
+
+        USERS_INFO usersInfo;
+        usersInfo = server_.db_.user_info(*cookie);
+
+        user_ = User();
+        user_.username = *cookie;
+        user_.name = usersInfo.name;
+        user_.surname = usersInfo.surname;
+        user_.age = usersInfo.age;
+        user_.gender = usersInfo.gender;
+        user_.faculty = usersInfo.faculty;
+        user_.course_number = usersInfo.course_number;
+        user_.num_pairs = usersInfo.num_pairs;
+        user_.vk_link = usersInfo.vk_link;
+        user_.telegram_link = usersInfo.telegram_link;
+        user_.description = usersInfo.description;
+        user_.rec_users = server_.db_.user_rec(*cookie);
+        user_.user_image = server_.db_.user_image(server_.db_.user_id(*cookie));
+        addWidget(std::make_unique<MainPageWidget>(user_,server_, app, this));
+    }
 }
 
 void TinderWidget::logout() {
     if (loggedIn()) {
+        app->removeCookie("userToken");
         loggedIn_ = false;
         isImageEmpty = true;
 
@@ -365,6 +392,7 @@ void TinderWidget::login() {
     user_.password = password;
 
     if (server_.login(user_)) {
+        app->setCookie("userToken", user_.username, 604800);
         loggedIn_ = true;
         clear();
         addWidget(std::make_unique<MainPageWidget>(user_,server_, app, this));
