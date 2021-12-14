@@ -13,7 +13,6 @@
 #include "User.hpp"
 #include "Postgre_DB.h"
 #include "TinderServer.hpp"
-#include "ProfileWidget.h"
 #include "TinderApplication.hpp"
 #include "SearchPageWidget.h"
 #include "PairWidget.h"

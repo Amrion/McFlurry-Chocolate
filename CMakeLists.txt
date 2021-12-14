@@ -31,18 +31,27 @@ include_directories(headers_client)
 
 set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
+set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/headers_client/MainPageWidget.h
+        ${PROJECT_SOURCE_DIR}/src_client/MainPageWidget.cpp
+        ${PROJECT_SOURCE_DIR}/src_client/PairWidget.cpp
+        ${PROJECT_SOURCE_DIR}/src_client/SearchPageWidget.cpp
+        ${PROJECT_SOURCE_DIR}/src_client/UserWidget.cpp)
+
+
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 add_library(find_rec_lib SHARED ${FIND_REC_LIB})
+add_library(find_client_lib SHARED ${FIND_CLIENT_LIB})
 
 
 target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
 target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
+target_include_directories(find_client_lib PUBLIC ${PROJECT_SOURCE_DIR}/headers_client)
 
 # Build main
 option(BUILD_MAIN OFF)
 if (BUILD_MAIN)
   add_executable(${PROJECT_NAME} src_db/main.cpp)
-  target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
+  target_link_libraries(${PROJECT_NAME} PRIVATE find_client_lib find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
 endif()
 
 file(GLOB prod_sources
@@ -55,17 +64,12 @@ file(GLOB prod_sources
         "src_server/TinderApplication.cpp"
         "src_server/User.cpp"
         "src_server/main.cpp"
-        "src_client/MainPageWidget.cpp"
-        "src_client/PairWidget.cpp"
-        "src_client/ProfileWidget.cpp"
-        "src_client/UserWidget.cpp"
-        "src_client/SearchPageWidget.cpp"
         "hash/md5.h"
         "hash/md5.cpp")
 
 add_executable(${PROJECT_NAME} ${prod_sources})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
+target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib find_client_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
 
 #Build tests
 option(BUILD_TESTS ON)
