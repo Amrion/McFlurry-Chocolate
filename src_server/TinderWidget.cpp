@@ -20,10 +20,6 @@
 #include "TinderWidget.hpp"
 #include "MainPageWidget.h"
 
-//static inline int64_t getTimeMs() {
-//    return std::chrono::duration_cast<std::chrono::milliseconds>
-//            (std::chrono::system_clock::now().time_since_epoch()).count();
-//}
 
 std::string ws2s(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -36,16 +32,12 @@ TinderWidget::TinderWidget(TinderServer &server, TinderApplication* app)
         : WContainerWidget(),
           app(app),
           server_(server),
-          loggedIn_(false)
+          loggedIn_(false),
+          user_(User())
            {
 
     letLogin();
 }
-
-//TinderWidget::~TinderWidget() {
-//    logout();
-//}
-
 
 void TinderWidget::letSignUp() {
     clear();
@@ -55,12 +47,16 @@ void TinderWidget::letSignUp() {
 
     auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
+
     auto container = hLayout->addWidget(std::make_unique<Wt::WContainerWidget>(), 1);
 
     avatar_ = container->addNew<Wt::WFileUpload>();
     avatar_->setFileTextSize(150); // Set the maximum file size to 50 kB.
     avatar_->setMargin(10, Wt::Side::Right);
 
+    avatar_->changed().connect([this] {
+        isImageEmpty = false;
+    });
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
@@ -101,9 +97,13 @@ void TinderWidget::letSignUp() {
 
     group->setSelectedButtonIndex(0);
 
-    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+    genderBtn_ = group->checkedButton();
 
-    genderBtn_ = group.get();
+    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+    
+    group->checkedChanged().connect([this] (Wt::WRadioButton *selection) {
+        genderBtn_ = selection;
+    });
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
@@ -314,11 +314,6 @@ void TinderWidget::signUp() {
 
     std::string avatar;
 
-    avatar_->changed().connect([this] {
-        isImageEmpty = false;
-    });
-
-    avatar_->upload();
 
     std::string username = ws2s(userLoginEdit_->text());
     std::string password = ws2s(passwordEdit_->text());
@@ -330,7 +325,7 @@ void TinderWidget::signUp() {
     std::string vkLink = ws2s(vkLinkEdit_->text());
     std::string telegram = ws2s(telegramEdit_->text());
     std::string description = ws2s(descriptionEdit_->text());
-    std::string gender = genderBtn_->id();
+    std::string gender = ws2s(genderBtn_->text());
     std::string  age = ws2s(ageEdit_->text());
 
     if (password.empty() || username.empty() || name.empty() || surname.empty() || faculty.empty() ||
@@ -355,7 +350,10 @@ void TinderWidget::signUp() {
         return;
     }
 
-    user_ = User();
+    if (!isImageEmpty) {
+        avatar_->upload();
+    }
+//    user_ = User();
 
     user_.description = description;
     user_.faculty = faculty;
@@ -389,7 +387,7 @@ void TinderWidget::login() {
     std::string username = ws2s(userLoginEdit_->text());
     std::string password = ws2s(passwordEdit_->text());
 
-    user_ = User();
+//    user_ = User();
     user_.username = username;
     user_.password = password;
 

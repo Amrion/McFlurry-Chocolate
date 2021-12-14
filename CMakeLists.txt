@@ -37,7 +37,6 @@ set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/headers_client/MainPageWidget.h
         ${PROJECT_SOURCE_DIR}/src_client/SearchPageWidget.cpp
         ${PROJECT_SOURCE_DIR}/src_client/UserWidget.cpp)
 
-
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 add_library(find_rec_lib SHARED ${FIND_REC_LIB})
 add_library(find_client_lib SHARED ${FIND_CLIENT_LIB})
@@ -65,7 +64,9 @@ file(GLOB prod_sources
         "src_server/User.cpp"
         "src_server/main.cpp"
         "hash/md5.h"
-        "hash/md5.cpp")
+        "hash/md5.cpp"
+        "include_server/UpdateRec.h"
+        "src_server/UpdateRec.cpp")
 
 add_executable(${PROJECT_NAME} ${prod_sources})
 

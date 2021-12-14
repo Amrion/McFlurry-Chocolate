@@ -62,5 +62,5 @@ bool TinderServer::login(User &user) {
 
 void TinderServer::logout(User &user) {
     std::unique_lock<std::recursive_mutex> lock(mutex_);
-    user.kill();
+//    user.kill();
 }

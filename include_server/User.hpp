@@ -9,6 +9,7 @@ class User
 {
 public:
     User();
+    ~User();
 
     std::string name;
     std::string surname;
@@ -25,8 +26,4 @@ public:
 
     std::string username;
     std::string password;
-
-    void kill() {
-        this->~User();
-    }
 };
