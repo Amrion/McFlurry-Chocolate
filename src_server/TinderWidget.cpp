@@ -56,6 +56,7 @@ void TinderWidget::letSignUp() {
 
     avatar_->changed().connect([this] {
         isImageEmpty = false;
+        isChanged = true;
     });
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
@@ -312,8 +313,7 @@ void TinderWidget::signUp() {
         return;
     }
 
-    std::string avatar;
-
+//    std::string avatar;
 
     std::string username = ws2s(userLoginEdit_->text());
     std::string password = ws2s(passwordEdit_->text());
@@ -367,9 +367,11 @@ void TinderWidget::signUp() {
     user_.username = username;
     user_.password = password;
 
-    avatar_->uploaded().connect([&] {
-        avatar = avatar_->spoolFileName();
-        user_.user_image.push_back(avatar);
+    avatar_->uploaded().connect([this] {
+        if (isChanged) {
+            user_.user_image.push_back(avatar_->spoolFileName());
+            isChanged = false;
+        }
 
         if (server_.signUp(user_)) {
             login();
