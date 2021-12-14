@@ -5,3 +5,5 @@ User::User()
           course_number(0),
           num_pairs(0)
 { }
+
+User::~User() = default;

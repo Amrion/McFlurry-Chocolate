@@ -39,7 +39,7 @@ private:
     Wt::WLineEdit *telegramEdit_;
     Wt::WLineEdit *ageEdit_;
     Wt::WTextArea *descriptionEdit_;
-    Wt::WButtonGroup *genderBtn_;
+    Wt::WRadioButton *genderBtn_;
     Wt::WFileUpload *avatar_;
 
     Wt::WText     *statusMsg_;
