@@ -33,7 +33,9 @@ TinderWidget::TinderWidget(TinderServer &server, TinderApplication* app)
           app(app),
           server_(server),
           loggedIn_(false),
-          user_(User())
+          user_(User()),
+          isImageEmpty(true),
+          changed(false)
            {
 
     letLogin();
@@ -56,6 +58,7 @@ void TinderWidget::letSignUp() {
 
     avatar_->changed().connect([this] {
         isImageEmpty = false;
+        changed = true;
     });
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
@@ -223,7 +226,7 @@ void TinderWidget::letSignUp() {
 
 void TinderWidget::letLogin() {
     auto cookie = app->environment().getCookie("userToken");
-    if (cookie == 0 || !cookie || cookie->empty()) {
+    if (!cookie || cookie->empty()) {
         clear();
 
         auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
@@ -369,7 +372,7 @@ void TinderWidget::signUp() {
 
     avatar_->uploaded().connect([&] {
         avatar = avatar_->spoolFileName();
-        user_.user_image.push_back(avatar);
+        user_.user_image[0] = avatar;
 
         if (server_.signUp(user_)) {
             login();

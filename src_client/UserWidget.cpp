@@ -1,6 +1,4 @@
 #include "UserWidget.h"
-#include <string>
-#include "Wt/WProgressBar.h"
 
 std::string ws2str(const std::wstring &wstr) {
     using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -45,10 +43,6 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
         myPhoto[user.user_image.size() - 1]->hide();
         int id = server.db_.user_id(user.username);
         server.db_.delete_image(id, "");
-        std::string rename = "mv ../users_images/profilePhoto" + std::to_string(id) + std::to_string(user.user_image.size() - 1) + " ../users_images/deleted";
-        system(rename.c_str());
-        std::string deleteP = "rm ../users_images/deleted";
-        system(deleteP.c_str());
         user.user_image.pop_back();
         deletedPhoto->setText("Нажмите на сохранить внизу для удалении фотографии");
         deletedPhoto->setStyleClass("valid");
@@ -194,13 +188,17 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
                 system(command.c_str());
                 command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
                 system(command.c_str());
+                auto end = std::chrono::system_clock::now();
+                std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+                std::string time = std::ctime(&end_time);
+                time.erase(std::remove(time.begin(),time.end(),' '),time.end());
                 std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
                 command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" +
-                          std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1);
+                          std::to_string(usersInfo.user_id) + time;
                 system(command.c_str());
                 server.db_.save_image("../users_images/profilePhoto" +
-                                      std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1), usersInfo.user_id, "profilePhoto" +
-                                                                                                                                         std::to_string(usersInfo.user_id) + std::to_string(user.user_image.size() - 1));
+                                      std::to_string(usersInfo.user_id) + time, usersInfo.user_id, "profilePhoto" +
+                                                                                                                                         std::to_string(usersInfo.user_id) + time);
             }
             server.db_.save_user(usersInfo);
             outAdd->show();
@@ -214,5 +212,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));
     back->setStyleClass("info");
+    user.rec_users = server.db_.user_rec(user.username);
     back->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/start"));
+
 }

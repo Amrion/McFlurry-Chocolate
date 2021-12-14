@@ -8,7 +8,10 @@
 #include <Wt/WTextArea.h>
 #include <Wt/WIntValidator.h>
 #include <Wt/WFileUpload.h>
-#include <stack>
+#include <ctime>
+#include <chrono>
+#include <string>
+#include <algorithm>
 
 #include "Postgre_DB.h"
 #include "User.hpp"
