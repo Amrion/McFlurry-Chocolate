@@ -26,11 +26,12 @@ bool TinderServer::signUp(User &user) {
         usersInfo.description = user.description;
         std::string command = "mkdir -p ../users_images";
         system(command.c_str());
-        command = "mv " + user.user_image[user.user_image.size() - 1] + " ../users_images";
+        command = "mv " + user.user_image[0] + " ../users_images";
         system(command.c_str());
-        std::filesystem::path p(user.user_image[user.user_image.size() - 1]);
+        std::filesystem::path p(user.user_image[0]);
         command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0);
         system(command.c_str());
+        user.user_image[0] = "../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0);
         db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0), usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0));
         db_.save_user(usersInfo);
         return true;

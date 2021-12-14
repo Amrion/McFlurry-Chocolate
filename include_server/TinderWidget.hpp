@@ -44,8 +44,8 @@ private:
 
     Wt::WText     *statusMsg_;
 
-    bool isImageEmpty;
-    bool changed;
+    bool isImageEmpty = true;
+    bool isChanged = false;
 
     typedef Wt::Core::observing_ptr<Wt::WPushButton> ButtonPtr;
 };
