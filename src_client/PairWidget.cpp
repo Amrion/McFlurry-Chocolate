@@ -1,6 +1,6 @@
 #include "PairWidget.h"
 
-PairWidget::PairWidget(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo, TinderServer& server) : server(server) {
+PairWidget::PairWidget(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo, TinderServer& server, User& user) : server(server), user(user) {
     createInfoPage(mainPageRight, pairInfo);
 }
 
@@ -42,5 +42,6 @@ void PairWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, const USERS
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("На страницу поиска"));
     back->setStyleClass("info");
+    user.rec_users = server.db_.user_rec(user.username);
     back->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/start"));
 }

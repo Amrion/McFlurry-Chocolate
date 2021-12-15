@@ -48,7 +48,7 @@ private:
     std::vector<USERS_INFO> pairsInfo;
 
     void showSearchPhoto(TinderApplication*);
-    void showInfoPair( const USERS_INFO&);
+    void showInfoPair(const USERS_INFO&);
     void showInfoUser();
     void showLoginPage(TinderWidget*);
 };

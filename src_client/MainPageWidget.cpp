@@ -100,7 +100,7 @@ void MainPageWidget::showSearchPhoto( TinderApplication *app) {
 }
 
 void MainPageWidget::showInfoPair(const USERS_INFO &pairInfo) {
-    pairWidget = wStackedWidget->addWidget(std::make_unique<PairWidget>(mainPageRight, pairInfo, server));
+    pairWidget = wStackedWidget->addWidget(std::make_unique<PairWidget>(mainPageRight, pairInfo, server, user));
 
     wStackedWidget->setCurrentWidget(pairWidget);
 }

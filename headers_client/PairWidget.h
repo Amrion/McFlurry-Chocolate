@@ -11,7 +11,7 @@
 
 class PairWidget : public Wt::WContainerWidget {
 public:
-    PairWidget(Wt::WContainerWidget*, const USERS_INFO&, TinderServer&);
+    PairWidget(Wt::WContainerWidget*, const USERS_INFO&, TinderServer&, User&);
 private:
     Wt::WImage* photo;
     Wt::WText* name;
@@ -24,6 +24,7 @@ private:
     Wt::WPushButton* back;
 
     TinderServer& server;
+    User& user;
 
     void createInfoPage(Wt::WContainerWidget*, const USERS_INFO&);
 };
