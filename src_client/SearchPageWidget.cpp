@@ -6,10 +6,11 @@ SearchPageWidget::SearchPageWidget(Wt::WContainerWidget* mainPageRight, User& us
     server(server),
     number(0),
     kol(0) {
-    createSearchPage(mainPageRight, app);
+    this->mainPageRight = mainPageRight;
+    createSearchPage(app);
 }
 
-void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
+void SearchPageWidget::createSearchPage(TinderApplication* app) {
     mainPageRight->clear();
 
     auto photos = mainPageRight->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -62,7 +63,7 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Tin
 
         dislike->clicked().connect([=] {
             server.db_.set_mark(user.username, user.rec_users[kol], -1);
-            changeMan(mainPhoto, mainPageRight, app);
+            changeMan(mainPhoto, app);
 
         });
         like->clicked().connect([=] {
@@ -73,17 +74,17 @@ void SearchPageWidget::createSearchPage(Wt::WContainerWidget* mainPageRight, Tin
             if (server.db_.is_pair(id, pairInfo.user_id) == 1) {
                 addPair(mainPhoto, app);
             } else {
-                changeMan(mainPhoto, mainPageRight, app);
+                changeMan(mainPhoto, app);
             }
         });
 
         info->clicked().connect([=] {
-            showInfoProfile(mainPageRight, app);
+            showInfoProfile(app);
         });
     }
 }
 
-void SearchPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
+void SearchPageWidget::showInfoProfile( TinderApplication* app) {
     mainPageRight->clear();
 
 
@@ -113,7 +114,7 @@ void SearchPageWidget::showInfoProfile(Wt::WContainerWidget* mainPageRight, Tind
     backSearch = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));
     backSearch->setStyleClass("info");
     backSearch->clicked().connect([=] {
-        createSearchPage(mainPageRight, app);
+        createSearchPage(app);
     });
 }
 
@@ -136,7 +137,7 @@ void SearchPageWidget::addPair(Wt::WContainerWidget* contPhoto, TinderApplicatio
 
 }
 
-void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
+void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, TinderApplication* app) {
     contPhoto->removeWidget(photo);
     kol++;
     if (kol == user.rec_users.size()) {
@@ -152,7 +153,7 @@ void SearchPageWidget::changeMan(Wt::WContainerWidget* contPhoto, Wt::WContainer
         photo = contPhoto->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
         photo->setStyleClass("photo");
         number = 0;
-        createSearchPage(mainPageRight, app);
+        createSearchPage(app);
     }
 }
 

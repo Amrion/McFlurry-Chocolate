@@ -1,4 +1,4 @@
-#include <stdlib.h>
+#include <cstdlib>
 #include <filesystem>
 #include <Wt/WServer.h>
 #include <Wt/WFileResource.h>
@@ -24,15 +24,21 @@ bool TinderServer::signUp(User &user) {
         usersInfo.vk_link = user.vk_link;
         usersInfo.telegram_link = user.telegram_link;
         usersInfo.description = user.description;
+
+        auto end = std::chrono::system_clock::now();
+        std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+        std::string time = std::ctime(&end_time);
+        time.erase(std::remove(time.begin(),time.end(),' '),time.end());
+
         std::string command = "mkdir -p ../users_images";
         system(command.c_str());
         command = "mv " + user.user_image[0] + " ../users_images";
         system(command.c_str());
         std::filesystem::path p(user.user_image[0]);
-        command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0);
+        command = "mv ../users_images/" + string(p.stem()) + " ../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + time;
         system(command.c_str());
-        user.user_image[0] = "../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0);
-        db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0), usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + std::to_string(0));
+        user.user_image[0] = "../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + time;
+        db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + time, usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + time);
         db_.save_user(usersInfo);
 
         return true;

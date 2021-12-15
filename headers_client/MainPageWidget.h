@@ -23,7 +23,9 @@ class MainPageWidget : public Wt::WContainerWidget {
 public:
     MainPageWidget(User&, TinderServer&, TinderApplication*, TinderWidget*);
 
-    void handleInternalPath(TinderApplication*, Wt::WContainerWidget*);
+    void creatPage (TinderApplication* app, TinderWidget* menu);
+
+    void handleInternalPath(TinderApplication*);
 private:
     Wt::WAnchor* userName;
     Wt::WImage* avatar;
@@ -32,6 +34,7 @@ private:
     Wt::WImage* pairAvatar;
     Wt::WPushButton* start;
     Wt::WPushButton* exit;
+    Wt::WContainerWidget* mainPageRight;
 
     UserWidget* userWidget;
     PairWidget* pairWidget;
@@ -44,8 +47,8 @@ private:
     std::vector<std::string> pairsLogin;
     std::vector<USERS_INFO> pairsInfo;
 
-    void showSearchPhoto(Wt::WContainerWidget*, TinderApplication*);
-    void showInfoPair(Wt::WContainerWidget*, const USERS_INFO&);
-    void showInfoUser(Wt::WContainerWidget*);
+    void showSearchPhoto(TinderApplication*);
+    void showInfoPair( const USERS_INFO&);
+    void showInfoUser();
     void showLoginPage(TinderWidget*);
 };

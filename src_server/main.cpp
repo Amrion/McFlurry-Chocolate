@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
                          std::bind(createApplication, std::placeholders::_1,
                                    std::ref(tinderServer)));
 
-    UpdateManager updateManager(db);
+   UpdateManager updateManager(db);
 
     if (server.start()) {
         auto t = updateManager.start();

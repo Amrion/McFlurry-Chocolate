@@ -26,6 +26,7 @@ private:
     Wt::WPushButton* dislike;
     Wt::WImage* photo;
     Wt::WPushButton* info;
+    Wt::WContainerWidget* mainPageRight;
 
     Wt::WImage* photoProf;
     Wt::WText* name;
@@ -42,11 +43,11 @@ private:
     size_t kol;
     std::vector<std::string> photoes;
 
-    void createSearchPage(Wt::WContainerWidget*, TinderApplication*);
+    void createSearchPage(TinderApplication*);
 
-    void showInfoProfile(Wt::WContainerWidget*, TinderApplication* app);
+    void showInfoProfile(TinderApplication* app);
 
-    void changeMan(Wt::WContainerWidget*, Wt::WContainerWidget*, TinderApplication* app);
+    void changeMan( Wt::WContainerWidget*, TinderApplication* app);
 
     void changePhotoForward(Wt::WContainerWidget*);
     void changePhotoBack(Wt::WContainerWidget*);
