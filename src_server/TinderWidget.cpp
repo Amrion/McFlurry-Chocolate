@@ -366,10 +366,10 @@ void TinderWidget::signUp() {
     user_.telegram_link = telegram;
     user_.username = username;
     user_.password = password;
-    user_.user_image.resize(1);
 
     avatar_->uploaded().connect([this] {
         if (isChanged) {
+            user_.user_image.resize(1);
             user_.user_image[0] = avatar_->spoolFileName();
             isChanged = false;
         }
