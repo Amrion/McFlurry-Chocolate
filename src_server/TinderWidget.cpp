@@ -369,7 +369,8 @@ void TinderWidget::signUp() {
 
     avatar_->uploaded().connect([this] {
         if (isChanged) {
-            user_.user_image.push_back(avatar_->spoolFileName());
+            user_.user_image.resize(1);
+            user_.user_image[0] = avatar_->spoolFileName();
             isChanged = false;
         }
 
