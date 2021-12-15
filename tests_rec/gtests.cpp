@@ -129,6 +129,24 @@ TEST(DBSCAN_CHECK, TWO_CIRCLES_BY_VALUES) {
     }
 }
 
+TEST(RECSYS_CHECK, TWO_CIRCLES_BY_VALUES) {
+    // generate Data for clustering!
+    const size_t NUM_IN_EACH_CLUSTER = 1000;
+    std::vector<std::vector<float>> X;
+
+    generate_circle(X, 10, 0, 0, NUM_IN_EACH_CLUSTER);
+    generate_circle(X, 3, 0, 0, NUM_IN_EACH_CLUSTER);
+
+    DBScan model;
+    model.fit(&X);
+    std::vector<float> user_values = {0., 0.};
+    std::vector<int> ans = model.predict(user_values);
+
+    for (size_t i = 0; i < ans.size(); ++i) {
+        EXPECT_EQ(ans[i], i + NUM_IN_EACH_CLUSTER);
+    }
+}
+
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -114,7 +114,7 @@ std::vector<int> RecSys::predict(const int user_id) {
         std::copy_if(als_recs.begin(), als_recs.end(), std::back_inserter(recs),
                      predicate);
         std::copy_if(als_recs.begin(), als_recs.end(), std::back_inserter(recs),
-                     not_predicate);        
+                     not_predicate);
 
         return recs;
     }
