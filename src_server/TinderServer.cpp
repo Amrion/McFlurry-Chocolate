@@ -40,6 +40,7 @@ bool TinderServer::signUp(User &user) {
         user.user_image[0] = "../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + time;
         db_.save_image("../users_images/profilePhoto" + std::to_string(usersInfo.user_id) + time, usersInfo.user_id, "profilePhoto" + std::to_string(usersInfo.user_id) + time);
         db_.save_user(usersInfo);
+
         return true;
     }
     return false;

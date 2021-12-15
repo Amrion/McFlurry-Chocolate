@@ -371,10 +371,19 @@ void TinderWidget::signUp() {
         if (isChanged) {
             user_.user_image.resize(1);
             user_.user_image[0] = avatar_->spoolFileName();
+            std::string command = "mkdir -p ../users_images_tmp";
+            system(command.c_str());
+            command = "mv " + user_.user_image[0] + " ../users_images_tmp";
+            system(command.c_str());
+            std::filesystem::path p(user_.user_image[0]);
+            user_.user_image[0] = "../users_images_tmp/" + string(p.stem());
+
             isChanged = false;
         }
 
         if (server_.signUp(user_)) {
+            std::string command = "rm -rf ../users_images_tmp";
+            system(command.c_str());
             login();
         } else {
             statusMsg_->setText("Это имя уже используется");
