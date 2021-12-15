@@ -1,7 +1,12 @@
 #include "MainPageWidget.h"
 
-MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplication* app, TinderWidget* menu)
-    : user(user), server(server) {
+MainPageWidget::MainPageWidget(User &user, TinderServer &server, TinderApplication *app, TinderWidget *menu)
+        : user(user), server(server) {
+    creatPage(app, menu);
+}
+
+void MainPageWidget::creatPage(TinderApplication *app, TinderWidget *menu) {
+    clear();
     auto mainPage = addWidget(std::make_unique<Wt::WContainerWidget>());
     mainPage->setStyleClass("page");
 
@@ -21,7 +26,7 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
 
     exit = myNameWidget->addWidget(std::make_unique<Wt::WPushButton>("Выйти"));
     exit->setStyleClass("exit");
-    exit->clicked().connect([=]{
+    exit->clicked().connect([=] {
         app->setInternalPath("/");
         showLoginPage(menu);
     });
@@ -39,7 +44,7 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
         auto pairAvatarWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
         pairAvatarWidget->setStyleClass("pairDiv");
 
-        do  {
+        do {
             pairsInfo[j] = server.db_.user_info(pairsLogin[j]);
             std::vector<std::string> photoes = server.db_.user_image(pairsInfo[j].user_id);
             link = Wt::WLink("/pair/" + std::to_string(pairsInfo[j].user_id));
@@ -66,12 +71,12 @@ MainPageWidget::MainPageWidget(User& user, TinderServer& server, TinderApplicati
     addWidget(std::unique_ptr<Wt::WStackedWidget>(wStackedWidget));
 
     app->internalPathChanged().connect([=] {
-        handleInternalPath(app, mainPageRight);
-    }
+                                           handleInternalPath(app, mainPageRight);
+                                       }
     );
 }
 
-void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWidget* mainPageRight) {
+void MainPageWidget::handleInternalPath(TinderApplication *app, Wt::WContainerWidget *mainPageRight) {
     if (app->internalPath() == "/start") {
         showSearchPhoto(mainPageRight, app);
     }
@@ -86,24 +91,24 @@ void MainPageWidget::handleInternalPath(TinderApplication* app, Wt::WContainerWi
     }
 }
 
-void MainPageWidget::showSearchPhoto(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
+void MainPageWidget::showSearchPhoto(Wt::WContainerWidget *mainPageRight, TinderApplication *app) {
     searchPageWidget = wStackedWidget->addWidget(std::make_unique<SearchPageWidget>(mainPageRight, user, server, app));
 
     wStackedWidget->setCurrentWidget(searchPageWidget);
 }
 
-void MainPageWidget::showInfoPair(Wt::WContainerWidget* mainPageRight, const USERS_INFO& pairInfo) {
+void MainPageWidget::showInfoPair(Wt::WContainerWidget *mainPageRight, const USERS_INFO &pairInfo) {
     pairWidget = wStackedWidget->addWidget(std::make_unique<PairWidget>(mainPageRight, pairInfo, server));
 
     wStackedWidget->setCurrentWidget(pairWidget);
 }
 
-void MainPageWidget::showInfoUser(Wt::WContainerWidget* mainPageRight) {
+void MainPageWidget::showInfoUser(Wt::WContainerWidget *mainPageRight) {
     userWidget = wStackedWidget->addWidget(std::make_unique<UserWidget>(mainPageRight, user, server));
 
     wStackedWidget->setCurrentWidget(userWidget);
 }
 
-void MainPageWidget::showLoginPage(TinderWidget* menu) {
+void MainPageWidget::showLoginPage(TinderWidget *menu) {
     menu->logout();
 }

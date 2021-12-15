@@ -23,6 +23,8 @@ class MainPageWidget : public Wt::WContainerWidget {
 public:
     MainPageWidget(User&, TinderServer&, TinderApplication*, TinderWidget*);
 
+    void creatPage (TinderApplication* app, TinderWidget* menu);
+
     void handleInternalPath(TinderApplication*, Wt::WContainerWidget*);
 private:
     Wt::WAnchor* userName;
