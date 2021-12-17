@@ -92,7 +92,7 @@ jobs:
              mkdir build
              cd build
              sudo cmake ..
-             sudo make wt wthttp -j8
+             sudo make wt wthttp -j4
              sudo make install
              sudo ln -s /usr/local/lib/libwt.so /usr/lib/
              
