@@ -92,7 +92,7 @@ jobs:
              mkdir build
              cd build
              sudo cmake ..
-             sudo make wt wthttp -j4
+             sudo make wt wthttp -j8
              sudo make install
              sudo ln -s /usr/local/lib/libwt.so /usr/lib/
              
@@ -109,11 +109,10 @@ jobs:
              cd cmake-built
              cmake ..
              make
-             ./Bauman_Tinder "--docroot" ".." "--http-address" "0.0.0.0" "--http-port" "9000" "--config" "../wt_config.xml"
              
       - run: |
              cd cmake-built
-             valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./Bauman_Tinder "--docroot" ".." "--http-address" "0.0.0.0" "--http-port" "9000" "--config" "../wt_config.xml"
+             valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./Bauman_Tinder
              
       - run: |
              mkdir build_db
