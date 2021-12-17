@@ -35,6 +35,11 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install cmake
+             
+      - run: |
+             sudo apt-get update
+             sudo apt-get install wget
+             
       - run: |
              sudo apt-get update
              sudo apt-get install libboost-all-dev
@@ -50,7 +55,7 @@ jobs:
       - run: |
              sudo apt-get update
              sudo apt-get install gcovr
-
+             
       - run: |
              cppcheck ./*/*.cpp ./*/*.hpp
 
@@ -84,6 +89,36 @@ jobs:
              make
              valgrind --leak-check=full ./tests_db 
              valgrind --leak-check=full ./tests_rec
+             
       - run: |
              cppcheck ./*/*.cpp ./*/*.hpp
-
+             
+      - run: |
+             wget -c https://github.com/emweb/wt/archive/4.5.0.tar.gz
+             tar xvxf 4.5.0.tar.gz
+             cd wt-4.5.0
+             mkdir build
+             cd build
+             sudo cmake ..
+             sudo make wt wthttp -j4
+             sudo make install
+             sudo ln -s /usr/local/lib/libwt.so /usr/lib/
+             
+      - run: |
+            cd src_client
+            cppcheck -I {{../headers_client}} —inconclusive —enable=all —language=c++ —check-config —suppress=missingIncludeSystem —error-exitcode=1 *.cpp
+            
+      - run: |
+            cd src_client
+            clang-format -i -style=WebKit *.cpp
+            
+      - run: |
+             mkdir cmake-built
+             cd cmake-built
+             cmake ..
+             make
+             ./Bauman_Tinder "--docroot .. --http-address 0.0.0.0 --http-port 9000 --config ../wt_config.xml"
+             
+      - run: |
+             cd cmake-built
+             valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./Bauman_Tinder "--docroot .. --http-address 0.0.0.0 --http-port 9000 --config ../wt_config.xml"
