@@ -4,4 +4,5 @@ src_db/main.cpp
 .idea
 cmake-build-debug
 users_images
+Dockerfile
 

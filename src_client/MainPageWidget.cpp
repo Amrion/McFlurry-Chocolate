@@ -24,15 +24,13 @@ void MainPageWidget::creatPage(TinderApplication *app, TinderWidget *menu) {
     userName->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/user"));
     userName->setStyleClass("name");
 
+
     mainPageRight = mainPage->addWidget(std::make_unique<Wt::WContainerWidget>());
     mainPageRight->setStyleClass("people");
 
     exit = myNameWidget->addWidget(std::make_unique<Wt::WPushButton>("Выйти"));
+    exit->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/"));
     exit->setStyleClass("exit");
-    exit->clicked().connect([=] {
-        app->setInternalPath("/");
-        showLoginPage(menu);
-    });
 
     auto pWidget = mainPageLeft->addWidget(std::make_unique<Wt::WContainerWidget>());
     pWidget->setStyleClass("pair");
@@ -73,12 +71,12 @@ void MainPageWidget::creatPage(TinderApplication *app, TinderWidget *menu) {
     addWidget(std::unique_ptr<Wt::WStackedWidget>(wStackedWidget));
 
     app->internalPathChanged().connect([=] {
-                                           handleInternalPath(app);
+                                           handleInternalPath(menu, app);
                                        }
     );
 }
 
-void MainPageWidget::handleInternalPath(TinderApplication *app) {
+void MainPageWidget::handleInternalPath(TinderWidget *menu, TinderApplication *app) {
     if (app->internalPath() == "/start") {
         showSearchPhoto(app);
     }
@@ -90,6 +88,9 @@ void MainPageWidget::handleInternalPath(TinderApplication *app) {
     }
     if (app->internalPath() == "/user") {
         showInfoUser();
+    }
+    if (app->internalPath() == "/") {
+        showLoginPage(menu, app);
     }
 }
 
@@ -111,6 +112,10 @@ void MainPageWidget::showInfoUser() {
     wStackedWidget->setCurrentWidget(userWidget);
 }
 
-void MainPageWidget::showLoginPage(TinderWidget *menu) {
+void MainPageWidget::showLoginPage(TinderWidget *menu, TinderApplication *app) {
     menu->logout();
+    menu = wStackedWidget->addWidget(std::make_unique<TinderWidget>(server, app));
+
+    Wt::WWebWidget::doJavaScript("location.reload()");
+    wStackedWidget->setCurrentWidget(menu);
 }

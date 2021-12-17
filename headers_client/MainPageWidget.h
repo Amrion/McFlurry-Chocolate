@@ -25,7 +25,7 @@ public:
 
     void creatPage (TinderApplication* app, TinderWidget* menu);
 
-    void handleInternalPath(TinderApplication*);
+    void handleInternalPath(TinderWidget*, TinderApplication*);
 private:
     Wt::WAnchor* userName;
     Wt::WImage* avatar;
@@ -50,5 +50,5 @@ private:
     void showSearchPhoto(TinderApplication*);
     void showInfoPair(const USERS_INFO&);
     void showInfoUser();
-    void showLoginPage(TinderWidget*);
+    void showLoginPage(TinderWidget*, TinderApplication*);
 };

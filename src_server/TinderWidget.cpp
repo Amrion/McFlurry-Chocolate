@@ -202,6 +202,7 @@ void TinderWidget::letSignUp() {
 
 
     auto signUp = vLayout->addWidget(std::make_unique<Wt::WPushButton>("Зарегистрироваться"), 0, Wt::AlignmentFlag::Center);
+    signUp->setStyleClass("info");
 
     signUp->clicked().connect(this, &TinderWidget::signUp);
 
@@ -229,7 +230,6 @@ void TinderWidget::letLogin() {
 
         auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
 
-
         auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
         hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
@@ -238,7 +238,6 @@ void TinderWidget::letLogin() {
         userLoginEdit_->setPlaceholderText("Логин");
 
         vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
-
 
         hLayout = std::make_unique<Wt::WHBoxLayout>();
 
@@ -252,6 +251,7 @@ void TinderWidget::letLogin() {
 
 
         auto logIn = vLayout->addWidget(std::make_unique<Wt::WPushButton>("Войти"), 0, Wt::AlignmentFlag::Center);
+        logIn->setStyleClass("info");
 
         logIn->clicked().connect(this, &TinderWidget::login);
         userLoginEdit_->enterPressed().connect(this, [&] {
@@ -300,7 +300,7 @@ void TinderWidget::logout() {
 
         server_.logout(user_);
 
-        letLogin();
+        //letLogin();
     }
 }
 
@@ -407,6 +407,7 @@ void TinderWidget::login() {
         app->setCookie("userToken", user_.username, 604800);
         loggedIn_ = true;
         clear();
+        app->setInternalPath("/home");
         addWidget(std::make_unique<MainPageWidget>(user_,server_, app, this));
     } else {
         statusMsg_->setText("Неверный логин или пароль");

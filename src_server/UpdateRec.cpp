@@ -14,11 +14,11 @@ UpdateManager::update_thread UpdateManager::start() {
     return update_thread{[this]{
                              using namespace std;
                              using namespace std::chrono;
-                             auto next = system_clock::now() + 2min;
+                             auto next = system_clock::now() + 1min;
                              while (!stop_) {
                                  this_thread::sleep_until(next);
                                  update(db_);
-                                 next += 2min;
+                                 next += 1min;
                              }
                          }};
 }
