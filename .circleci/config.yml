@@ -81,14 +81,6 @@ jobs:
              ./configure
              make -j4
              sudo make install
-
-      - run: |
-             mkdir build_db
-             cd build_db
-             cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
-             make
-             valgrind --leak-check=full ./tests_db 
-             valgrind --leak-check=full ./tests_rec
              
       - run: |
              cppcheck ./*/*.cpp ./*/*.hpp
@@ -122,3 +114,11 @@ jobs:
       - run: |
              cd cmake-built
              valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./Bauman_Tinder "--docroot .. --http-address 0.0.0.0 --http-port 9000 --config ../wt_config.xml"
+             
+      - run: |
+             mkdir build_db
+             cd build_db
+             cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
+             make
+             valgrind --leak-check=full ./tests_db 
+             valgrind --leak-check=full ./tests_rec
