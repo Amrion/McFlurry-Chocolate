@@ -22,6 +22,28 @@ Postgre_DB::~Postgre_DB() {
     }
 }
 
+result Postgre_DB::select(const std::string & table, std::vector <std::string> what, std::string where) {
+    std::string request = "SELECT ";
+    if (what.size() > 0) {
+        for (std::size_t i = 0; i < what.size(); ++i) {
+            request += what[i] + ", ";
+        }
+        request = request.substr(0, request.size() - 2);
+    }
+    else {
+        request += "*";
+    }
+    request += " FROM " + table;
+    if (where != "") {
+        request += " WHERE " + where;
+    }
+    request += ";";
+    nontransaction N(*PG_conn);
+    result res = N.exec(request);
+    N.commit();
+    return res;
+}
+
 int Postgre_DB::max_id(const std::string & table, std::string name_id) {
     nontransaction N(*PG_conn);
     std::string check = "SELECT * FROM " + table;
@@ -410,17 +432,23 @@ std::vector <std::vector <int>> Postgre_DB::marks_matrix() {
 
 int Postgre_DB::gender_is_different(int id1, int id2) {
     nontransaction N(*PG_conn);
-    std::string request = "SELECT gender FROM USERS_INFO WHERE user_id = " + std::to_string(id1) + ";";
+    string request = "SELECT gender FROM USERS_INFO WHERE user_id = " + to_string(id1) + ";";
     result res = N.exec(request);
-    result::const_iterator c = res.begin();
-    std::string gender1 = c[0].as<std::string>();
+    string gender1 = "";
+    if (res.begin() != res.end()) {
+        result::const_iterator c = res.begin();
+        gender1 = c[0].as<string>();
+    }
     res.clear();
     N.commit();
     nontransaction N1(*PG_conn);
-    request = "SELECT gender FROM USERS_INFO WHERE user_id = " + std::to_string(id2) + ";";
+    request = "SELECT gender FROM USERS_INFO WHERE user_id = " + to_string(id2) + ";";
     result res1 = N1.exec(request);
-    result::const_iterator c1 = res1.begin();
-    std::string gender2 = c1[0].as<std::string>();
+    string gender2 = "";
+    if (res1.begin() != res1.end()) {
+        result::const_iterator c1 = res1.begin();
+        gender2 = c1[0].as<string>();
+    }
     res1.clear();
     N1.commit();
     return (gender1 != gender2);
