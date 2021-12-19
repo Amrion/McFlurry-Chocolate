@@ -28,7 +28,14 @@ include_directories(${Boost_INCLUDE_DIRS})
 # Threads
 find_package(Threads)
 
-set(FIND_RECSYS_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
+set(FIND_RECSYS_LIB 
+    ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp 
+    ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp 
+    ${PROJECT_SOURCE_DIR}/src_rec/als.cpp 
+    ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp 
+    ${PROJECT_SOURCE_DIR}/src_rec/utility.cpp 
+    ${PROJECT_SOURCE_DIR}/src_rec/textsimilarity.cpp
+)
 add_library(find_recsys_lib SHARED ${FIND_RECSYS_LIB})
 target_include_directories(find_recsys_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
 

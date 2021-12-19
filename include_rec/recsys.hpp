@@ -9,6 +9,8 @@
 
 #include "als.hpp"
 #include "dbscan.hpp"
+#include "textsimilarity.hpp"
+#include "utility.hpp"
 
 using namespace boost::numeric::ublas;
 
