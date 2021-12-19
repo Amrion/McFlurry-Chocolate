@@ -5,7 +5,7 @@
 using namespace pqxx;
 
 class DB {
-  public:
+  private:
     virtual int save(const std::string & table, std::vector <std::string> values, std::string where = "") = 0;
     virtual int update(const std::string & table, std::vector <std::string> values, std::string where = "") = 0;
     virtual int insert(const std::string & table, std::vector <std::string> values) = 0;
