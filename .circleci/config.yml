@@ -111,10 +111,6 @@ jobs:
              make
              
       - run: |
-             cd cmake-built
-             valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --error-exitcode=1 ./Bauman_Tinder
-             
-      - run: |
              mkdir build_db
              cd build_db
              cmake .. -DBUILD_MAIN=OFF -DBUILD_TESTS=ON
