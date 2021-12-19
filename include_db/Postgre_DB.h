@@ -5,6 +5,7 @@
 #include "dirent.h"
 #include <fstream>
 #include <memory>
+#include <list>
 
 class Postgre_DB : DB {
     private:

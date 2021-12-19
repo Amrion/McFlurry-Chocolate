@@ -24,7 +24,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(include_db)
 include_directories(include_rec)
 
-set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
+set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp ${PROJECT_SOURCE_DIR}/src_rec/utility.cpp ${PROJECT_SOURCE_DIR}/src_rec/textsimilarity.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 add_library(find_rec_lib SHARED ${FIND_REC_LIB})
@@ -52,4 +52,3 @@ if (BUILD_TESTS)
   gtest_add_tests(TARGET tests_db)
   gtest_add_tests(TARGET tests_rec)
 endif()
-
