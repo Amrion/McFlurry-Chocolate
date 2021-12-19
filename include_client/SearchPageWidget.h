@@ -45,9 +45,9 @@ private:
 
     void createSearchPage(TinderApplication*);
 
-    void showInfoProfile(TinderApplication* app);
+    void showInfoProfile(TinderApplication*);
 
-    void changeMan( Wt::WContainerWidget*, TinderApplication* app);
+    void changeMan(Wt::WContainerWidget*, TinderApplication*);
 
     void changePhotoForward(Wt::WContainerWidget*);
     void changePhotoBack(Wt::WContainerWidget*);

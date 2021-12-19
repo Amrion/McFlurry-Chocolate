@@ -37,8 +37,8 @@ void PairWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, const USERS
 
     link = Wt::WLink(pairInfo.telegram_link);
     link.setTarget(Wt::LinkTarget::NewWindow);
-    net = info->addWidget(std::make_unique<Wt::WAnchor>(link, pairInfo.telegram_link));
-    net->setStyleClass("vkNet");
+    tg = info->addWidget(std::make_unique<Wt::WAnchor>(link, pairInfo.telegram_link));
+    tg->setStyleClass("vkNet");
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("На страницу поиска"));
     back->setStyleClass("info");
