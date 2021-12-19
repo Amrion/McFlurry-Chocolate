@@ -27,11 +27,11 @@ include_directories(hash)
 include_directories(include_db)
 include_directories(include_rec)
 include_directories(include_server)
-include_directories(headers_client)
+include_directories(include_client)
 
 set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
-set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/headers_client/MainPageWidget.h
+set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/include_client/MainPageWidget.h
         ${PROJECT_SOURCE_DIR}/src_client/MainPageWidget.cpp
         ${PROJECT_SOURCE_DIR}/src_client/PairWidget.cpp
         ${PROJECT_SOURCE_DIR}/src_client/SearchPageWidget.cpp
@@ -44,7 +44,7 @@ add_library(find_client_lib SHARED ${FIND_CLIENT_LIB})
 
 target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
 target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
-target_include_directories(find_client_lib PUBLIC ${PROJECT_SOURCE_DIR}/headers_client)
+target_include_directories(find_client_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_client)
 
 # Build main
 option(BUILD_MAIN OFF)
