@@ -14,12 +14,14 @@ class Postgre_DB : DB {
         virtual int update(const std::string & table, std::vector <std::string> values, std::string where = "") override;
         virtual int insert(const std::string & table, std::vector <std::string> values) override;
         virtual int delete_(const std::string & table, std::string where = "") override;
+        virtual result select(const std::string table, std::string where = "", std::vector <std::string> what = std::vector <std::string>()) override;
         int max_id(const std::string & table, std::string name_id);
         int init_tables();
         std::vector <std::vector<float>> users_params();
         std::vector <std::vector <int>> marks_matrix();
+        std::string remove_danger_characters(const std::string & row_column);
+        
     public:
-        result select(const std::string & table, std::vector <std::string> what = std::vector <std::string>(), std::string where = "");
         Postgre_DB(std::string host, std::string port, std::string db_name, std::string user, std::string password);
         ~Postgre_DB();
         int drop_tables();

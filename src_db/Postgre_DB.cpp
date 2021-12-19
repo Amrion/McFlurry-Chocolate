@@ -22,11 +22,19 @@ Postgre_DB::~Postgre_DB() {
     }
 }
 
-result Postgre_DB::select(const std::string & table, std::vector <std::string> what, std::string where) {
+std::string Postgre_DB::remove_danger_characters(const std::string & row_column) {
+    std::string prep_column = "";
+    for (auto i : row_column) {
+        if (i != '\'' and i != '\"') prep_column += i;
+    }
+    return prep_column;
+}
+
+result Postgre_DB::select(const std::string table, std::string where, std::vector <std::string> what) {
     std::string request = "SELECT ";
     if (what.size() > 0) {
         for (std::size_t i = 0; i < what.size(); ++i) {
-            request += what[i] + ", ";
+            request += remove_danger_characters(what[i]) + ", ";
         }
         request = request.substr(0, request.size() - 2);
     }
@@ -45,17 +53,16 @@ result Postgre_DB::select(const std::string & table, std::vector <std::string> w
 }
 
 int Postgre_DB::max_id(const std::string & table, std::string name_id) {
-    nontransaction N(*PG_conn);
-    std::string check = "SELECT * FROM " + table;
-    result res = N.exec(check);
+    result res = select(table);
     if (res.begin() == res.end()) {
         res.clear();
         return -1;
     }
     else {
         res.clear();
-        std::string sql = "SELECT MAX(" + name_id + ") FROM " + table;
-        result res(N.exec(sql));
+        std::vector <std::string> column;
+        column.push_back("MAX(" + name_id + ")");
+        result res = select(table, "", column);
         result::const_iterator c = res.begin();
         int m = c[0].as<int>();
         res.clear();
@@ -69,7 +76,7 @@ int Postgre_DB::insert(const std::string & table, std::vector <std::string> valu
     try {
         request = "INSERT INTO " + table + " VALUES('";
         for (size_t i = 0; i < values.size(); ++i) {
-            request += values[i] + "', '";
+            request += remove_danger_characters(values[i]) + "', '";
         } 
         request = request.substr(0, request.size() - 3);
         request += ");";
@@ -89,13 +96,15 @@ int Postgre_DB::update(const std::string & table, std::vector <std::string> valu
     for (auto sym : table) {
         lower_table += tolower(sym);
     }
-    request = "SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '" + lower_table + "';";
-    result columns = N.exec(request);
+    std::vector <std::string> column;
+    column.push_back("column_name");
+    std::string wh = "TABLE_NAME = '" + lower_table + "'";
+    result columns = select("INFORMATION_SCHEMA.COLUMNS", wh, column);
     try {
         request = "UPDATE " + table + " SET ";
         std::size_t i = 0;
         for (result::const_iterator c = columns.begin(); c != columns.end(); ++c) {
-            request += c[0].as<std::string>() + " = '" + values[i++] + "', ";
+            request += c[0].as<std::string>() + " = '" + remove_danger_characters(values[i++]) + "', ";
         }
         if (i < values.size()) return 1;
 
@@ -116,16 +125,9 @@ int Postgre_DB::update(const std::string & table, std::vector <std::string> valu
 }
 
 int Postgre_DB::save(const std::string & table, std::vector <std::string> values, std::string where) {
-    work N(*PG_conn);
-    std::string request;
-    request = "SELECT * FROM " + table;
-    if (where != "") {
-        request += " WHERE " + where;
-    } 
-    request += ";";
-    result check = N.exec(request);
+    std::vector <std::string> column;
+    result check = select(table, where);
     try {
-        N.commit();
         if ((where != "") and (check.begin() != check.end())) {
             check.clear();
             return update(table, values, where);
@@ -260,14 +262,12 @@ int Postgre_DB::drop_tables() {
 }
 
 int Postgre_DB::user_exist(std::string login, std::string password) {
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT * FROM LOGIN WHERE login = '" + login + "'"; 
+    std::string where = "login = '" + remove_danger_characters(login) + "'";
     if (password != "") {
-        request += " AND password = '" + password + "'";
+        where += " AND password = '" + password + "'";
     }
-    request += ";";
     try {
-        result res = N.exec(request);
+        result res = select("LOGIN", where);
         if (res.begin() != res.end()) {
             res.clear();
             return 1;
@@ -281,9 +281,8 @@ int Postgre_DB::user_exist(std::string login, std::string password) {
 }
 
 USERS_INFO Postgre_DB::user_info(std::string login) {
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT * FROM USERS_INFO WHERE (SELECT user_id FROM LOGIN WHERE login = '" + login + "') = user_id;"; 
-    result res = N.exec(request);
+    std::string where = "(SELECT user_id FROM LOGIN WHERE login = '" + login + "') = user_id"; 
+    result res = select("USERS_INFO", where);
     USERS_INFO user;
     if (res.begin() != res.end()) {
         result::const_iterator c = res.begin();
@@ -343,9 +342,8 @@ int Postgre_DB::save_user(USERS_INFO user_info) {
 }
 
 int Postgre_DB::user_id(std::string login) {
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT user_id FROM LOGIN WHERE login = '" + login + "';"; 
-    result res = N.exec(request);
+    std::string where = "login = '" + login + "'"; 
+    result res = select("LOGIN", where);
     if (res.begin() == res.end()) {
         res.clear();
         return -1;
@@ -359,16 +357,15 @@ int Postgre_DB::user_id(std::string login) {
 }
 
 std::string Postgre_DB::user_login(int id) {
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT login FROM LOGIN WHERE user_id = '" + std::to_string(id) + "';"; 
-    result res = N.exec(request);
+    std::string where = "user_id = '" + std::to_string(id) + "'"; 
+    result res = select("LOGIN", where);
     if (res.begin() == res.end()) {
         res.clear();
         return "";
     }
     else {
         result::const_iterator c = res.begin();
-        std::string s = c[0].as<std::string>();
+        std::string s = c[1].as<std::string>();
         res.clear();
         return s;
     }
@@ -420,44 +417,39 @@ std::vector <std::vector <int>> Postgre_DB::marks_matrix() {
             temp.push_back(0);
         marks.push_back(temp);
     }
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT id_marker, id_marked, mark FROM MARKS;";
-    result res = N.exec(request);
+    result res = select("MARKS");
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
-        marks[c[0].as<int>()][c[1].as<int>()] = c[2].as<int>();
+        marks[c[1].as<int>()][c[2].as<int>()] = c[3].as<int>();
     }
     res.clear();
     return marks;
 }
 
 int Postgre_DB::gender_is_different(int id1, int id2) {
-    nontransaction N(*PG_conn);
-    string request = "SELECT gender FROM USERS_INFO WHERE user_id = " + to_string(id1) + ";";
-    result res = N.exec(request);
-    string gender1 = "";
+    std::string where = "user_id = " + to_string(id1);
+    std::vector <std::string> column;
+    column.push_back("gender");
+    result res = select("USERS_INFO", where, column);
+    std::string gender1 = "";
     if (res.begin() != res.end()) {
         result::const_iterator c = res.begin();
         gender1 = c[0].as<string>();
     }
     res.clear();
-    N.commit();
-    nontransaction N1(*PG_conn);
-    request = "SELECT gender FROM USERS_INFO WHERE user_id = " + to_string(id2) + ";";
-    result res1 = N1.exec(request);
-    string gender2 = "";
+    where = "user_id = " + to_string(id2);
+    result res1 = select("USERS_INFO", where, column);
+    std::string gender2 = "";
     if (res1.begin() != res1.end()) {
         result::const_iterator c1 = res1.begin();
         gender2 = c1[0].as<string>();
     }
     res1.clear();
-    N1.commit();
     return (gender1 != gender2);
 }
 
 int Postgre_DB::seen(int id1, int id2) {
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT * FROM MARKS WHERE id_marker = " + std::to_string(id1) + "AND id_marked = " + std::to_string(id2) + ";";
-    result res = N.exec(request);
+    std::string where = "id_marker = " + std::to_string(id1) + "AND id_marked = " + std::to_string(id2);
+    result res = select("MARKS", where);
     if (res.begin() != res.end()) {
         res.clear();
         return 1;
@@ -476,9 +468,11 @@ int Postgre_DB::is_pair(int id1, int id2) {
 
 std::vector <std::vector<float>> Postgre_DB::users_params() {
     std::vector <std::vector<float>> users_params;
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT age, course_number, num_pairs FROM USERS_INFO;";
-    result res = N.exec(request);
+    std::vector <std::string> columns;
+    columns.push_back("age");
+    columns.push_back("course_number");
+    columns.push_back("num_pairs");
+    result res = select("USERS_INFO", "", columns);
 
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
         std::vector <float> temp;
@@ -530,13 +524,11 @@ std::vector <std::string> Postgre_DB::user_rec(std::string login) {
     std::vector <std::string> rec;
     std::vector<int> rec_id;
     int us_id = user_id(login);
-    nontransaction N(*PG_conn);
-    std::string request = "SELECT user_rec FROM USERS_REC WHERE user_id = " + std::to_string(us_id) + ";";
-    result res = N.exec(request);
+    std::string where = "user_id = " + std::to_string(us_id);
+    result res = select("USERS_REC", where);
     if (res.begin() != res.end()) {
         result::const_iterator c = res.begin();
-        N.commit();
-        std::string row = c[0].as<std::string>();
+        std::string row = c[1].as<std::string>();
         res.clear();
         int kol = 0;
         if (row != "{}") {
@@ -555,7 +547,6 @@ std::vector <std::string> Postgre_DB::user_rec(std::string login) {
     }
 
     else {
-        N.commit();
         res.clear();
         std::vector <std::vector <int>> marks = marks_matrix();
         std::vector <std::vector <float>> u_params = users_params();
@@ -605,13 +596,12 @@ int Postgre_DB::save_image(std::string path_to_file, int user_id, std::string na
 
 std::vector <std::string> Postgre_DB::user_image(int user_id, std::string image_name) {
     std::vector <std::string> paths;
-    std::string request = "SELECT * FROM IMAGES WHERE user_id = " + std::to_string(user_id);
+    std::string where = "user_id = " + std::to_string(user_id);
     if (image_name != "") {
-        request += " AND image_name = '" + image_name + "'";
+        where += " AND image_name = '" + image_name + "'";
     }
-    request += " ORDER BY image_id;";
-    nontransaction N(*PG_conn);
-    result res = N.exec(request);
+    where += " ORDER BY image_id";
+    result res = select("IMAGES", where);
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
         paths.push_back(c[3].as<std::string>());
     }
