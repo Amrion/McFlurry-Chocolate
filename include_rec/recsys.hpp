@@ -6,6 +6,7 @@
 #include <numeric>
 #include <thread>
 #include <vector>
+#include <list>
 
 #include "als.hpp"
 #include "dbscan.hpp"
@@ -20,6 +21,7 @@ class RecSys {
     const unsigned max_thread = 100;
 
     DBScan cluster_model;
+    TextSimilarity text_model;
     std::shared_ptr<std::map<int, std::vector<int>>> recs;
 
     matrix<float> create_matrix(const std::vector<std::vector<int>>& V);
@@ -44,10 +46,11 @@ class RecSys {
 
     void fit(const std::vector<std::vector<int>>& V,
              std::vector<std::vector<float>>* X,
+             std::list<std::string>& corpus,
 
              std::vector<int> users_id = std::vector<int>(0), int _k = 5,
              float _eps = 0.01, float _learning_rate = 0.5, int _nb_epoch = 0,
-             int n_jobs = -1, bool use_reg = true,
+             int n_jobs = -1,
 
              float cl_eps = 2.5, size_t min_sample = 4);
 
@@ -56,7 +59,7 @@ class RecSys {
         std::vector<int> users_id = std::vector<int>(0),
 
         int _k = 5, float _eps = 0.01, float _learning_rate = 0.5,
-        int _nb_epoch = 0, int n_jobs = -1, bool use_reg = true);
+        int _nb_epoch = 0, int n_jobs = -1);
 
     std::vector<int> predict(const int user_id);
     std::vector<int> predict(const std::vector<float>& user_values);

@@ -4,15 +4,15 @@
 
 // Static template methods are defined in utility.hpp
 
-float Utility::cosine_similarity(const std::vector<float>& x, const std::vector<float>& y) {
-    if (x.size() != y.size())
-        return 0;
+float Utility::cosine_similarity(const std::vector<float>& x,
+                                 const std::vector<float>& y) {
+    if (x.size() != y.size()) return 0;
 
     float xy = 0, norm_x = 0, norm_y = 0;
     for (size_t i = 0; i < x.size(); ++i) {
-        xy += x[i]*y[i];
-        norm_x += x[i]*x[i];
-        norm_y += y[i]*y[i];
+        xy += x[i] * y[i];
+        norm_x += x[i] * x[i];
+        norm_y += y[i] * y[i];
     }
 
     return xy / (sqrt(norm_x) * sqrt(norm_y));

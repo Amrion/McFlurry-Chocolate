@@ -28,20 +28,6 @@ TEST(ALS_CHECK, EUCLIDEAN_NORM) {
     EXPECT_FLOAT_EQ(model.euclidean_norm(A), 0.5 * sqrt(sum));
 }
 
-TEST(ALS_CHECK, GRADIENT_DESCENT) {
-    ALS model;
-
-    matrix<float> A(10, 10);
-    model.random_init(A, 0, 10);
-    matrix<float> W(10, 3);
-    model.random_init(W, 0, 10);
-    matrix<float> H(3, 10);
-    model.random_init(H, 0, 10);
-
-    model.gradient_descent(A, W, H);
-    EXPECT_TRUE(model.frabenius_norm(A, W, H) < 20);
-}
-
 TEST(ALS_CHECK, GRADIENT_DESCENT_REG) {
     ALS model;
 
@@ -129,22 +115,26 @@ TEST(DBSCAN_CHECK, TWO_CIRCLES_BY_VALUES) {
     }
 }
 
-TEST(RECSYS_CHECK, TWO_CIRCLES_BY_VALUES) {
-    // generate Data for clustering!
-    const size_t NUM_IN_EACH_CLUSTER = 1000;
-    std::vector<std::vector<float>> X;
+TEST(LABELENCODER_TEST, ENCODE_LABELS) {
+    std::vector<std::string> classes = {"ICS", "MT", "FS", "MT", "FS", "ICS"};
 
-    generate_circle(X, 10, 0, 0, NUM_IN_EACH_CLUSTER);
-    generate_circle(X, 3, 0, 0, NUM_IN_EACH_CLUSTER);
-
-    DBScan model;
-    model.fit(&X);
-    std::vector<float> user_values = {0., 0.};
-    std::vector<int> ans = model.predict(user_values);
-
-    for (size_t i = 0; i < ans.size(); ++i) {
-        EXPECT_EQ(ans[i], i + NUM_IN_EACH_CLUSTER);
+    std::vector<int> labels = Utility::LabelEncoder(classes);
+    std::vector<int> _labels = {1, 2, 0, 2, 0, 1};
+    for (size_t i = 0; i < labels.size(); ++i) {
+        EXPECT_EQ(labels[i], _labels[i]);
     }
+}
+
+TEST(TEXT_CHECK, TEXT_SIMILARITY) { 
+    std::list<std::string> corpus = {"AAAA", "AAAA", "BBB"};
+
+    TextSimilarity text; 
+    text.fit(corpus);
+
+    EXPECT_FLOAT_EQ(text.predict(0, 1), 1.0);
+    EXPECT_FLOAT_EQ(text.predict(0, 2), 0.0);
+    EXPECT_FLOAT_EQ(text.predict(1, 2), 0.0);
+    
 }
 
 int main(int argc, char** argv) {

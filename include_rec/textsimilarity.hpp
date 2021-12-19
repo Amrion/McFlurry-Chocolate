@@ -3,6 +3,7 @@
 #include <list>
 #include <string>
 #include <numeric>
+#include <cassert>
 
 #include "utility.hpp"
 
