@@ -22,14 +22,14 @@ class Utility {
     static std::set<std::string> create_bag_of_words(
         const std::list<std::list<std::string>>& corpus_tokenized);
 
-    template <typename V, typename T = int>
+    template <typename T = int, typename V = std::string>
     static std::vector<T> LabelEncoder(const std::vector<V>& values);
 
     static std::vector<std::vector<float>> TfIdfVectorizer(
         const std::list<std::string>& corpus);
 };
 
-template <typename V, typename T>
+template <typename T, typename V>
 std::vector<T> Utility::LabelEncoder(const std::vector<V>& values) {
     std::set<V> set_values(values.begin(), values.end());
 
