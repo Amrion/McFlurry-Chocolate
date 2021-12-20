@@ -90,7 +90,6 @@ int Postgre_DB::insert(const std::string & table, std::vector <std::string> valu
 }
 
 int Postgre_DB::update(const std::string & table, std::vector <std::string> values, std::string where) {
-    work N(*PG_conn);
     std::string request;
     std::string lower_table = "";
     for (auto sym : table) {
@@ -100,6 +99,7 @@ int Postgre_DB::update(const std::string & table, std::vector <std::string> valu
     column.push_back("column_name");
     std::string wh = "TABLE_NAME = '" + lower_table + "'";
     result columns = select("INFORMATION_SCHEMA.COLUMNS", wh, column);
+    work N(*PG_conn);
     try {
         request = "UPDATE " + table + " SET ";
         std::size_t i = 0;
@@ -125,7 +125,6 @@ int Postgre_DB::update(const std::string & table, std::vector <std::string> valu
 }
 
 int Postgre_DB::save(const std::string & table, std::vector <std::string> values, std::string where) {
-    std::vector <std::string> column;
     result check = select(table, where);
     try {
         if ((where != "") and (check.begin() != check.end())) {
