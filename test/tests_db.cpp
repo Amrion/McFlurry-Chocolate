@@ -63,6 +63,9 @@ TEST(POSTGRE_DB, test_make_recommendation) {
   pg.save_user(user);
   std::vector <string> rec = pg.user_rec("new.ru");
   EXPECT_EQ(rec[0], "mail.ru");
+  pg.make_recommendations();
+  rec = pg.user_rec("new.ru");
+  EXPECT_EQ(rec[0], "mail.ru");
 }
 
 TEST(POSTGRE_DB, test_drop_tables) {
