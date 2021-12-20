@@ -469,9 +469,11 @@ int Postgre_DB::is_pair(int id1, int id2) {
 std::vector <std::vector<float>> Postgre_DB::users_params() {
     std::vector <std::vector<float>> users_params;
     std::vector <std::string> columns;
+    std::vector <std::string> faculty;
     columns.push_back("age");
     columns.push_back("course_number");
     columns.push_back("num_pairs");
+    columns.push_back("faculty");
     result res = select("USERS_INFO", "", columns);
 
     for (result::const_iterator c = res.begin(); c != res.end(); ++c) {
@@ -479,7 +481,12 @@ std::vector <std::vector<float>> Postgre_DB::users_params() {
         temp.push_back(c[0].as<float>());
         temp.push_back(c[1].as<float>());
         temp.push_back(c[2].as<float>());
+        faculty.push_back(c[3].as<std::string>());
         users_params.push_back(temp);
+    }
+    std::vector <float> faculty_labels = Utility::LabelEncoder<float>(faculty);
+    for (size_t i = 0; i < users_params.size(); ++i) {
+        users_params[i].push_back(faculty_labels[i]);
     }
     res.clear();
     return users_params;
@@ -487,16 +494,20 @@ std::vector <std::vector<float>> Postgre_DB::users_params() {
 
 
 int Postgre_DB::make_recommendations() {
-    std::vector <std::vector <int>> marks = marks_matrix();;
-    std::vector <std::vector <float>> u_params = users_params();;
+    std::vector <std::vector <int>> marks = marks_matrix();
+    std::vector <std::vector <float>> u_params = users_params();
     std::vector <std::string> user_rec;
+    std::list <std::string> user_desc;
+    std::vector <std::string> column(1, "description");
     std::string rec;
     std::string request;
     std::vector <int> zeros(0);
     RecSys recsys;
 
+    result res = select("USERS_INFO", "", column);
+    for (result::const_iterator c = res.begin(); c != res.end(); ++c) user_desc.push_back(c[0].as<std::string>());
     if (u_params.size() <= 1) return 0;
-    recsys.fit(marks, &u_params);
+    recsys.fit(marks, &u_params, user_desc);
 
     for (int i = 0; i < (int) u_params.size(); ++i) {
         std::vector<int> recs_for_user = recsys.predict(i);
@@ -551,9 +562,13 @@ std::vector <std::string> Postgre_DB::user_rec(std::string login) {
         res.clear();
         std::vector <std::vector <int>> marks = marks_matrix();
         std::vector <std::vector <float>> u_params = users_params();
+        std::list <std::string> user_desc;
+        std::vector <std::string> column(1, "description");
         RecSys recsys;
+        result res = select("USERS_INFO", "", column);
+        for (result::const_iterator c = res.begin(); c != res.end(); ++c) user_desc.push_back(c[0].as<std::string>());
         if (u_params.size() <= 1) return rec;
-        recsys.fit(marks, &u_params);
+        recsys.fit(marks, &u_params, user_desc);
         rec_id = recsys.predict(us_id);
         for (int i = (int) rec_id.size() - 1; i >= 0; --i) {
             if (!gender_is_different(us_id, rec_id[i])) {

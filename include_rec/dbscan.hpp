@@ -1,16 +1,16 @@
 #pragma once
 
-#include <vector>
-#include <map>
 #include <algorithm>
-#include <cmath>
 #include <cassert>
+#include <cmath>
+#include <map>
 #include <numeric>
+#include <vector>
 
-#define UNCLASSIFIED -1
-#define SUCCESS 0
-#define NOISE -2
-#define FAILURE -3
+const int UNCLASSIFIED = -1;
+const int SUCCESS = 0;
+const int NOISE = -2;
+const int FAILURE = -3;
 
 struct point {
     int user_id;

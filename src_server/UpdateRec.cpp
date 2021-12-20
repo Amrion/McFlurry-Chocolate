@@ -24,7 +24,7 @@ UpdateManager::update_thread UpdateManager::start() {
 }
 
 void update(Postgre_DB &db) {
-//    std::cout << "1" << endl;
+    std::cout << "1111111111111111" << std::endl;
 //    std::vector<string> user_rec;
     db.make_recommendations();
 //    user_rec = db.user_rec("w");

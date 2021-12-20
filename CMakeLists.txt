@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.16)
 project(Bauman_Tinder CXX)
 
@@ -29,7 +30,7 @@ include_directories(include_rec)
 include_directories(include_server)
 include_directories(include_client)
 
-set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp)
+set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp ${PROJECT_SOURCE_DIR}/src_rec/utility.cpp ${PROJECT_SOURCE_DIR}/src_rec/textsimilarity.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
 set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/include_client/MainPageWidget.h
         ${PROJECT_SOURCE_DIR}/src_client/MainPageWidget.cpp
@@ -84,3 +85,4 @@ if (BUILD_TESTS)
   gtest_add_tests(TARGET tests_db)
   gtest_add_tests(TARGET tests_rec)
 endif()
+
