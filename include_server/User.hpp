@@ -8,19 +8,19 @@ class User;
 class User
 {
 public:
-    User();
-    ~User();
+    User() = default;
+    ~User() = default;
 
     std::string name;
     std::string surname;
-    int age;
+    uint16_t age = 0;
     std::string gender;
     std::string faculty;
-    int course_number;
+    uint16_t course_number = 0;
     std::string vk_link;
     std::string telegram_link;
     std::string description;
-    int num_pairs;
+    uint16_t num_pairs = 0;
     std::vector <std::string> rec_users;
     std::vector <std::string> user_image;
 

@@ -97,12 +97,20 @@ jobs:
              sudo ln -s /usr/local/lib/libwt.so /usr/lib/
              
       - run: |
-            cd src_client
-            cppcheck -I {{../headers_client}} —inconclusive —enable=all —language=c++ —check-config —suppress=missingIncludeSystem —error-exitcode=1 *.cpp
+             cd src_client
+             cppcheck -I {{../include_client}} —inconclusive —enable=all —language=c++ —check-config —suppress=missingIncludeSystem —error-exitcode=1 *.cpp
             
       - run: |
-            cd src_client
-            clang-format -i -style=WebKit *.cpp
+             cd src_client
+             clang-format -i -style=WebKit *.cpp
+
+      - run: |
+             cd src_server
+             cppcheck -I {{../include_server}} —inconclusive —enable=all —language=c++ —check-config —suppress=missingIncludeSystem —error-exitcode=1 *.cpp
+
+      - run: |
+             cd src_server
+             clang-format -i -style=WebKit *.cpp
             
       - run: |
              mkdir cmake-built
