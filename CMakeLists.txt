@@ -44,7 +44,6 @@ set(FIND_SERVER_LIB ${PROJECT_SOURCE_DIR}/include_server/TinderApplication.hpp
         ${PROJECT_SOURCE_DIR}/src_server/TinderApplication.cpp
         ${PROJECT_SOURCE_DIR}/src_server/TinderServer.cpp
         ${PROJECT_SOURCE_DIR}/src_server/TinderWidget.cpp
-        ${PROJECT_SOURCE_DIR}/src_server/User.cpp
         ${PROJECT_SOURCE_DIR}/hash/md5.cpp
         ${PROJECT_SOURCE_DIR}/src_server/UpdateRec.cpp)
 
