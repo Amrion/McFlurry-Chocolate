@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.16)
 project(Bauman_Tinder CXX)
 
@@ -30,7 +29,7 @@ include_directories(include_rec)
 include_directories(include_server)
 include_directories(include_client)
 
-set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp ${PROJECT_SOURCE_DIR}/src_rec/utility.cpp ${PROJECT_SOURCE_DIR}/src_rec/textsimilarity.cpp)
+set(FIND_REC_LIB ${PROJECT_SOURCE_DIR}/include_rec/recsys.hpp ${PROJECT_SOURCE_DIR}/src_rec/recsys.cpp ${PROJECT_SOURCE_DIR}/src_rec/als.cpp ${PROJECT_SOURCE_DIR}/src_rec/dbscan.cpp ${PROJECT_SOURCE_DIR}/src_rec/textsimilarity.cpp ${PROJECT_SOURCE_DIR}/src_rec/utility.cpp)
 set(FIND_DB_LIB ${PROJECT_SOURCE_DIR}/include_db/Postgre_DB.h ${PROJECT_SOURCE_DIR}/src_db/Postgre_DB.cpp ${PROJECT_SOURCE_DIR}/src_db/TABLES.cpp)
 set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/include_client/MainPageWidget.h
         ${PROJECT_SOURCE_DIR}/src_client/MainPageWidget.cpp
@@ -38,40 +37,37 @@ set(FIND_CLIENT_LIB ${PROJECT_SOURCE_DIR}/include_client/MainPageWidget.h
         ${PROJECT_SOURCE_DIR}/src_client/SearchPageWidget.cpp
         ${PROJECT_SOURCE_DIR}/src_client/UserWidget.cpp)
 
+set(FIND_SERVER_LIB ${PROJECT_SOURCE_DIR}/include_server/TinderApplication.hpp
+        ${PROJECT_SOURCE_DIR}/include_server/UpdateRec.h
+        ${PROJECT_SOURCE_DIR}/include_server/TinderServer.hpp
+        ${PROJECT_SOURCE_DIR}/include_server/TinderWidget.hpp
+        ${PROJECT_SOURCE_DIR}/src_server/TinderApplication.cpp
+        ${PROJECT_SOURCE_DIR}/src_server/TinderServer.cpp
+        ${PROJECT_SOURCE_DIR}/src_server/TinderWidget.cpp
+        ${PROJECT_SOURCE_DIR}/src_server/User.cpp
+        ${PROJECT_SOURCE_DIR}/hash/md5.cpp
+        ${PROJECT_SOURCE_DIR}/src_server/UpdateRec.cpp)
+
 add_library(find_db_lib SHARED ${FIND_DB_LIB})
 add_library(find_rec_lib SHARED ${FIND_REC_LIB})
 add_library(find_client_lib SHARED ${FIND_CLIENT_LIB})
-
+add_library(find_server_lib SHARED ${FIND_SERVER_LIB})
 
 target_include_directories(find_db_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_db)
 target_include_directories(find_rec_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_rec)
 target_include_directories(find_client_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_client)
+target_include_directories(find_server_lib PUBLIC ${PROJECT_SOURCE_DIR}/include_server)
+
+add_executable(${PROJECT_NAME} src_server/main.cpp)
 
 # Build main
 option(BUILD_MAIN OFF)
 if (BUILD_MAIN)
   add_executable(${PROJECT_NAME} src_db/main.cpp)
-  target_link_libraries(${PROJECT_NAME} PRIVATE find_client_lib find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
+  target_link_libraries(${PROJECT_NAME} PRIVATE find_server_lib find_client_lib find_db_lib -ldl -libpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl)
 endif()
 
-file(GLOB prod_sources
-        "include_server/TinderApplication.hpp"
-        "include_server/TinderServer.hpp"
-        "include_server/TinderWidget.hpp"
-        "include_server/User.hpp"
-        "src_server/TinderWidget.cpp"
-        "src_server/TinderServer.cpp"
-        "src_server/TinderApplication.cpp"
-        "src_server/User.cpp"
-        "src_server/main.cpp"
-        "hash/md5.h"
-        "hash/md5.cpp"
-        "include_server/UpdateRec.h"
-        "src_server/UpdateRec.cpp")
-
-add_executable(${PROJECT_NAME} ${prod_sources})
-
-target_link_libraries(${PROJECT_NAME} PRIVATE find_db_lib find_client_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
+target_link_libraries(${PROJECT_NAME} PRIVATE find_server_lib find_db_lib find_client_lib -ldl -lpqxx -lpq ${Boost_LIBRARIES} find_rec_lib -ldl Wt::Wt Wt::HTTP)
 
 #Build tests
 option(BUILD_TESTS ON)
@@ -85,4 +81,3 @@ if (BUILD_TESTS)
   gtest_add_tests(TARGET tests_db)
   gtest_add_tests(TARGET tests_rec)
 endif()
-

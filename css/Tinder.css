@@ -449,3 +449,47 @@ h1 {
             225deg,#fd267a, #ff6036);
 }
 
+.label {
+    width: 200px;
+    text-align: right;
+    font-size: 20px;
+}
+
+.field {
+    width: 350px;
+    font-size: 20px;
+}
+
+.namePage {
+    font-size: 40px;
+    font-weight: bold;
+    padding-bottom: 25px;
+}
+
+.text-link {
+    font-size: 20px;
+}
+
+.error {
+    font-size: 20px;
+    color: crimson;
+}
+
+.labelSignIn {
+    width: 80px;
+    text-align: right;
+    font-size: 20px;
+}
+
+.fieldSignIn {
+    width: 200px;
+    font-size: 20px;
+}
+
+.logo {
+    width: 150px;
+}
+
+.signIn {
+    padding-top: 100px;
+}
