@@ -14,21 +14,15 @@ UpdateManager::update_thread UpdateManager::start() {
     return update_thread{[this]{
                              using namespace std;
                              using namespace std::chrono;
-                             auto next = system_clock::now() + 1min;
+                             auto next = system_clock::now() + 5s;
                              while (!stop_) {
                                  this_thread::sleep_until(next);
                                  update(db_);
-                                 next += 1min;
+                                 next += 5s;
                              }
                          }};
 }
 
 void update(Postgre_DB &db) {
-//    std::cout << "1" << endl;
-//    std::vector<string> user_rec;
     db.make_recommendations();
-//    user_rec = db.user_rec("w");
-//    for (std::vector<string>::iterator i = user_rec.begin(); i != user_rec.end(); ++i) {
-//        std::cout << *i << " ";
-//    }
 }

@@ -42,13 +42,23 @@ TinderWidget::TinderWidget(TinderServer &server, TinderApplication* app)
 void TinderWidget::letSignUp() {
     clear();
 
-    auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
 
+    auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
+    vLayout->addSpacing(50);
+    vLayout->setSpacing(10);
 
     auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
+    auto name = hLayout->addWidget(std::make_unique<Wt::WText>(), 1);
+    name->setText("Регистрация");
+    name->setStyleClass("namePage");
+
+    vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+
+    hLayout = std::make_unique<Wt::WHBoxLayout>();
 
     auto container = hLayout->addWidget(std::make_unique<Wt::WContainerWidget>(), 1);
+    container->setStyleClass("addImg");
 
     avatar_ = container->addNew<Wt::WFileUpload>();
     avatar_->setFileTextSize(150); // Set the maximum file size to 50 kB.
@@ -63,28 +73,34 @@ void TinderWidget::letSignUp() {
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Имя:"), 1);
+    auto label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Имя:"), 1);
+    label->setStyleClass("label");
 
     nameEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     nameEdit_->setPlaceholderText("Иван");
     nameEdit_->setFocus();
+    nameEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Фамилия:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Фамилия:"), 1);
+    label->setStyleClass("label");
 
     surnameEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     surnameEdit_->setPlaceholderText("Иванов");
     surnameEdit_->setFocus();
+    surnameEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Пол:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Пол:"), 1);
+    label->setStyleClass("label");
 
     container = hLayout->addWidget(std::make_unique<Wt::WContainerWidget>(), 1);
+    container->setStyleClass("field");
     auto group = std::make_shared<Wt::WButtonGroup>();
     Wt::WRadioButton *rb;
 
@@ -101,108 +117,119 @@ void TinderWidget::letSignUp() {
     genderBtn_ = group->checkedButton();
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
-    
+
     group->checkedChanged().connect([this] (Wt::WRadioButton *selection) {
         genderBtn_ = selection;
     });
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Возраст:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Возраст:"), 1);
+    label->setStyleClass("label");
 
     ageEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     ageEdit_->setPlaceholderText("20");
-    ageEdit_->setFocus();
+    ageEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Факультет:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Факультет:"), 1);
+    label->setStyleClass("label");
 
     facultyEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     facultyEdit_->setPlaceholderText("ИУ5");
-    facultyEdit_->setFocus();
+    facultyEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Курс:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Курс:"), 1);
+    label->setStyleClass("label");
 
     courseNumberEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     courseNumberEdit_->setPlaceholderText("2");
-    courseNumberEdit_->setFocus();
+    courseNumberEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("VK:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("VK:"), 1);
+    label->setStyleClass("label");
 
     vkLinkEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     vkLinkEdit_->setPlaceholderText("VK");
-    vkLinkEdit_->setFocus();
+    vkLinkEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Telegram:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Telegram:"), 1);
+    label->setStyleClass("label");
 
     telegramEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     telegramEdit_->setPlaceholderText("Telegram");
-    telegramEdit_->setFocus();
+    telegramEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Расскажи о себе:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Расскажи о себе:"), 1);
+    label->setStyleClass("label");
 
     descriptionEdit_ = hLayout->addWidget(std::make_unique<Wt::WTextArea>(), 1);
     descriptionEdit_->setPlaceholderText("Не стесняйся, напиши что-нибудь!");
     descriptionEdit_->setColumns(40);
     descriptionEdit_->setRows(5);
-    descriptionEdit_->setFocus();
+    descriptionEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
+    label->setStyleClass("label");
 
     userLoginEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     userLoginEdit_->setPlaceholderText("Логин");
-    userLoginEdit_->setFocus();
+    userLoginEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+    label->setStyleClass("label");
 
     passwordEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     passwordEdit_->setPlaceholderText("Пароль");
     passwordEdit_->setAttributeValue("type", "password");
+    passwordEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
 
     hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-    hLayout->addWidget(std::make_unique<Wt::WLabel>("Повторите пароль:"), 1);
+    label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Повторите пароль:"), 1);
+    label->setStyleClass("label");
 
     confirmPasswordEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
     confirmPasswordEdit_->setPlaceholderText("Повторите пароль");
     confirmPasswordEdit_->setAttributeValue("type", "password");
+    confirmPasswordEdit_->setStyleClass("field");
 
     vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
 
     auto signUp = vLayout->addWidget(std::make_unique<Wt::WPushButton>("Зарегистрироваться"), 0, Wt::AlignmentFlag::Center);
-    signUp->setStyleClass("info");
+    signUp->setStyleClass("info signUp");
 
     signUp->clicked().connect(this, &TinderWidget::signUp);
 
@@ -221,6 +248,7 @@ void TinderWidget::letSignUp() {
 
     statusMsg_ = vLayout->addWidget(std::make_unique<Wt::WText>(), 1, Wt::AlignmentFlag::Center);
     statusMsg_->setTextFormat(Wt::TextFormat::Plain);
+    statusMsg_->setStyleClass("error");
 }
 
 void TinderWidget::letLogin() {
@@ -229,23 +257,45 @@ void TinderWidget::letLogin() {
         clear();
 
         auto vLayout = setLayout(std::make_unique<Wt::WVBoxLayout>());
+        vLayout->addSpacing(50);
+        vLayout->setSpacing(10);
 
         auto hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-        hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
-
-        userLoginEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
-        userLoginEdit_->setPlaceholderText("Логин");
+        auto logo = hLayout->addWidget(std::make_unique<Wt::WImage>(Wt::WLink("../css/tinder.svg")));
+        logo->setStyleClass("logo");
 
         vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
         hLayout = std::make_unique<Wt::WHBoxLayout>();
 
-        hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+        auto name = hLayout->addWidget(std::make_unique<Wt::WText>(), 1);
+        name->setText("Вход");
+        name->setStyleClass("namePage signIn");
+
+        vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+
+        hLayout = std::make_unique<Wt::WHBoxLayout>();
+
+        auto label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Логин:"), 1);
+        label->setStyleClass("labelSignIn");
+
+        userLoginEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
+        userLoginEdit_->setPlaceholderText("Логин");
+        userLoginEdit_->setFocus();
+        userLoginEdit_->setStyleClass("fieldSignIn");
+
+        vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
+
+        hLayout = std::make_unique<Wt::WHBoxLayout>();
+
+        label = hLayout->addWidget(std::make_unique<Wt::WLabel>("Пароль:"), 1);
+        label->setStyleClass("labelSignIn");
 
         passwordEdit_ = hLayout->addWidget(std::make_unique<Wt::WLineEdit>(), 1);
         passwordEdit_->setPlaceholderText("Пароль");
         passwordEdit_->setAttributeValue("type", "password");
+        passwordEdit_->setStyleClass("fieldSignIn");
 
         vLayout->addLayout(std::move(hLayout), 0, Wt::AlignmentFlag::Center);
 
@@ -266,6 +316,7 @@ void TinderWidget::letLogin() {
 
         statusMsg_ = vLayout->addWidget(std::make_unique<Wt::WText>(), 1, Wt::AlignmentFlag::Center);
         statusMsg_->setTextFormat(Wt::TextFormat::Plain);
+        statusMsg_->setStyleClass("error");
     } else {
         app->setInternalPath("/", true);
 
