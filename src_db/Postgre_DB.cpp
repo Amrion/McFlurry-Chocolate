@@ -162,7 +162,7 @@ int Postgre_DB::delete_(const std::string & table, std::string where) {
 
 int Postgre_DB::init_tables() {
     std::string create_table = "CREATE TABLE ";
-    std::string users_info = create_table + "USERS_INFO (user_id int, age int, course_number int, num_pairs int, name text, surname text, gender text, faculty text, vk_link text, telegram_link text, description text);";
+    std::string users_info = create_table + "USERS_INFO (user_id int, age int, course_number int, num_pairs int, name text, surname text, gender text, faculty text, vk_link text, telegram_link text, description text, deleted boolean);";
     std::string login = create_table + "LOGIN (user_id int, login text, password text);";
     std::string  users_rec = create_table + "USERS_REC (user_id int, user_rec int[]);";
     std::string marks = create_table + "MARKS (mark_id int, id_marker int, id_marked int, mark int);";
@@ -296,6 +296,7 @@ USERS_INFO Postgre_DB::user_info(std::string login) {
         user.vk_link = c[8].as<std::string>();
         user.telegram_link = c[9].as<std::string>();
         user.description = c[10].as<std::string>();
+        user.deleted = c[11].as<bool>();
     }
     res.clear();
     return user;
@@ -329,6 +330,7 @@ int Postgre_DB::save_user(USERS_INFO user_info) {
     user.push_back(user_info.vk_link);
     user.push_back(user_info.telegram_link);
     user.push_back(user_info.description);
+    user.push_back(std::to_string(user_info.deleted));
     std::string request = "user_id = " + user[0];
     try {
         std::string users_info = "USERS_INFO";
@@ -633,4 +635,17 @@ int Postgre_DB::delete_image(int user_id, std::string image_name) {
         img_req += "image_id = (SELECT MAX(image_id) FROM IMAGES WHERE user_id = " + std::to_string(user_id) + ")";
     }
     return delete_(table, img_req);
+}
+
+int Postgre_DB::delete_user(std::string login) {
+    USERS_INFO user;
+    user = user_info(login);
+    if (user.user_id == -1) {
+        return 1;
+    }
+    else {
+        user.deleted = true;
+        save_user(user);
+        return 0;
+    }
 }

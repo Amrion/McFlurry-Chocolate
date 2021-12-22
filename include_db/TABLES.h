@@ -15,5 +15,6 @@ struct USERS_INFO {
     string telegram_link;
     uint32_t num_pairs;
     string description;
+    bool deleted;
     USERS_INFO();
 };
