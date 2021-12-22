@@ -49,6 +49,6 @@ private:
 
     void showSearchPhoto(TinderApplication*);
     void showInfoPair(const USERS_INFO&);
-    void showInfoUser();
+    void showInfoUser(TinderApplication*);
     void showLoginPage(TinderWidget*, TinderApplication*);
 };

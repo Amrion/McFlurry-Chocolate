@@ -320,6 +320,25 @@ body {
     color: red;
     margin-bottom: 20px;
 }
+.deleteP {
+    margin-top: 20px;
+    display: block;
+    text-align: center;
+    padding-left: 20px;
+    font-size: 25px;
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.returnP {
+    margin-top: 20px;
+    display: block;
+    text-align: center;
+    padding-left: 20px;
+    font-size: 25px;
+    color: green;
+    font-weight: bold;
+}
 .userPhotos {
     display: flex;
     margin-bottom: 30px;
@@ -492,4 +511,45 @@ h1 {
 
 .signIn {
     padding-top: 100px;
+}
+
+.deleteProfile {
+    display: block;
+    height: 50px;
+    width: 220px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    border: 1px solid red;
+    color: red;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 27%;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.deleteProfile:hover {
+    background: red;
+    color:  #f2f2f2;
+}
+.returnProfile {
+    display: block;
+    height: 50px;
+    width: 220px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    background: #f2f2f2;
+    border-radius: 10px;
+    border: 1px solid green;
+    color: green;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 27%;
+    transition: all .30s ease-in-out,background-color .30s ease-in-out,opacity .10s ease-in-out;
+}
+.returnProfile:hover {
+    background: green;
+    color:  #f2f2f2;
 }

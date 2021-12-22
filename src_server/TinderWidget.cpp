@@ -337,7 +337,9 @@ void TinderWidget::letLogin() {
         user_.vk_link = usersInfo.vk_link;
         user_.telegram_link = usersInfo.telegram_link;
         user_.description = usersInfo.description;
+        user_.deleted = usersInfo.deleted;
         user_.rec_users = server_.db_.user_rec(*cookie);
+
         user_.user_image = server_.db_.user_image(server_.db_.user_id(*cookie));
         addWidget(std::make_unique<MainPageWidget>(user_,server_, app, this));
     }
@@ -417,6 +419,7 @@ void TinderWidget::signUp() {
     user_.telegram_link = telegram;
     user_.username = username;
     user_.password = password;
+    user_.deleted = false;
 
     avatar_->uploaded().connect([this] {
         if (isChanged) {

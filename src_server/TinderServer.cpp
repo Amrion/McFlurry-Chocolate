@@ -24,6 +24,7 @@ bool TinderServer::signUp(User &user) {
         usersInfo.vk_link = user.vk_link;
         usersInfo.telegram_link = user.telegram_link;
         usersInfo.description = user.description;
+        usersInfo.deleted = user.deleted;
 
         auto end = std::chrono::system_clock::now();
         std::time_t end_time = std::chrono::system_clock::to_time_t(end);
@@ -62,6 +63,7 @@ bool TinderServer::login(User &user) {
         user.telegram_link = usersInfo.telegram_link;
         user.description = usersInfo.description;
         user.rec_users = db_.user_rec(user.username);
+        user.deleted = usersInfo.deleted;
         user.user_image = db_.user_image(db_.user_id(user.username));
         return true;
     }

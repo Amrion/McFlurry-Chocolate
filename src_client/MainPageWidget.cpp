@@ -87,7 +87,7 @@ void MainPageWidget::handleInternalPath(TinderWidget *menu, TinderApplication *a
         }
     }
     if (app->internalPath() == "/user") {
-        showInfoUser();
+        showInfoUser(app);
     }
     if (app->internalPath() == "/") {
         showLoginPage(menu, app);
@@ -106,13 +106,22 @@ void MainPageWidget::showInfoPair(const USERS_INFO &pairInfo) {
     wStackedWidget->setCurrentWidget(pairWidget);
 }
 
-void MainPageWidget::showInfoUser() {
-    userWidget = wStackedWidget->addWidget(std::make_unique<UserWidget>(mainPageRight, user, server));
+void MainPageWidget::showInfoUser(TinderApplication* app) {
+    userWidget = wStackedWidget->addWidget(std::make_unique<UserWidget>(mainPageRight, user, server, app));
 
     wStackedWidget->setCurrentWidget(userWidget);
 }
 
 void MainPageWidget::showLoginPage(TinderWidget *menu, TinderApplication *app) {
+    if (user.deleted) {
+        int id = server.db_.user_id(user.username);
+
+        USERS_INFO usersInfo;
+        usersInfo.user_id = id;
+        usersInfo.name = user.name;
+        usersInfo.deleted = true;
+        server.db_.save_user(usersInfo);
+    }
     menu->logout();
     menu = wStackedWidget->addWidget(std::make_unique<TinderWidget>(server, app));
 

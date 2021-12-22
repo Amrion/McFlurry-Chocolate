@@ -7,11 +7,11 @@ std::string ws2str(const std::wstring &wstr) {
     return converterX.to_bytes(wstr);
 }
 
-UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server) : user(user), server(server), checkAdd(false) {
-    createInfoPage(mainPageRight);
+UserWidget::UserWidget(Wt::WContainerWidget* mainPageRight, User& user, TinderServer& server, TinderApplication* app) : user(user), server(server), checkAdd(false) {
+    createInfoPage(mainPageRight, app);
 }
 
-void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
+void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, TinderApplication* app) {
     mainPageRight->clear();
     user.user_image = server.db_.user_image(server.db_.user_id(user.username));
 
@@ -142,6 +142,42 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
     saveData = setting->addWidget(std::make_unique<Wt::WPushButton>("Сохранить изменения"));
     saveData->setStyleClass("info buttonSetting");
 
+    auto deleteP = setting->addWidget(std::make_unique<Wt::WText>());
+    deleteP->hide();
+
+    deleteProfile = setting->addWidget(std::make_unique<Wt::WPushButton>("Удалить профиль"));
+    deleteProfile->setStyleClass("deleteProfile");
+
+    Wt::WPushButton* deleteAcc = setting->addWidget(std::make_unique<Wt::WPushButton>("Удалить профиль"));
+    deleteAcc->setStyleClass("deleteProfile");
+    deleteAcc->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/"));
+    deleteAcc->hide();
+
+    auto returnP = setting->addWidget(std::make_unique<Wt::WText>());
+    returnP->hide();
+
+    Wt::WPushButton* returnAcc = setting->addWidget(std::make_unique<Wt::WPushButton>("Отменить удаление"));
+    returnAcc->setStyleClass("returnProfile");
+    returnAcc->hide();
+
+    returnAcc->clicked().connect([=] {
+        user.deleted = false;
+        createInfoPage(mainPageRight, app);
+    });
+
+    deleteProfile->clicked().connect( [=] {
+        user.deleted = true;
+        deleteAcc->show();
+        returnP->show();
+        returnP->setText("Если хотите отменить действие, нажмите кнопку отмена!");
+        returnP->setStyleClass("returnP");
+        returnAcc->show();
+        deleteProfile->hide();
+        deleteP->show();
+        deleteP->setText("Аккаунт будет удален безвозвратно! Подтвердите действие, нажав на кнопку еще раз");
+        deleteP->setStyleClass("deleteP");
+    });
+
     bool checkAge = false;
     addPhoto->fileTooLarge().connect([=] {
         outAdd->show();
@@ -171,12 +207,14 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             user.course_number = std::stoi(ws2str(courseEdit->text()));
             user.telegram_link = ws2str(tgEdit->text());
             user.vk_link = ws2str(netEdit->text());
+            user.deleted = false;
             int id = server.db_.user_id(user.username);
 
             USERS_INFO usersInfo;
             usersInfo.user_id = id;
             usersInfo.age = user.age;
             usersInfo.name = user.name;
+            usersInfo.deleted = user.deleted;
             usersInfo.faculty = user.faculty;
             usersInfo.course_number = user.course_number;
             usersInfo.vk_link = user.vk_link;
@@ -212,7 +250,7 @@ void UserWidget::createInfoPage(Wt::WContainerWidget* mainPageRight) {
             checkAdd = false;
         }
         delete [] myPhoto;
-        createInfoPage(mainPageRight);
+        createInfoPage(mainPageRight, app);
     });
 
     back = mainPageRight->addWidget(std::make_unique<Wt::WPushButton>("Вернуться к поиску"));

@@ -21,6 +21,7 @@ public:
     std::string telegram_link;
     std::string description;
     uint16_t num_pairs = 0;
+    bool deleted;
     std::vector <std::string> rec_users;
     std::vector <std::string> user_image;
 

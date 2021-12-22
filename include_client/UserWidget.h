@@ -16,10 +16,11 @@
 #include "Postgre_DB.h"
 #include "User.hpp"
 #include "TinderServer.hpp"
+#include "TinderApplication.hpp"
 
 class UserWidget : public Wt::WContainerWidget {
 public:
-    explicit UserWidget(Wt::WContainerWidget*, User&, TinderServer&);
+    explicit UserWidget(Wt::WContainerWidget*, User&, TinderServer&, TinderApplication*);
 private:
     Wt::WImage** myPhoto;
     Wt::WPushButton* deletePhoto;
@@ -43,12 +44,14 @@ private:
     Wt::WLineEdit* tgEdit;
     Wt::WText* netText;
     Wt::WLineEdit* netEdit;
+    Wt::WPushButton* deleteProfile;
 
+    int checkDelete;
 
     User& user;
     TinderServer& server;
 
     bool checkAdd;
 
-    void createInfoPage(Wt::WContainerWidget*);
+    void createInfoPage(Wt::WContainerWidget*, TinderApplication*);
 };
