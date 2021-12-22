@@ -12,4 +12,5 @@ USERS_INFO::USERS_INFO() {
     telegram_link = "";
     num_pairs = 0;
     description = "";
+    deleted = false;
 }

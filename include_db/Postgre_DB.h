@@ -47,4 +47,5 @@ class Postgre_DB : DB {
         int save_image(std::string path_to_file, int user_id, std::string name = "");
         std::vector <std::string> user_image(int user_id, std::string image_name = "");
         int delete_image(int user_id, std::string image_name = "");
+        int delete_user(std::string login);
 };
