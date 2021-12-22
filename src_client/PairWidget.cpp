@@ -12,8 +12,13 @@ void PairWidget::createInfoPage(Wt::WContainerWidget* mainPageRight, const USERS
 
     std::vector<std::string> photoes = server.db_.user_image(pairInfo.user_id);
 
-    photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
-    photo->setStyleClass("photoProfile");
+    if (pairInfo.deleted) {
+        photo = info->addWidget(std::make_unique<Wt::WImage>("../css/delete.jpeg"));
+        photo->setStyleClass("photoProfile");
+    } else {
+        photo = info->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
+        photo->setStyleClass("photoProfile");
+    }
 
     name = info->addWidget(std::make_unique<Wt::WText>(pairInfo.name));
     name->setStyleClass("nameProfile");

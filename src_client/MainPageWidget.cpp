@@ -53,8 +53,14 @@ void MainPageWidget::creatPage(TinderApplication *app, TinderWidget *menu) {
             pairName->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/pair/" + std::to_string(pairsInfo[j].user_id)));
             pairName->setStyleClass("pairName");
 
-            pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
-            pairAvatar->setStyleClass("pairAvatar");
+            if (pairsInfo[j].deleted) {
+                pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>("../css/delete.jpeg"));
+                pairAvatar->setStyleClass("pairAvatar");
+            } else {
+                pairAvatar = pairAvatarWidget->addWidget(std::make_unique<Wt::WImage>(Wt::WLink(photoes[0])));
+                pairAvatar->setStyleClass("pairAvatar");
+            }
+
             ++j;
         } while (j % 2 != 0 && j != pairsLogin.size());
     }
@@ -115,11 +121,18 @@ void MainPageWidget::showInfoUser(TinderApplication* app) {
 void MainPageWidget::showLoginPage(TinderWidget *menu, TinderApplication *app) {
     if (user.deleted) {
         int id = server.db_.user_id(user.username);
+        while (!user.user_image.empty()) {
+            server.db_.delete_image(id, "");
+            user.user_image.pop_back();
+        }
 
         USERS_INFO usersInfo;
         usersInfo.user_id = id;
         usersInfo.name = user.name;
         usersInfo.deleted = true;
+        //ls | grep -P "^A.*[0-9]{2}$" | xargs -d"\n" rm
+        std::string deletePhotos = "rm ../users_images/profilePhoto" + std::to_string(id) + "*";
+        system(deletePhotos.c_str());
         server.db_.save_user(usersInfo);
     }
     menu->logout();
