@@ -512,7 +512,7 @@ int Postgre_DB::make_recommendations() {
     for (int i = 0; i < (int) u_params.size(); ++i) {
         std::vector<int> recs_for_user = recsys.predict(i);
         for (int j = (int) recs_for_user.size() - 1; j >= 0; --j) {
-            if (!(gender_is_different(i, recs_for_user[j])) or seen(i, recs_for_user[j])) {
+            if (!(gender_is_different(i, recs_for_user[j])) or seen(i, recs_for_user[j]) or user_deleted(recs_for_user[j])) {
                 recs_for_user[j] = recs_for_user[recs_for_user.size() - 1];
                 recs_for_user.pop_back();
             }
@@ -581,7 +581,7 @@ std::vector <std::string> Postgre_DB::user_rec(std::string login) {
     }
 
     for (auto i : rec_id) {
-        if (!seen(us_id, i)) {
+        if (!seen(us_id, i) and !user_deleted(i)) {
             rec.push_back(user_login(i));
         }
     }
@@ -646,6 +646,17 @@ int Postgre_DB::delete_user(std::string login) {
     else {
         user.deleted = true;
         save_user(user);
+        return 0;
+    }
+}
+
+int Postgre_DB::user_deleted(int id) {
+    USERS_INFO user;
+    user = user_info(user_login(id));
+    if (user.user_id == -1 or user.deleted) {
+        return 1;
+    }
+    else {
         return 0;
     }
 }

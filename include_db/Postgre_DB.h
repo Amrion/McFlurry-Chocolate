@@ -40,6 +40,7 @@ class Postgre_DB : DB {
         int gender_is_different(int id1, int id2);
         int is_pair(int id1, int id2);
         int seen(int id1, int id2);
+        int user_deleted(int id);
 
         int make_recommendations();
         std::vector <std::string> user_rec(std::string login);
