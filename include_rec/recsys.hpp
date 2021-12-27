@@ -1,12 +1,12 @@
 #pragma once
 
 #include <boost/numeric/ublas/matrix.hpp>
+#include <list>
 #include <map>
 #include <mutex>
 #include <numeric>
 #include <thread>
 #include <vector>
-#include <list>
 
 #include "als.hpp"
 #include "dbscan.hpp"
@@ -45,7 +45,7 @@ class RecSys {
     ~RecSys() = default;
 
     void fit(const std::vector<std::vector<int>>& V,
-             std::vector<std::vector<float>>* X,
+             std::shared_ptr<std::vector<std::vector<float>>> X,
              std::list<std::string>& corpus,
 
              std::vector<int> users_id = std::vector<int>(0), int _k = 5,
@@ -63,4 +63,6 @@ class RecSys {
 
     std::vector<int> predict(const int user_id);
     std::vector<int> predict(const std::vector<float>& user_values);
+    std::vector<int> predict(const std::vector<float>& user_values,
+                             std::string& description);
 };

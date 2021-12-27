@@ -73,7 +73,8 @@ TEST(DBSCAN_CHECK, TWO_CIRCLES) {
     }
 
     DBScan model;
-    model.fit(&X);
+    auto _X = std::make_shared<std::vector<std::vector<float>>>(X);
+    model.fit(_X);
     std::vector<int> ans = model.predict();
 
     for (size_t i = 0; i < labels.size(); ++i) {
@@ -89,7 +90,8 @@ TEST(DBSCAN_CHECK, TWO_CIRCLES_WITH_USER) {
     generate_circle(X, 3, 0, 0, NUM_IN_EACH_CLUSTER);
 
     DBScan model;
-    model.fit(&X);
+    auto _X = std::make_shared<std::vector<std::vector<float>>>(X);
+    model.fit(_X);
     std::vector<int> ans = model.predict(0);
 
     for (size_t i = 0; i < ans.size(); ++i) {
@@ -106,7 +108,8 @@ TEST(DBSCAN_CHECK, TWO_CIRCLES_BY_VALUES) {
     generate_circle(X, 3, 0, 0, NUM_IN_EACH_CLUSTER);
 
     DBScan model;
-    model.fit(&X);
+    auto _X = std::make_shared<std::vector<std::vector<float>>>(X);
+    model.fit(_X);
     std::vector<float> user_values = {0., 0.};
     std::vector<int> ans = model.predict(user_values);
 
@@ -135,19 +138,18 @@ TEST(LABELENCODER_TEST, ENCODE_LABELS_FLOAT) {
     }
 }
 
-TEST(TEXT_CHECK, TEXT_SIMILARITY) { 
+TEST(TEXT_CHECK, TEXT_SIMILARITY) {
     std::list<std::string> corpus = {"AAAA", "AAAA", "BBB"};
 
-    TextSimilarity text; 
+    TextSimilarity text;
     text.fit(corpus);
 
     EXPECT_FLOAT_EQ(text.predict(0, 1), 1.0);
     EXPECT_FLOAT_EQ(text.predict(0, 2), 0.0);
     EXPECT_FLOAT_EQ(text.predict(1, 2), 0.0);
-    
 }
 
-TEST(RECSYS_CHECK, TEXT_SIMILARITY) { 
+TEST(RECSYS_CHECK, RECS) {
     std::vector<std::vector<int>> A(10, std::vector<int>(10));
 
     for (size_t i = 0; i < A.size(); ++i) {
@@ -163,7 +165,7 @@ TEST(RECSYS_CHECK, TEXT_SIMILARITY) {
         }
     }
 
-    std::vector<std::vector<float>> X(100, std::vector<float>(3));
+    std::vector<std::vector<float>> X(10, std::vector<float>(3));
     for (size_t i = 0; i < X.size(); ++i) {
         for (size_t j = 0; j < X[i].size(); ++j) {
             X[i][j] = -5 + static_cast<float>(rand()) /
@@ -172,24 +174,29 @@ TEST(RECSYS_CHECK, TEXT_SIMILARITY) {
     }
 
     std::list<std::string> corpus = {
-        "I like xurma", "I think xurma is cool",
-        "badminton!",   "So do I! I like xurma and badminton!",
-        "Ok, i don't really want to talk about xurma", "nononono6 no way",
-        "I wish i could survive", "I like xurma",
-        "666", "BOMONKA RULIT"};
+        "I like xurma",
+        "I think xurma is cool",
+        "badminton!",
+        "So do I! I like xurma and badminton!",
+        "Ok, i don't really want to talk about xurma",
+        "nononono6 no way",
+        "I wish i could survive",
+        "I like xurma",
+        "666",
+        "BOMONKA RULIT"};
 
     std::vector<int> users_ids = std::vector<int>(10);
     std::iota(std::begin(users_ids), std::end(users_ids), 0);
 
     RecSys recsys;
-    recsys.fit(A, &X, corpus, users_ids);
+    auto _X = std::make_shared<std::vector<std::vector<float>>>(X);
+    recsys.fit(A, _X, corpus, users_ids);
 
     for (auto id : users_ids) {
         std::vector<int> preds = recsys.predict(id);
         // Check that there are recommendations for all users
         EXPECT_EQ(preds.size(), users_ids.size());
     }
-    
 }
 
 int main(int argc, char** argv) {

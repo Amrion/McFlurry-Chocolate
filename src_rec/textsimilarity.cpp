@@ -12,7 +12,6 @@ void TextSimilarity::fit(std::list<std::string>& corpus,
 
     // Clear corpus
     Utility::clear_corpus(corpus);
-
     TfIdf = Utility::TfIdfVectorizer(corpus);
 }
 
@@ -25,4 +24,19 @@ float TextSimilarity::predict(const int user1_id, const int user2_id) {
                       std::find(users_id.begin(), users_id.end(), user2_id));
 
     return Utility::cosine_similarity(TfIdf[u1], TfIdf[u2]);
+}
+
+std::vector<float> TextSimilarity::predict(std::string& str) {
+    std::vector<float> similarity;
+
+    // Clear corpus
+    Utility::clear_str(str);
+    std::vector<float> tfidf_vector = Utility::TfIdfVectorizeStr(str);
+
+    std::vector<float> preds;
+    for (auto user_id : users_id) {
+        preds.push_back(
+            Utility::cosine_similarity(tfidf_vector, TfIdf[user_id]));
+    }
+    return preds;
 }

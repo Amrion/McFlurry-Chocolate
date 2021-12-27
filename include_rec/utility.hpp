@@ -4,29 +4,36 @@
 #include <cmath>
 #include <iterator>
 #include <list>
+#include <regex>
 #include <set>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <regex>
 
 class Utility {
    public:
-    static float cosine_similarity(const std::vector<float>& x, const std::vector<float>& y);
+    static std::set<std::string> bag;
+    static std::list<std::list<std::string>> corpus_tokenized;
+
+    static float cosine_similarity(const std::vector<float>& x,
+                                   const std::vector<float>& y);
 
     static void clear_corpus(std::list<std::string>& corpus);
+    static void clear_str(std::string& str);
 
-    static std::list<std::list<std::string>> word_tokenize_corpus(
-        const std::list<std::string>& corpus);
+    static void word_tokenize_corpus(const std::list<std::string>& corpus);
 
-    static std::set<std::string> create_bag_of_words(
-        const std::list<std::list<std::string>>& corpus_tokenized);
+    static std::list<std::string> word_tokenize_str(const std::string& str);
+
+    static void create_bag_of_words();
 
     template <typename T = int, typename V = std::string>
     static std::vector<T> LabelEncoder(const std::vector<V>& values);
 
     static std::vector<std::vector<float>> TfIdfVectorizer(
         const std::list<std::string>& corpus);
+
+    static std::vector<float> TfIdfVectorizeStr(const std::string& str);
 };
 
 template <typename T, typename V>

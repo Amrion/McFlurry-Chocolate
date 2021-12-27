@@ -12,25 +12,27 @@ DBScan::DBScan(float _eps, size_t _min_sample, std::vector<int> _users_id) {
     eps = _eps;
     min_sample = _min_sample;
     users_id = _users_id;
-    X = nullptr;
+    points = std::vector<point>(0);
 }
 
-DBScan::~DBScan() {
-    X = nullptr;
-    users_id.clear();
-    points.clear();
+void DBScan::set_params(float _eps, size_t _min_sample,
+                        std::vector<int> _users_id) {
+    eps = _eps;
+    min_sample = _min_sample;
+    users_id = _users_id;
 }
 
-void DBScan::fit(std::vector<std::vector<float>>* _X) {
-    assert((*_X).size() > 0);
+void DBScan::fit(std::shared_ptr<std::vector<std::vector<float>>> _X) {
+    assert(_X->size() > 0);
     X = _X;
     if (users_id.size() == 0) {
-        users_id = std::vector<int>((*X).size());
+        users_id = std::vector<int>(X->size());
         std::iota(std::begin(users_id), std::end(users_id), 0);
     }
 
-    for (size_t i = 0; i < (*X).size(); ++i) {
-        points.push_back(point(users_id[i], i));
+    for (size_t i = 0; i < X->size(); ++i) {
+        point p(users_id[i], i);
+        points.push_back(p);
     }
 
     int cluster_id = 1;
@@ -153,6 +155,7 @@ std::vector<int> DBScan::predict(const int user_id) {
     int i = std::distance(users_id.begin(), user_i);
 
     int user_cluster_id = points[i].cluster_id;
+
     return create_predictions(user_cluster_id);
 }
 
@@ -186,5 +189,6 @@ std::vector<int> DBScan::predict(const std::vector<float>& user_values) {
         });
 
     int user_cluster_id = key_of_max_value->first;
+
     return create_predictions(user_cluster_id);
 }

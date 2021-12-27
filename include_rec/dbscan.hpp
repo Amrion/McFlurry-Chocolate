@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cmath>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <vector>
 
@@ -26,9 +27,8 @@ class DBScan {
    private:
     float eps;
     size_t min_sample;
-    std::vector<int> users_id;
     std::vector<point> points;
-    std::vector<std::vector<float>>* X;
+    std::shared_ptr<std::vector<std::vector<float>>> X;
 
     inline float calculate_distance(const point& p1, const point& p2);
     inline float calculate_distance(const std::vector<float>& p1,
@@ -40,11 +40,16 @@ class DBScan {
     std::vector<int> create_predictions(const int user_cluster_id);
 
    public:
+    std::vector<int> users_id;
+
     DBScan(float _eps = 2.5, size_t _min_sample = 4,
            std::vector<int> _users_id = std::vector<int>(0));
-    ~DBScan();
+    ~DBScan() = default;
 
-    void fit(std::vector<std::vector<float>>* _X);
+    void set_params(float _eps = 2.5, size_t _min_sample = 4,
+                    std::vector<int> _users_id = std::vector<int>(0));
+
+    void fit(std::shared_ptr<std::vector<std::vector<float>>> _X);
     std::vector<int> predict();
     std::vector<int> predict(const int user_id);
     std::vector<int> predict(const std::vector<float>& user_values);

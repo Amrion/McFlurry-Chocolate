@@ -90,10 +90,13 @@ void RecSys::rec_multi_thread(
 }
 
 void RecSys::fit(const std::vector<std::vector<int>>& V,
-                 std::vector<std::vector<float>>* X,
+                 std::shared_ptr<std::vector<std::vector<float>>> X,
                  std::list<std::string>& corpus, std::vector<int> users_id,
                  int _k, float _eps, float _learning_rate, int _nb_epoch,
                  int n_jobs, float cl_eps, size_t min_sample) {
+    assert(V.size() == X->size());
+    assert(V.size() == corpus.size());
+
     // TfIdf Cosine similarity for users description
     text_model.fit(corpus, users_id);
 
@@ -102,7 +105,7 @@ void RecSys::fit(const std::vector<std::vector<int>>& V,
         fit_predict(V, users_id, _k, _eps, _learning_rate, _nb_epoch, n_jobs);
 
     // DBSCAN Clustering
-    cluster_model = DBScan(cl_eps, min_sample, users_id);
+    cluster_model.set_params(cl_eps, min_sample, users_id);
     cluster_model.fit(X);
 }
 
@@ -134,7 +137,62 @@ std::vector<int> RecSys::predict(const int user_id) {
 }
 
 std::vector<int> RecSys::predict(const std::vector<float>& user_values) {
-    return cluster_model.predict(user_values);
+    std::vector<int> users_same_cluster = cluster_model.predict(user_values);
+    std::vector<int> pred;
+
+    auto const predicate = [&users_same_cluster](int const value) {
+        return std::find(users_same_cluster.begin(), users_same_cluster.end(),
+                         value) != users_same_cluster.end();
+    };
+
+    auto const not_predicate = [&users_same_cluster](int const value) {
+        return std::find(users_same_cluster.begin(), users_same_cluster.end(),
+                         value) == users_same_cluster.end();
+    };
+
+    std::copy_if(cluster_model.users_id.begin(), cluster_model.users_id.end(),
+                 std::back_inserter(pred), predicate);
+    std::copy_if(cluster_model.users_id.begin(), cluster_model.users_id.end(),
+                 std::back_inserter(pred), not_predicate);
+
+    return pred;
+}
+
+std::vector<int> RecSys::predict(const std::vector<float>& user_values,
+                                 std::string& description) {
+    std::vector<int> users_same_cluster = cluster_model.predict(user_values);
+    std::vector<int> pred;
+
+    std::vector<float> similarities = text_model.predict(description);
+
+    auto const predicate = [&users_same_cluster](int const value) {
+        return std::find(users_same_cluster.begin(), users_same_cluster.end(),
+                         value) != users_same_cluster.end();
+    };
+
+    auto const not_predicate = [&users_same_cluster](int const value) {
+        return std::find(users_same_cluster.begin(), users_same_cluster.end(),
+                         value) == users_same_cluster.end();
+    };
+
+    std::copy_if(cluster_model.users_id.begin(), cluster_model.users_id.end(),
+                 std::back_inserter(pred), predicate);
+
+    std::vector<id_score> rec_ids;
+    for (size_t i = 0; i < pred.size(); ++i)
+        rec_ids.push_back(
+            id_score({cluster_model.users_id[i], similarities[i]}));
+
+    sort(rec_ids.begin(), rec_ids.end());
+
+    for (size_t i = 0; i < pred.size(); ++i) {
+        pred[i] = rec_ids[i].i_s.first;
+    }
+
+    std::copy_if(cluster_model.users_id.begin(), cluster_model.users_id.end(),
+                 std::back_inserter(pred), not_predicate);
+
+    return pred;
 }
 
 std::shared_ptr<std::map<int, std::vector<int>>> RecSys::fit_predict(
